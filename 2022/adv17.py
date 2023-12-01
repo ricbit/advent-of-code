@@ -174,8 +174,7 @@ def simulate(wind_patterns, rocks, limit):
       height_left = well_height(state) - last_height
       return height_left + detector.period_height(manager.required)
     for action in itertools.cycle([apply_wind, apply_gravity]):
-      blocked = action(iter_wind, rock, state)
-      if blocked:
+      if action(iter_wind, rock, state):
         stamp_rock(state, rock)
         break
   return well_height(state)

@@ -101,18 +101,14 @@ def dump_group(graph, group):
   print(" ".join(groups))
 
 def search(graph, agents, limit):
-  events = []
   start = get_start(graph)
   pos = tuple([start] * agents)
-  event_id = 0
-  heapq.heappush(events, 
-    (-max_bound(graph, 0, limit, agents), 0, 0, pos, limit, event_id))
+  events = [(-max_bound(graph, 0, limit, agents), 0, 0, pos, limit)]
   visited = {}
   minbound = 0
   while events:
-    max_rate, rate, opened, pos, time, old_id = heapq.heappop(events)
+    max_rate, rate, opened, pos, time = heapq.heappop(events)
     max_rate, rate = -max_rate, -rate
-    event_id += 1
     if time == 0 or max_rate < minbound:
       continue
     chain = []
@@ -131,7 +127,7 @@ def search(graph, agents, limit):
       if new_bound > minbound:
         if next_rate > visited.get((new_opened, tuple(new_pos)), -1):
           next_node = (
-            -new_bound, -next_rate, new_opened, new_pos, time - 1, event_id)
+            -new_bound, -next_rate, new_opened, new_pos, time - 1)
           minbound = max(minbound, next_rate)
           heapq.heappush(events, next_node)
           visited[(new_opened, tuple(new_pos))] = next_rate

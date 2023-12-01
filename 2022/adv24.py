@@ -87,7 +87,11 @@ def iter_player(valley, pos, wind):
 
 def score(valley, state, goal, nj, ni):
   minpath = valley.minpath * (goal - state - 1)
-  return abs(nj - valley.end[0]) + abs(ni - valley.end[1]) + minpath
+  if state % 2 == 0:
+    fj, fi = valley.end[0], valley.end[1]
+  else:
+    fj, fi = valley.start[0], valley.start[1]
+  return abs(nj - fj) + abs(ni - fi) + minpath
 
 def change_state(valley, state, pos):
   if state % 2 == 0 and pos == valley.end:
@@ -103,13 +107,18 @@ def search(valley, goal):
   events = [start]
   wind_cache = {0: [(j, i) for j, i, dj, di in valley.wind]}
   minscore = 0
+  vis, drop = 0, 0
   while events:
     maxscore, time, state, pos = heapq.heappop(events)
+    vis += 1
     if maxscore < minscore:
+      drop += 1
       continue
     if time not in wind_cache:
       wind_cache[time] = iter_wind(valley, wind_cache[time - 1])
     wind = wind_cache[time]
+    if vis % 1000 == 0:
+      print(vis, drop, state, maxscore, minscore)
     newstate = change_state(valley, state, pos)
     if newstate == goal:
       return time - 1

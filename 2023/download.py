@@ -1,6 +1,8 @@
 import requests
 from bs4 import BeautifulSoup as BS
 import sys
+import openai
+import os
 
 cookies = {}
 cookie_file = open("cookies.txt", "rt")

@@ -3,6 +3,8 @@ from bs4 import BeautifulSoup as BS
 import sys
 import openai
 import os
+import webbrowser
+import shutil
 
 cookies = {}
 cookie_file = open("cookies.txt", "rt")
@@ -23,4 +25,13 @@ input_text = requests.get(url_problem + "/input", cookies=cookies)
 f = open("input.%02d.txt" % int(problem), "wt")
 f.write(input_text.text)
 f.close()
+
+webbrowser.open_new_tab(url_problem)
+
+filename_part1 = "adv%02d-1.py" % int(problem)
+filename_part2 = "adv%02d-2.py" % int(problem)
+if not os.path.exists(filename_part1):
+  shutil.copy("template.py", filename_part1)
+elif not os.path.exists(filename_part2):
+  shutil.copy(filename_part1, filename_part2)
 

@@ -5,7 +5,7 @@ lines = [line.strip() for line in sys.stdin]
 
 def empty_rows(lines):
   current = 0
-  for i, line in enumerate(lines):
+  for line in lines:
     if "#" not in line:
       current += 1
     yield current

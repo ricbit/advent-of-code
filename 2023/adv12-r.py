@@ -24,6 +24,8 @@ def count(springs, opensize, groups):
     return empty(opensize, groups)
   if len(groups) > len(springs):
     return 0
+  if groups and opensize > groups[0]:
+    return 0
   if springs[0] == ".":
     return dot(springs, opensize, groups)
   if springs[0] == "#":

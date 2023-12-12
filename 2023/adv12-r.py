@@ -10,10 +10,10 @@ def empty(opensize, groups):
 def dot(springs, opensize, groups):
   if opensize > 0:
     if groups and groups[0] == opensize:
-      return count(springs[1:], 0, groups[1:])
+      return count(springs[1:].lstrip("."), 0, groups[1:])
     return 0
   else:
-    return count(springs[1:], 0, groups)
+    return count(springs[1:].lstrip("."), 0, groups)
 
 def sharp(springs, opensize, groups):
   return count(springs[1:], opensize + 1, groups)

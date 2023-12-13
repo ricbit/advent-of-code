@@ -1,7 +1,5 @@
 import sys
-import re
 import itertools
-import math
 
 first_order = "AKQJT98765432"
 second_order = "AKQT98765432J"

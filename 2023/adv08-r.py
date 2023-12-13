@@ -13,8 +13,7 @@ start = [node for node in graph if node.endswith("A")]
 
 def simulate(cur):
   for steps, command in enumerate(itertools.cycle(commands)):
-    cur = graph[cur][command]
-    if cur.endswith("Z"):
+    if (cur := graph[cur][command]).endswith("Z"):
       return steps + 1
 
 print(simulate("AAA"))

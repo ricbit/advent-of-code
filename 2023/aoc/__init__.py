@@ -1,9 +1,14 @@
 import sys
 import itertools
 
+def batched(iterable, n):
+  it = iter(iterable)
+  while batch := tuple(itertools.islice(it, n)):
+    yield batch
+
 class Table:
-  def __init__(self):
-    self.table = [x.strip() for x in sys.stdin.readlines()]
+  def __init__(self, lines):
+    self.table = [x.strip() for x in lines]
     self.w = len(self.table[0])
     self.h = len(self.table)
 

@@ -4,6 +4,7 @@ import sys
 import re
 import itertools
 import math
+import aoc
 from dataclasses import dataclass
 
 @dataclass(repr=True, init=True)
@@ -62,6 +63,6 @@ def transform(seed_intervals, seed_maps):
 
 seeds, maps = read_input()
 print(transform(((i, 1) for i in seeds), maps))
-print(transform(itertools.batched(seeds, 2), maps))
+print(transform(aoc.batched(seeds, 2), maps))
   
 

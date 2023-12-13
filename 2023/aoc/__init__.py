@@ -6,6 +6,9 @@ def batched(iterable, n):
   while batch := tuple(itertools.islice(it, n)):
     yield batch
 
+def line_blocks():
+  return [line.strip().split("\n") for line in sys.stdin.read().split("\n\n")]
+
 class Table:
   def __init__(self, lines):
     self.table = [x.strip() for x in lines]
@@ -30,4 +33,7 @@ class Table:
 
   def __getitem__(self, j):
     return self.table[j]
+
+  def transpose(self):
+    return Table(["".join(t) for t in zip(*self.table)])
 

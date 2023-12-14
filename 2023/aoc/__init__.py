@@ -11,9 +11,13 @@ def line_blocks():
 
 class Table:
   def __init__(self, lines):
-    self.table = [list(x.strip()) for x in lines]
+    self.table = lines
     self.w = len(self.table[0])
     self.h = len(self.table)
+
+  @staticmethod
+  def read():
+    return Table([list(line.strip()) for line in sys.stdin])
 
   def iter_all(self, conditional=lambda x: True):
     for j, i in itertools.product(range(self.h), range(self.w)):
@@ -42,4 +46,11 @@ class Table:
 
   def transpose(self):
     return Table(["".join(t) for t in zip(*self.table)])
+  
+  def clock90(self):
+    return Table([list(reversed(col)) for col in zip(*self.table)])
+
+  def copy(self):
+    return Table([line.copy() for line in self.table])
+
 

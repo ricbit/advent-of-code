@@ -20,7 +20,7 @@ def unique(j, i, visited):
   visited.add((j, i))
   return insert
 
-table = Table(sys.stdin)
+table = Table.read()
 parts_visited = set()
 parts_total = 0
 gears_total = 0

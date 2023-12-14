@@ -3,7 +3,7 @@ import re
 import heapq
 import aoc
 
-mat = aoc.Table(sys.stdin)
+mat = aoc.Table.read()
 
 def find_s(mat):
   for j, i in mat.iter_all(lambda x: x == 'S'):

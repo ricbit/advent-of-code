@@ -1,15 +1,13 @@
 import sys
 import re
 import heapq
+import aoc
 
-mat = [list(line.strip()) for line in sys.stdin]
-sy, sx = len(mat), len(mat[0])
+mat = aoc.Table(sys.stdin)
 
 def find_s(mat):
-  for j in range(sy):
-    for i in range(sx):
-      if mat[j][i] == 'S':
-        return j, i
+  for j, i in mat.iter_all(lambda x: x == 'S'):
+    return j, i
 
 dirs = {
   "|": [(1, 0), (-1, 0)],
@@ -40,14 +38,13 @@ def build_loop(mat):
   return visited, max(distances)
 
 def erase_not_loop(mat, visited):
-  for j in range(sy):
-    for i in range(sx):
-      if (j, i) not in visited:
-        mat[j][i] = '.'
+  for j, i in mat.iter_all():
+    if (j, i) not in visited:
+      mat[j][i] = '.'
 
 def count_area(mat):
   ans = 0
-  for row in mat:
+  for row in mat.table:
     interior = 0
     row = re.sub(r"F-*7|L-*J", "", "".join(row))
     row = re.sub(r"F-*J|L-*7", "|", row)

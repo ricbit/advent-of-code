@@ -11,7 +11,7 @@ def line_blocks():
 
 class Table:
   def __init__(self, lines):
-    self.table = [x.strip() for x in lines]
+    self.table = [list(x.strip()) for x in lines]
     self.w = len(self.table[0])
     self.h = len(self.table)
 
@@ -27,6 +27,12 @@ class Table:
     for dj, di in itertools.product(range(-1, 2), repeat=2):
       if dj == 0 and di == 0:
         continue
+      jj, ii = j + dj, i + di
+      if self.valid(jj, ii) and conditional(self.table[jj][ii]):
+        yield jj, ii
+
+  def iter_neigh4(self, j, i, conditional=lambda x: True):
+    for dj, di in itertools.product([-1, 1], repeat=2):
       jj, ii = j + dj, i + di
       if self.valid(jj, ii) and conditional(self.table[jj][ii]):
         yield jj, ii

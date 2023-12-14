@@ -7,7 +7,7 @@ def issymbol(c):
   return (not c.isnumeric()) and c != "."
 
 def extract_max_number(s):
-  return re.match(r"^(\d+)", s).group(1)
+  return re.match(r"^(\d+)", "".join(s)).group(1)
 
 def search_backwards(table, j, i):
   return j, i + 1 - len(extract_max_number(table[j][i::-1]))

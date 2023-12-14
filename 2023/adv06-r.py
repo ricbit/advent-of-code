@@ -1,8 +1,5 @@
 import sys
-import re
-import itertools
 import math
-import multiprocessing
 
 lines = sys.stdin.readlines()
 time = lines[0].split(":")[1].split()

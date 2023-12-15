@@ -27,8 +27,7 @@ print(sum(apply_hash(code) for code in codes))
 boxes = initialize(codes)
 ans = 0
 for box in boxes:
-  if boxes[box]:
-    for i, (label, focal) in enumerate(boxes[box].items()):
-      ans += (box + 1) * (i + 1) * focal
+  for i, (label, focal) in enumerate(boxes[box].items()):
+    ans += (box + 1) * (i + 1) * focal
 print(ans)
 

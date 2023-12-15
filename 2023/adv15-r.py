@@ -1,24 +1,18 @@
 import sys
 import re
+import functools
 
 def apply_hash(code):
-  ans = 0
-  for c in code:
-    ans = (ans + ord(c)) * 17 % 256
-  return ans
+  return functools.reduce(lambda acc, x: (acc + ord(x)) * 17 % 256, code, 0)
 
 def initialize(codes):
   boxes = {n:{} for n in range(256)}
   for code in codes:
-    if code.endswith("-"):
-      label = code[:-1]
-      box = apply_hash(label)
-      if label in boxes[box]:
-        del boxes[box][label]
-    else:
-      label, number = re.match(r"(\w+)=(\d+)", code).groups()
-      box = apply_hash(label)
-      boxes[box][label] = int(number)
+    match re.match(r"(\w+)-|(\w+)=(\d+)", code).groups():
+      case (label, None, None):
+        boxes[apply_hash(label)].pop(label, None)
+      case (None, label, number):
+        boxes[apply_hash(label)][label] = int(number)
   return boxes
 
 codes = sys.stdin.read().strip().split(",")

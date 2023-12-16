@@ -27,6 +27,9 @@ class Table:
   def valid(self, j, i):
     return 0 <= j < self.h and 0 <= i < self.w
 
+  def cvalid(self, complex_pos):
+    return 0 <= complex_pos.imag < self.h and 0 <= complex_pos.real < self.w
+
   def iter_neigh8(self, j, i, conditional=lambda x: True):
     for dj, di in itertools.product(range(-1, 2), repeat=2):
       if dj == 0 and di == 0:
@@ -43,6 +46,9 @@ class Table:
 
   def __getitem__(self, j):
     return self.table[j]
+
+  def get(self, complex_position):
+    return self.table[int(complex_position.imag)][int(complex_position.real)]
 
   def transpose(self):
     return Table(["".join(t) for t in zip(*self.table)])

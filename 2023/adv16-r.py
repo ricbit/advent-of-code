@@ -23,9 +23,9 @@ def count(packed):
     positions.add(pos)
     match m.get(pos):
       case ".":
-        track = list(fast_track(m, pos, vdir))
-        positions.update(track)
-        append(m, tiles, visited, track[-1], vdir)
+        for track in fast_track(m, pos, vdir):
+          positions.add(track)
+        append(m, tiles, visited, track, vdir)
       case "\\":
         append(m, tiles, visited, pos, vdir.conjugate() * 1J)
       case "/":

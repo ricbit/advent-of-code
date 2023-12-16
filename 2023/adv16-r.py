@@ -1,5 +1,6 @@
 import sys
 import aoc
+import itertools
 from multiprocessing import Pool
 
 def append(m, tiles, visited, pos, vdir):
@@ -52,8 +53,12 @@ def all_rays(m):
     yield (m, i, 1J)
     yield (m, (m.h - 1) * 1J + i, -1J)
 
+def count_batched(batched):
+  return max(count(task) for task in batched)
+
 m = aoc.Table.read()
 print(count((m, 0, 1)))
 with Pool(8) as p:
-  print(max(p.imap_unordered(count, all_rays(m))))
+  batched = itertools.batched(all_rays(m), 10)
+  print(max(p.imap_unordered(count_batched, batched)))
 

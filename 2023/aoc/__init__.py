@@ -39,7 +39,7 @@ class Table:
         yield jj, ii
 
   def iter_neigh4(self, j, i, conditional=lambda x: True):
-    for dj, di in itertools.product([-1, 1], repeat=2):
+    for dj, di in [(0,1), (1,0), (0,-1), (-1,0)]:
       jj, ii = j + dj, i + di
       if self.valid(jj, ii) and conditional(self.table[jj][ii]):
         yield jj, ii

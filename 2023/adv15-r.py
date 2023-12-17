@@ -8,10 +8,10 @@ def apply_hash(code):
 def initialize(codes):
   boxes = {n:{} for n in range(256)}
   for code in codes:
-    match re.match(r"(\w+)-|(\w+)=(\d+)", code).groups():
-      case (label, None, None):
+    match re.match(r"(\w+)[-=](\d+)?", code).groups():
+      case (label, None):
         boxes[apply_hash(label)].pop(label, None)
-      case (None, label, number):
+      case (label, number):
         boxes[apply_hash(label)][label] = int(number)
   return boxes
 
@@ -20,8 +20,8 @@ print(sum(apply_hash(code) for code in codes))
 
 boxes = initialize(codes)
 ans = 0
-for box in boxes:
-  for i, (label, focal) in enumerate(boxes[box].items()):
+for box, contents in boxes.items():
+  for i, (label, focal) in enumerate(contents.items()):
     ans += (box + 1) * (i + 1) * focal
 print(ans)
 

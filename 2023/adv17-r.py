@@ -2,7 +2,7 @@ import sys
 import aoc
 import heapq
 
-def h(m, y, x):
+def heuristic(m, y, x):
   return (m.h - y + m.w - x)
 
 def search(m, minsize, maxsize):
@@ -11,7 +11,7 @@ def search(m, minsize, maxsize):
   lastsize = 5
   vec = (pos, lastdir, lastsize)
   visited = set([vec])
-  vnext = [(h(m, 0, 0),0,) + vec]
+  vnext = [(heuristic(m, 0, 0), 0) + vec]
   while vnext:
     heu, score, (y, x), (dy, dx), lastsize = heapq.heappop(vnext)
     if (y, x) == (m.h - 1, m.w - 1):
@@ -28,7 +28,8 @@ def search(m, minsize, maxsize):
           continue
         if (vec := ((j, i), (dj, di), 1)) in visited:
           continue
-      heapq.heappush(vnext, (h(m,j,i) +score + m[j][i] ,score+m[j][i]) + vec)
+      pure_score = score + m[j][i]
+      heapq.heappush(vnext, (heuristic(m,j,i) + pure_score, pure_score) + vec)
       visited.add(vec)
 
 lines = [[int(i) for i in line.strip()] for line in sys.stdin]

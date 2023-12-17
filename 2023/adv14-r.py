@@ -40,7 +40,7 @@ def search(table, n):
       period = pos - visited[h]
       return scores[(n - visited[h]) % period + visited[h]]
 
-table = aoc.Table([list(line.strip()) for line in sys.stdin])
+table = aoc.Table.read()
 print(score(scroll(table.copy())))
 print(search(table, 10 ** 9))
 

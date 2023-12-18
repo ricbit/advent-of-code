@@ -1,10 +1,14 @@
 import sys
 import itertools
 
-def batched(iterable, n):
-  it = iter(iterable)
-  while batch := tuple(itertools.islice(it, n)):
-    yield batch
+def shoelace(points):
+  area = 0
+  pairs = zip(points, itertools.islice(itertools.cycle(points), 1, None))
+  for (y1, x1), (y2, x2) in pairs:
+    area += x1 * y2 - x2 * y1
+  return area / 2
+
+DIRECTIONS = {"R": (0, 1), "L": (0, -1), "U": (-1, 0), "D": (1, 0)}
 
 def line_blocks():
   return [line.strip().split("\n") for line in sys.stdin.read().split("\n\n")]

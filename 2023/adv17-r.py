@@ -1,33 +1,23 @@
 import sys
 import aoc
 import heapq
-import cProfile
+from collections import defaultdict
 
-def heuristic(m, y, x):
+def heuristic(m, y, x, score):
   return m.h - y + m.w - x
 
 def search(m, minsize, maxsize):
-  pos = (0, 0)
-  lastdir = (2, 2)
-  vec = (pos, lastdir)
-  visited = set()
-  current = {}
-  vnext = [(heuristic(m, 0, 0), 0) + vec]
-  count = 0
-  skipped = 0
+  visited = defaultdict(lambda: 1e6)
+  vnext = [(heuristic(m, 0, 0, 0), 0, (0, 0), 2)]
   while vnext:
-    count += 1
-    old_heuristic, score, (y, x), (dy, dx) = heapq.heappop(vnext)
-    if (oldvec := ((y, x), (dy, dx))) in visited:
-      skipped += 1
+    old_heuristic, score, (y, x), direction = heapq.heappop(vnext)
+    if old_heuristic > visited[((y, x), direction)]:
       continue
-    visited.add(oldvec)
     if (y, x) == (m.h - 1, m.w - 1):
-      print(count, skipped)
       return score
     for j, i in m.iter_neigh4(y, x):
       dj, di = j - y, i - x
-      if (dj, di) == (dy, dx) or (dj, di) == (-dy, -dx):
+      if (dj == 0 and direction == 0) or (di == 0 and direction == 1):
         continue
       dscore = 0
       for size in range(1, maxsize + 1):
@@ -35,13 +25,12 @@ def search(m, minsize, maxsize):
         if not m.valid(nj, ni):
           break
         dscore += m[nj][ni]
-        if size < minsize or (vec := ((nj, ni), (dj, di))) in visited:
-          continue
         pure_score = score + dscore
-        new_heuristic = heuristic(m, nj, ni) + pure_score
-        if new_heuristic < current.get(vec, 1e9):
+        new_heuristic = heuristic(m, nj, ni, pure_score) + pure_score
+        vec = ((nj, ni), 0 if dj == 0 else 1)
+        if size >= minsize and new_heuristic < visited[vec]:
           heapq.heappush(vnext, (new_heuristic, pure_score) + vec)
-          current[vec] = new_heuristic
+          visited[vec] = new_heuristic
 
 lines = [[int(i) for i in line.strip()] for line in sys.stdin]
 m = aoc.Table(lines)

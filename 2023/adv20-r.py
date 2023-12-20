@@ -2,7 +2,7 @@ import sys
 import re
 import itertools
 import math
-from collections import defaultdict, Counter
+from collections import defaultdict, Counter, deque
 
 def get_inputs(modules):
   inputs = defaultdict(list)
@@ -31,9 +31,9 @@ def simulate(modules, inputs, nands, n):
   counts, periods = Counter(), {}
   buttons = range(n) if n else itertools.count()
   for button in buttons:
-    pulses = [(0, "broadcaster", "!")]
+    pulses = deque([(0, "broadcaster", "!")])
     while pulses:
-      value, name, inp = pulses.pop(0)
+      value, name, inp = pulses.popleft()
       counts[value] += 1
       if name in nands and value == 0 and name not in periods:
         periods[name] = button + 1

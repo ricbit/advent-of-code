@@ -77,38 +77,41 @@ class DFS:
 
   def search(self):
     self.visited.add(self.start)
-    left = sum(self.sizes) - self.sizes[self.start]
-    return self.dfs_search(self.sizes[self.start], self.start, left)
+    return self.dfs_search(self.sizes[self.start], self.start,
+      sum(self.sizes) - self.sizes[self.start]) - 1
 
   def remove(self, pos, new_pos):
     removed = [new_pos]
     self.visited.add(new_pos)
-    for node in self.graph[pos]:
-      if node not in self.visited and node != new_pos:
-        if len([n for n in self.graph[node] if n not in self.visited]) == 1:
-          removed.append(node)
-          self.visited.add(node)
+    candidates = [pos]
+    while candidates:
+      base = candidates.pop()
+      for node in self.graph[base]:
+        if node not in self.visited and node != new_pos:
+          if len([n for n in self.graph[node] if n not in self.visited]) == 1:
+            removed.append(node)
+            self.visited.add(node)
+            candidates.append(node)
+    if len(removed) != len(set(removed)):
+        print(removed)
     return removed
 
   def dfs_search(self, score, pos, left):
     maxscore = 0
-    #print(pos)
     for new_pos in self.graph[pos]:
       if new_pos == self.end:
-        maxscore = max(maxscore, score + self.sizes[self.end] - 1)
+        maxscore = max(maxscore, score + self.sizes[self.end])
         if maxscore > self.best:
           self.best = maxscore
-          print(self.best, self.path)
+          print(self.best - 1, left)
         break
       if new_pos not in self.visited:
         self.path.append(new_pos)
         removed = self.remove(pos, new_pos)
-        #print(f"from {pos} to {new_pos} removed {removed}")
-        d = self.dfs_search(score + sizes[new_pos], new_pos, left - sizes[new_pos])
+        d = self.dfs_search(score + sizes[new_pos], new_pos, left)
         self.path.pop()
         for node in removed:
-          if node in self.visited:
-            self.visited.remove(node)
+          self.visited.remove(node)
         maxscore = max(maxscore, d)
     return maxscore
 

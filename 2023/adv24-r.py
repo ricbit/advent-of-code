@@ -5,6 +5,8 @@ import sympy
 
 def solve1(stones):
   ans = 0
+  pmin, pmax = 200000000000000, 400000000000000
+  bounds = lambda x: pmin <= x <= pmax
   for a, b in itertools.combinations(stones, 2):
     pax, pay, paz = a[0]
     pbx, pby, pbz = b[0]
@@ -12,13 +14,11 @@ def solve1(stones):
     vbx, vby, vbz = b[1]
     d = vay * vbx - vax * vby
     if d == 0:
-        continue
+      continue
     ta = -(pay * vbx - pby * vbx - pax * vby + pbx * vby) / d
     tb = -(pay * vax - pby * vax - pax * vay + pbx * vay) / d
     py = pay + ta * vay
     px = pax + ta * vax
-    pmin, pmax = 200000000000000, 400000000000000
-    bounds = lambda x: pmin <= x <= pmax
     if bounds(py) and bounds(px) and ta >= 0 and tb >= 0:
       ans += 1
   return ans

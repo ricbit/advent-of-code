@@ -35,7 +35,7 @@ def invert_supports(supports):
       inverted[top].add(base)
   return inverted
 
-def desintegrate(bricks, bases, tops):
+def disintegrate(bricks, bases, tops):
   ans = 0
   for i in range(len(bases)):
     removed = defaultdict(lambda: [])
@@ -62,7 +62,7 @@ supports = list(drop_bricks(bricks))
 flat = aoc.flatten(list(s) for s in supports if len(s) == 1)
 print(len(bricks) - len(set(flat)))
 tops = invert_supports(supports)
-print(desintegrate(bricks, supports, tops))
+print(disintegrate(bricks, supports, tops))
 
 
  

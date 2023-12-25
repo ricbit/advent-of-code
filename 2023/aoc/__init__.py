@@ -1,6 +1,9 @@
 import sys
 import itertools
 
+def flatten(composite):
+  return itertools.chain.from_iterable(composite)
+
 def shoelace(points):
   area = 0
   pairs = zip(points, itertools.islice(itertools.cycle(points), 1, None))

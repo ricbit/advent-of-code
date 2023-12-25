@@ -1,5 +1,6 @@
 import sys
 import aoc
+import itertools
 from collections import *
 import copy
 
@@ -51,6 +52,19 @@ def build_graph(t, groups):
   end = t[-1][-2]
   return graph, group_size, start, end
 
+def collapse(graph, sizes):
+  new_graph = copy.deepcopy(graph)
+  for v1, v2 in itertools.combinations(graph.keys(), 2):
+    if len(graph[v1]) == 2 and len(graph[v2]) == 2 and v1 in graph[v2]:
+      b = [v for v in graph[v2] if v not in graph[v1] and v != v1][0]
+      new_graph[v1].remove(v2)
+      new_graph[v1].add(b)
+      new_graph[b].remove(v2)
+      new_graph[b].add(v1)
+      del new_graph[v2]
+      sizes[v1] += sizes[v2]
+  return new_graph
+
 class DFS:
   def __init__(self, graph, sizes, start, end):
     self.graph = graph
@@ -58,41 +72,59 @@ class DFS:
     self.start = start
     self.end = end
     self.visited = set()
+    self.best = 0
+    self.path = []
 
   def search(self):
     self.visited.add(self.start)
     left = sum(self.sizes) - self.sizes[self.start]
-    self.available = copy.deepcopy(graph)
     return self.dfs_search(self.sizes[self.start], self.start, left)
 
-  def remove(self, start, chosen):
-    for node in self.graph[start]:
-      if node != chosen:
-        self.available[node].remove(start)
-
-  def reinsert(self, start, chosen):
-    for node in self.graph[start]:
-      if node != chosen:
-        self.available[node].add(start)
+  def remove(self, pos, new_pos):
+    removed = [new_pos]
+    self.visited.add(new_pos)
+    for node in self.graph[pos]:
+      if node not in self.visited and node != new_pos:
+        if len([n for n in self.graph[node] if n not in self.visited]) == 1:
+          removed.append(node)
+          self.visited.add(node)
+    return removed
 
   def dfs_search(self, score, pos, left):
     maxscore = 0
-    for new_pos in self.available[pos]:
+    #print(pos)
+    for new_pos in self.graph[pos]:
       if new_pos == self.end:
         maxscore = max(maxscore, score + self.sizes[self.end] - 1)
-        continue
+        if maxscore > self.best:
+          self.best = maxscore
+          print(self.best, self.path)
+        break
       if new_pos not in self.visited:
-        self.visited.add(new_pos)
-        self.remove(pos, new_pos)
+        self.path.append(new_pos)
+        removed = self.remove(pos, new_pos)
+        #print(f"from {pos} to {new_pos} removed {removed}")
         d = self.dfs_search(score + sizes[new_pos], new_pos, left - sizes[new_pos])
-        self.reinsert(pos, new_pos)
-        self.visited.remove(new_pos)
+        self.path.pop()
+        for node in removed:
+          if node in self.visited:
+            self.visited.remove(node)
         maxscore = max(maxscore, d)
     return maxscore
+
+def draw_graph(graph):
+  print("graph x {")
+  for k, v in graph.items():
+    for vv in v:
+      if k < vv:
+        print(f"v{k} -- v{vv};")
+  print("} ")
 
 t = aoc.Table.read()
 groups = build_groups(t)
 graph, sizes, start, end = build_graph(t, groups)
+graph = collapse(graph, sizes)
+#draw_graph(graph)
 d = DFS(graph, sizes, start, end)
 print(d.search())
 

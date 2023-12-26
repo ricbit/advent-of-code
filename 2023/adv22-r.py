@@ -1,6 +1,6 @@
 import sys
 import aoc
-from collections import *
+from collections import defaultdict
 
 def max_item(bricks, i):
   return max(aoc.flatten((a[i], b[i]) for a, b in bricks))

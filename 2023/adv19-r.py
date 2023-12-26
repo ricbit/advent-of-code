@@ -1,4 +1,3 @@
-import sys
 import re
 import math
 import aoc
@@ -30,7 +29,7 @@ def parse_flow(flow, d):
 
 def parse_parts(parts):
   parts = [part.split("=") for part in parts.strip("{}").split(",")]
-  return {k:int(v) for k, v in parts}
+  return {k: int(v) for k, v in parts}
 
 def split_traverse(flows, block, state):
   while state not in ["R", "A"]:
@@ -40,7 +39,7 @@ def split_traverse(flows, block, state):
   return state, [block]
 
 def count(flows):
-  block = {"x":(1, 4000), "m":(1, 4000), "a":(1, 4000), "s":(1, 4000)}
+  block = {c: (1, 4000) for c in "xmas"}
   blocks, ans = [block], 0
   while blocks:
     block = blocks.pop()
@@ -53,11 +52,11 @@ def count(flows):
   return ans
 
 def validate(flows, part):
-  d = {k:(v, v) for k, v in parse_parts(part).items()}
+  d = {k: (v, v) for k, v in parse_parts(part).items()}
   state, _ = split_traverse(flows, d, "in")
   return sum(a for a, b in d.values()) if state == "A" else 0
 
 flows, parts = aoc.line_blocks()
-flows = {re.match(r"(\w+)\{", f).group(1):f for f in flows}
+flows = {re.match(r"(\w+)\{", f).group(1): f for f in flows}
 print(sum(validate(flows, part) for part in parts))
 print(count(flows))

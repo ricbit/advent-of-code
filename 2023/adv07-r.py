@@ -25,7 +25,7 @@ def rank(hand, order):
       return 6
 
 def first_score(hand, order):
-  return (rank(hand, order) , [order.index(i) for i in hand])
+  return (rank(hand, order), [order.index(i) for i in hand])
 
 def second_score(hand, order):
   all_ranks = [rank(hand.replace("J", c), order) for c in order]

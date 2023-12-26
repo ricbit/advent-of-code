@@ -1,4 +1,3 @@
-import sys
 import aoc
 import itertools
 from multiprocessing import Pool

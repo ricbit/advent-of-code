@@ -1,10 +1,5 @@
-# Requires python 3.12
-
 import sys
-import re
 import itertools
-import math
-import aoc
 from dataclasses import dataclass
 
 @dataclass(repr=True, init=True)
@@ -33,7 +28,7 @@ def read_input():
   maps = []
   while pos < len(lines):
     pos, new_map = read_map(lines, pos)
-    new_map.sort(key=lambda x : x.begin)
+    new_map.sort(key=lambda x: x.begin)
     maps.append(new_map)
   return seeds, maps
 

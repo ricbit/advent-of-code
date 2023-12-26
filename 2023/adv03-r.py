@@ -1,6 +1,4 @@
-import sys
 import re
-import itertools
 from aoc import Table
 
 def issymbol(c):

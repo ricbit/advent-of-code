@@ -1,12 +1,10 @@
-import sys
-import itertools
 import aoc
 
 def build_distances(t, reachable):
   allj = list(j for j, i in reachable)
   alli = list(i for j, i in reachable)
   minj, maxj = min(allj + [0]), max(allj + [t.h])
-  mini, maxi = min(alli + [0]), max(alli + [t.h])
+  mini, maxi = min(alli + [0]), max(alli + [t.w])
   sizej = maxj - minj + 1
   sizei = maxi - mini + 1
   m = [["."] * sizei for _ in range(sizej)]
@@ -21,6 +19,7 @@ def walk(t, py, px, n):
   reachable = set([(py, px)])
   last_odd = [set(), set()]
   visited = set()
+  notseen = lambda x: all(x not in last for last in last_odd)
   for step in range(n + 1):
     newreach = set()
     if step % 2 == n % 2:
@@ -32,8 +31,7 @@ def walk(t, py, px, n):
         ii = i + di
         if t[jj % t.h][ii % t.w] == ".":
           newreach.add((jj, ii))
-    reachable = set((x for x in newreach if (
-          x not in last_odd[0] and x not in last_odd[1])))
+    reachable = set((x for x in newreach if notseen(x)))
     last_odd = [last_odd[1], reachable]
   return build_distances(t, visited)
 
@@ -45,10 +43,8 @@ def find_s(t):
       return j, i
 
 def get_sizes(dist):
-  sizes = []
   for line in dist:
-    sizes.append(len([c for c in line if c not in "#."]))
-  return sizes
+    yield len([c for c in line if c not in "#."])
 
 def direct(t, py, px, n):
   return sum(get_sizes(walk(t, py, px, n)))
@@ -61,7 +57,7 @@ def simulate(t, py, px, n):
   c = x
   i = n // t.h
   return a * i * i + b * i + c
- 
+
 t = aoc.Table.read()
 py, px = find_s(t)
 print(direct(t, py, px, 64))

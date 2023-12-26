@@ -1,7 +1,6 @@
-import sys
 import aoc
 import itertools
-from collections import *
+from collections import defaultdict, Counter
 import copy
 
 EMPTY = ".v^<>"
@@ -64,7 +63,7 @@ def collapse(graph, sizes):
       del new_graph[v2]
       sizes[v1] += sizes[v2]
   measure = lambda n: -sizes[n]
-  return {k:list(sorted(v, key=measure)) for k, v in new_graph.items()}
+  return {k: list(sorted(v, key=measure)) for k, v in new_graph.items()}
 
 class DFS:
   def __init__(self, graph, sizes, start, end):
@@ -78,8 +77,8 @@ class DFS:
 
   def search(self):
     self.visited.add(self.start)
-    return self.dfs_search(self.sizes[self.start], self.start,
-      sum(self.sizes) - self.sizes[self.start])
+    left = sum(self.sizes) - self.sizes[self.start]
+    return self.dfs_search(self.sizes[self.start], self.start, left)
 
   def remove(self, pos, new_pos):
     removed = [new_pos]
@@ -128,7 +127,7 @@ groups = build_groups(t)
 graph, sizes, start, end = build_graph(t, groups)
 graph = collapse(graph, sizes)
 for k, v in graph.items():
-  print(k, sizes[k], sum(sizes[n] for n in v), [(j,sizes[j]) for j in v])
+  print(k, sizes[k], sum(sizes[n] for n in v), [(j, sizes[j]) for j in v])
 #draw_graph(graph)
 #d = DFS(graph, sizes, start, end)
 #print(d.search())

@@ -6,7 +6,7 @@ def apply_hash(code):
   return functools.reduce(lambda acc, x: (acc + ord(x)) * 17 % 256, code, 0)
 
 def initialize(codes):
-  boxes = {n:{} for n in range(256)}
+  boxes = {n: {} for n in range(256)}
   for code in codes:
     match re.match(r"(\w+)[-=](\d+)?", code).groups():
       case (label, None):

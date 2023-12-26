@@ -1,4 +1,3 @@
-import sys
 import aoc
 
 def hamming(a, b):

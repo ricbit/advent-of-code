@@ -4,6 +4,10 @@ from collections import *
 import itertools
 from multiprocessing import Pool
 
+CPUS = 8
+TRIALS = 100
+CANDIDATES = 6
+
 def read_graph():
   verts = defaultdict(lambda: set())
   names = {}
@@ -68,12 +72,12 @@ def extract_edges(used):
   for (a, b), v in edges:
     if a not in verts and b not in verts:
       ans.append((a, b))
-      if len(ans) == 6:
+      if len(ans) == CANDIDATES:
         return ans
 
 def search(_):
   used = Counter()
-  for i in range(100):
+  for i in range(TRIALS):
     random_bfs(verts, used)
   edges = extract_edges(used)
   ans = [0]
@@ -86,4 +90,8 @@ def search(_):
 
 verts = read_graph()
 with Pool() as p:
-  print(max(p.imap_unordered(search, (i for i in range(20)))))
+  while True:
+    ans = max(p.imap_unordered(search, (i for i in range(CPUS))))
+    if ans > 0:
+      print(ans)
+      break

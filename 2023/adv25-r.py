@@ -1,33 +1,84 @@
 import sys
-import re
-import itertools
-import math
-import aoc
 import random
 from collections import *
 import copy
-from multiprocessing import Pool
 
-verts = defaultdict(lambda: [])
-edges = []
-for line in sys.stdin:
-  a, links = line.strip().split(":")
-  for b in links.split():
-    edges.append(((a, b), (a, b)))
-    verts[a].append(len(edges) - 1)
-    verts[b].append(len(edges) - 1)
+def read_graph():
+  verts = defaultdict(lambda: set())
+  names = {}
+  current = 0
+  for line in sys.stdin:
+    a, links = line.strip().split(":")
+    for b in links.split():
+      if a not in names:
+        names[a] = current
+        current += 1
+      if b not in names:
+        names[b] = current
+        current += 1
+      verts[names[a]].add(names[b])
+      verts[names[b]].add(names[a])
+  return verts
 
-def contract(original_verts, original_edges):
-  verts = copy.deepcopy(original_verts)
-  edges = copy.deepcopy(original_edges)
-  while len(edges) > 2:
-    idx = random.randrange(0, len(edges))
-    (a, b), name = edges[idx]
+def random_bfs(verts, used):
+  vnext = deque()
+  keys = list(verts.keys())
+  source = random.choice(keys)
+  sink = random.choice(keys)
+  vnext.append(source)
+  visited = [False] * len(verts)
+  while vnext:
+    node = vnext.popleft()
+    if node == sink:
+      return
+    if visited[node]:
+      continue
+    visited[node] = True
+    for neigh in verts[node]:
+      if not visited[neigh]:
+        vnext.append(neigh)
+        a, b = sorted([node, neigh])
+        used[(a, b)] += 1
 
+def floodfill(verts, edges):
+  vnext = deque()
+  keys = list(verts.keys())
+  source = random.choice(keys)
+  vnext.append(source)
+  visited = set()
+  while vnext:
+    node = vnext.popleft()
+    if node in visited:
+      continue
+    visited.add(node)
+    for neigh in verts[node]:
+      if neigh not in visited:
+        a, b = sorted([node, neigh])
+        if (a, b) not in edges:
+          vnext.append(neigh)
+  return len(visited)
 
-print(verts)
-print(edges)
+def extract_edges(used):
+  edges = list(used.items())
+  edges.sort(key=lambda x: x[1], reverse=True)
+  verts = set()
+  ans = []
+  for (a, b), v in edges:
+    if a not in verts and b not in verts:
+      ans.append((a, b))
+      if len(ans) == 3:
+        return ans
 
+def search(verts):
+  while True:
+    used = Counter()
+    for i in range(100):
+      random_bfs(verts, used)
+    edges = extract_edges(used)
+    size = floodfill(verts, edges) 
+    ans = size * (len(verts) - size)
+    if ans > 0:
+      return ans
 
-#print(len(graph),a,b)
-#print(a*b)
+verts = read_graph()
+print(search(verts))

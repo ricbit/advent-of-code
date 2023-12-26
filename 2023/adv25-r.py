@@ -1,8 +1,8 @@
 import sys
 import random
 from collections import *
-import copy
 import itertools
+from multiprocessing import Pool
 
 def read_graph():
   verts = defaultdict(lambda: set())
@@ -57,6 +57,7 @@ def floodfill(verts, edges):
         a, b = sorted([node, neigh])
         if (a, b) not in edges:
           vnext.append(neigh)
+          visited.add(node)
   return len(visited)
 
 def extract_edges(used):
@@ -70,20 +71,19 @@ def extract_edges(used):
       if len(ans) == 6:
         return ans
 
-def search(verts):
-  while True:
-    used = Counter()
-    for i in range(300):
-      random_bfs(verts, used)
-    edges = extract_edges(used)
-    ans = [0]
-    for subset in itertools.combinations(edges, 3):
-      size = floodfill(verts, edges) 
-      compl = len(verts) - size
-      if size > len(verts) / 3 and compl > len(verts) / 3:
-        ans.append(size * compl)
-    if max(ans) > 0:
-      return max(ans)
+def search(_):
+  used = Counter()
+  for i in range(100):
+    random_bfs(verts, used)
+  edges = extract_edges(used)
+  ans = [0]
+  for subset in itertools.combinations(edges, 3):
+    size = floodfill(verts, edges) 
+    compl = len(verts) - size
+    if size > len(verts) / 3 and compl > len(verts) / 3:
+      ans.append(size * compl)
+  return max(ans)
 
 verts = read_graph()
-print(search(verts))
+with Pool() as p:
+  print(max(p.imap_unordered(search, (i for i in range(20)))))

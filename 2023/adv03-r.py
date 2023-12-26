@@ -41,5 +41,3 @@ for j, i in table.iter_all(issymbol):
 
 print(parts_total)
 print(gears_total)
-      
-

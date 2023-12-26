@@ -12,5 +12,3 @@ def count_wins(time, distance):
 
 print(math.prod(count_wins(int(t), int(d)) for t, d in zip(time, distance)))
 print(count_wins(int("".join(time)), int("".join(distance))))
-
-  

@@ -11,4 +11,3 @@ for line in sys.stdin:
 
 print(math.floor(0.5 + after))
 print(math.floor(0.5 + before))
-  

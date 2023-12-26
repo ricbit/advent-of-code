@@ -44,4 +44,3 @@ def unfold(lines, n):
 lines = sys.stdin.readlines()
 print(unfold(lines, 1))
 print(unfold(lines, 5))
-  

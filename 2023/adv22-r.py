@@ -63,6 +63,3 @@ flat = aoc.flatten(list(s) for s in supports if len(s) == 1)
 print(len(bricks) - len(set(flat)))
 tops = invert_supports(supports)
 print(disintegrate(bricks, supports, tops))
-
-
- 

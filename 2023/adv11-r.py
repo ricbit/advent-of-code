@@ -36,4 +36,3 @@ cols = list(empty_rows(transpose(lines)))
 galaxies = list(find_galaxies(lines))
 print(all_distances(galaxies, rows, cols, 2))
 print(all_distances(galaxies, rows, cols, 1000000))
-

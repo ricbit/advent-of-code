@@ -59,6 +59,3 @@ visited, max_distance = build_loop(mat)
 print(max_distance)
 erase_not_loop(mat, visited)
 print(count_area(mat))
-  
-
-

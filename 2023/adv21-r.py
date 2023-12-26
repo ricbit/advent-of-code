@@ -30,7 +30,7 @@ def walk(t, py, px, n):
       for dj, di in aoc.DIRECTIONS.values():
         jj = j + dj
         ii = i + di
-        if t[jj % t.h][ii % t.w] == ".": 
+        if t[jj % t.h][ii % t.w] == ".":
           newreach.add((jj, ii))
     reachable = set((x for x in newreach if (
           x not in last_odd[0] and x not in last_odd[1])))
@@ -73,4 +73,3 @@ t = aoc.Table.read()
 py, px = find_s(t)
 print(sum(get_sizes(walk(t, py, px, 64))))
 print(simulate(t, py, px, 26501365))
-

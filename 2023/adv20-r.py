@@ -65,5 +65,3 @@ nands = list(simple_nands(modules, inputs))
 
 print(simulate(modules, inputs, nands, 1000))
 print(simulate(modules, inputs, nands, None))
-
-  

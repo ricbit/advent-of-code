@@ -11,4 +11,3 @@ last = build(fr"^.*(\d|{numbers}).*?$")
 digits = lambda line: "".join(d for d in line if d.isdecimal())
 print(sum(first(digits(line)) * 10 + last(digits(line)) for line in lines))
 print(sum(first(line) * 10 + last(line) for line in lines))
-

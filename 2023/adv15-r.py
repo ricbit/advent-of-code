@@ -24,4 +24,3 @@ for box, contents in boxes.items():
   for i, (label, focal) in enumerate(contents.items()):
     ans += (box + 1) * (i + 1) * focal
 print(ans)
-

@@ -12,5 +12,3 @@ for pos, line in enumerate(lines):
 
 print(points)
 print(sum(card_copies))
-    
-  

@@ -28,14 +28,14 @@ def build_groups(t):
         visited.add((j, i))
         group.add((j, i))
         vnext.append((name, j, i, group))
-      else: 
+      else:
         group = set([(j, i)])
         visited.add((j, i))
         vnext.append((last_name + 1, j, i, group))
         last_name += 1
   return groups
 
-def build_graph(t, groups): 
+def build_graph(t, groups):
   for name, group in groups.items():
     for j, i in group:
       t[j][i] = name
@@ -43,7 +43,7 @@ def build_graph(t, groups):
   group_size = Counter()
   for y, x in t.iter_all():
     if t[y][x] == "#":
-      continue  
+      continue
     group_size[t[y][x]] += 1
     for j, i in t.iter_neigh4(y, x):
       if t[j][i] != "#" and t[j][i] != t[y][x]:
@@ -132,4 +132,3 @@ for k, v in graph.items():
 #draw_graph(graph)
 #d = DFS(graph, sizes, start, end)
 #print(d.search())
-

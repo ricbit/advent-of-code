@@ -39,4 +39,3 @@ def winnings(hands, score, order):
 hands = [line.strip().split() for line in sys.stdin]
 print(winnings(hands, first_score, first_order))
 print(winnings(hands, second_score, second_order))
-  

@@ -19,7 +19,7 @@ def count(packed):
   tiles = [(pos, vdir)]
   visited = set(tiles)
   positions = set([pos])
-  while tiles:  
+  while tiles:
     pos, vdir = tiles.pop()
     positions.add(pos)
     match m.get(pos):
@@ -61,4 +61,3 @@ print(count((m, 0, 1)))
 with Pool(8) as p:
   batched = itertools.batched(all_rays(m), 15)
   print(max(p.imap_unordered(count_batched, batched)))
-

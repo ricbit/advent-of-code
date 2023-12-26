@@ -27,4 +27,3 @@ def second(games):
 
 print(first(games))
 print(second(games))
-

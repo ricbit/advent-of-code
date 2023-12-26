@@ -42,4 +42,3 @@ for line in sys.stdin:
 
 print(solve1(stones))
 print(solve2(stones))
-

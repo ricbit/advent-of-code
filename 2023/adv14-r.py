@@ -43,5 +43,3 @@ def search(table, n):
 table = aoc.Table.read()
 print(score(scroll(table.copy())))
 print(search(table, 10 ** 9))
-
-

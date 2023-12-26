@@ -50,26 +50,19 @@ def get_sizes(dist):
     sizes.append(len([c for c in line if c not in "#."]))
   return sizes
 
-def simulate(t, py, px, n):
-  reference = t.h * 3 + n % t.h
-  sizes = get_sizes(walk(t, py, px, reference))
-  ans = 0
-  for i in range(t.h):
-    chopped = itertools.islice(sizes, i, None, t.h)
-    diffs = [(b - a) for a, b in itertools.pairwise(chopped)]
-    half = (n - reference) // t.h
-    last = sizes[i] + diffs[0]
-    ans += sizes[i] + last
-    ans += half * last + half * (half + 1) * diffs[1] // 2
-    last += half * diffs[1]
-    for i in itertools.islice(diffs, 1, len(diffs) - 1):
-      last += i
-      ans += last
-    ans += half * last + half * (half + 1) * diffs[-2] // 2
-    ans += last + half * diffs[-2] + diffs[-1]
-  return ans
+def direct(t, py, px, n):
+  return sum(get_sizes(walk(t, py, px, n)))
 
+def simulate(t, py, px, n):
+  base = n % t.h
+  x, y, z = [direct(t, py, px, base + i * t.h) for i in range(3)]
+  a = (x - 2 * y + z) // 2
+  b = (-3 * x + 4 * y - z) // 2
+  c = x
+  i = n // t.h
+  return a * i * i + b * i + c
+ 
 t = aoc.Table.read()
 py, px = find_s(t)
-print(sum(get_sizes(walk(t, py, px, 64))))
+print(direct(t, py, px, 64))
 print(simulate(t, py, px, 26501365))

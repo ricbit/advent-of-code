@@ -63,7 +63,8 @@ def collapse(graph, sizes):
       new_graph[b].add(v1)
       del new_graph[v2]
       sizes[v1] += sizes[v2]
-  return new_graph
+  measure = lambda n: -sizes[n]
+  return {k:list(sorted(v, key=measure)) for k, v in new_graph.items()}
 
 class DFS:
   def __init__(self, graph, sizes, start, end):
@@ -78,7 +79,7 @@ class DFS:
   def search(self):
     self.visited.add(self.start)
     return self.dfs_search(self.sizes[self.start], self.start,
-      sum(self.sizes) - self.sizes[self.start]) - 1
+      sum(self.sizes) - self.sizes[self.start])
 
   def remove(self, pos, new_pos):
     removed = [new_pos]
@@ -92,8 +93,6 @@ class DFS:
             removed.append(node)
             self.visited.add(node)
             candidates.append(node)
-    if len(removed) != len(set(removed)):
-        print(removed)
     return removed
 
   def dfs_search(self, score, pos, left):
@@ -103,12 +102,13 @@ class DFS:
         maxscore = max(maxscore, score + self.sizes[self.end])
         if maxscore > self.best:
           self.best = maxscore
-          print(self.best - 1, left)
+          print(self.best - 1, left, self.path)
         break
       if new_pos not in self.visited:
-        self.path.append(new_pos)
         removed = self.remove(pos, new_pos)
-        d = self.dfs_search(score + sizes[new_pos], new_pos, left)
+        remlen = sum(sizes[n] for n in removed)
+        self.path.append((new_pos, remlen, removed))
+        d = self.dfs_search(score + sizes[new_pos], new_pos, left - remlen)
         self.path.pop()
         for node in removed:
           self.visited.remove(node)
@@ -127,7 +127,9 @@ t = aoc.Table.read()
 groups = build_groups(t)
 graph, sizes, start, end = build_graph(t, groups)
 graph = collapse(graph, sizes)
+for k, v in graph.items():
+  print(k, sizes[k], sum(sizes[n] for n in v), [(j,sizes[j]) for j in v])
 #draw_graph(graph)
-d = DFS(graph, sizes, start, end)
-print(d.search())
+#d = DFS(graph, sizes, start, end)
+#print(d.search())
 

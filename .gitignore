@@ -3,3 +3,10 @@
 */infosec/*
 */old/*
 *lixo*
+*.flake8*
+*__pycache__*
+*figure*
+*/test/*
+*answers.txt
+*cookies.txt
+

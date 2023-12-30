@@ -70,38 +70,40 @@ def collapse(graph, sizes):
   return {k: list(sorted(v, key=measure)) for k, v in new_graph.items()}
 
 class DFS:
-  def __init__(self, graph, sizes, start, end, visited=None):
+  def __init__(self, graph, sizes, start, end, visited=None, final=None):
     self.graph = graph
     self.sizes = sizes
     self.start = start
     self.end = end
     self.visited = visited if visited is not None else [False] * len(self.sizes)
     self.best = 0
-    self.final = set(itertools.chain(*(self.graph[v] for v in self.graph[self.end])))
+    self.final = final if final is not None else self.populate_final()
+
+  def populate_final(self):
+    final = {}
+    for g in self.graph[self.end]:
+      final[g] = self.end
+    for a in list(final.keys()):
+      for b in self.graph[a]:
+        final[b] = a
+    return final
 
   def search(self):
     self.visited[self.start] = True
     yield from self.dfs_search(self.sizes[self.start], self.start)
 
-  def bfs_final(self, score, pos):
-    vnext = deque([(pos, score + self.sizes[pos])])
-    visited = set()
-    while vnext:
-      next_pos, next_score = vnext.popleft()
-      if next_pos == self.end:
-        return next_score
-      for g in self.graph[next_pos]:
-        if g in visited:
-          continue
-        visited.add(g)
-        vnext.append((g, next_score + self.sizes[g]))
+  def fast_exit(self, score, pos):
+    while pos != self.end:
+      score += self.sizes[pos]
+      pos = self.final[pos]
+    return score + self.sizes[self.end]
+
 
   def dfs_search(self, score, pos):
     maxscore = 0
     for new_pos in self.graph[pos]:
       if new_pos in self.final:
-        final_score = self.bfs_final(score, new_pos)
-        maxscore = max(maxscore, final_score)
+        maxscore = max(maxscore, self.fast_exit(score, new_pos))
         continue
       if not self.visited[new_pos]:
         self.visited[new_pos] = True
@@ -117,9 +119,14 @@ class DFS:
       return
     for new_pos in self.graph[pos]:
       if not self.visited[new_pos]:
-        self.visited[new_pos] = True
+        x = []
+        for g in self.graph[pos]:
+          if not self.visited[g]:
+            self.visited[g] = True
+            x.append(g)
         yield from self.dfs_shallow(score + self.sizes[new_pos], new_pos, steps + 1)
-        self.visited[new_pos] = False
+        for g in x:
+          self.visited[g] = False
 
   def shallow_search(self):
     self.visited[self.start] = True

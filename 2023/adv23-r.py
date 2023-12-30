@@ -1,7 +1,8 @@
 import aoc
 import itertools
-from collections import defaultdict, Counter
+from collections import defaultdict, Counter, deque
 import copy
+from multiprocessing import Pool
 
 EMPTY = ".v^<>"
 
@@ -49,7 +50,10 @@ def build_graph(t, groups):
         graph[t[y][x]].add(t[j][i])
   start = t[0][1]
   end = t[-1][-2]
-  return graph, group_size, start, end
+  sizes = [0] * (max(group_size) + 1)
+  for k, v in group_size.items():
+    sizes[k] = v
+  return graph, sizes, start, end
 
 def collapse(graph, sizes):
   new_graph = copy.deepcopy(graph)
@@ -66,56 +70,72 @@ def collapse(graph, sizes):
   return {k: list(sorted(v, key=measure)) for k, v in new_graph.items()}
 
 class DFS:
-  def __init__(self, graph, sizes, start, end):
+  def __init__(self, graph, sizes, start, end, visited=None):
     self.graph = graph
     self.sizes = sizes
     self.start = start
     self.end = end
-    self.visited = set()
+    self.visited = visited if visited is not None else [False] * len(self.sizes)
     self.best = 0
-    self.path = []
+    self.final = set(itertools.chain(*(self.graph[v] for v in self.graph[self.end])))
 
   def search(self):
-    self.visited.add(self.start)
-    left = sum(self.sizes) - self.sizes[self.start]
-    return self.dfs_search(self.sizes[self.start], self.start, left)
+    self.visited[self.start] = True
+    yield from self.dfs_search(self.sizes[self.start], self.start)
 
-  def remove(self, pos, new_pos):
-    removed = [new_pos]
-    self.visited.add(new_pos)
-    candidates = [pos]
-    while candidates:
-      base = candidates.pop()
-      for node in self.graph[base]:
-        if node not in self.visited and node != new_pos:
-          if len([n for n in self.graph[node] if n not in self.visited]) == 1:
-            removed.append(node)
-            self.visited.add(node)
-            candidates.append(node)
-    return removed
+  def bfs_final(self, score, pos):
+    vnext = deque([(pos, score + self.sizes[pos])])
+    visited = set()
+    while vnext:
+      next_pos, next_score = vnext.popleft()
+      if next_pos == self.end:
+        return next_score
+      for g in self.graph[next_pos]:
+        if g in visited:
+          continue
+        visited.add(g)
+        vnext.append((g, next_score + self.sizes[g]))
 
-  def dfs_search(self, score, pos, left):
+  def dfs_search(self, score, pos):
     maxscore = 0
     for new_pos in self.graph[pos]:
-      if new_pos == self.end:
-        maxscore = max(maxscore, score + self.sizes[self.end])
-        if maxscore > self.best:
-          self.best = maxscore
-          print(self.best - 1, left, self.path)
-        break
-      if new_pos not in self.visited:
-        removed = self.remove(pos, new_pos)
-        remlen = sum(sizes[n] for n in removed)
-        self.path.append((new_pos, remlen, removed))
-        d = self.dfs_search(score + sizes[new_pos], new_pos, left - remlen)
-        self.path.pop()
-        for node in removed:
-          self.visited.remove(node)
+      if new_pos in self.final:
+        final_score = self.bfs_final(score, new_pos)
+        maxscore = max(maxscore, final_score)
+        continue
+      if not self.visited[new_pos]:
+        self.visited[new_pos] = True
+        d = self.dfs_search(score + self.sizes[new_pos], new_pos)
+        self.visited[new_pos] = False
         maxscore = max(maxscore, d)
     return maxscore
 
-def draw_graph(graph):
+  def dfs_shallow(self, score, pos, steps):
+    if steps == 15:
+      clone = DFS(self.graph, self.sizes, self.start, self.end, self.visited[:])
+      yield (score, pos, clone)
+      return
+    for new_pos in self.graph[pos]:
+      if not self.visited[new_pos]:
+        self.visited[new_pos] = True
+        yield from self.dfs_shallow(score + self.sizes[new_pos], new_pos, steps + 1)
+        self.visited[new_pos] = False
+
+  def shallow_search(self):
+    self.visited[self.start] = True
+    maxscore = 0
+    paths = self.dfs_shallow(self.sizes[self.start], self.start, 0)
+    with Pool(8) as p:
+      maxscore = max(p.starmap(dfs_deep, paths))
+    return maxscore
+
+def dfs_deep(score, pos, g):
+  return g.dfs_search(score, pos)
+
+def draw_graph(graph, path):
   print("graph x {")
+  for k in path:
+    print(f"v{k} [shape=doublecircle]")
   for k, v in graph.items():
     for vv in v:
       if k < vv:
@@ -126,8 +146,8 @@ t = aoc.Table.read()
 groups = build_groups(t)
 graph, sizes, start, end = build_graph(t, groups)
 graph = collapse(graph, sizes)
-for k, v in graph.items():
-  print(k, sizes[k], sum(sizes[n] for n in v), [(j, sizes[j]) for j in v])
+#for k, v in graph.items():
+#  print(k, sizes[k], sum(sizes[n] for n in v), [(j, sizes[j]) for j in v])
 #draw_graph(graph)
-#d = DFS(graph, sizes, start, end)
-#print(d.search())
+d = DFS(graph, sizes, start, end)
+print(d.shallow_search())

@@ -8,6 +8,9 @@ from dataclasses import dataclass
 
 ddict = defaultdict
 
+def ints(seq):
+  return [int(i) for i in seq]
+
 def cls():
   print("\033c", end="")
 

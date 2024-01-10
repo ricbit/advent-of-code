@@ -1,0 +1,15 @@
+{
+  "manifest_version": 2,
+  "name": "AOC Extension",
+  "version": "1.0",
+  "description": "Add numbers to samples",
+  "permissions": [
+    "activeTab"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://adventofcode.com/*/day/*"],
+      "js": ["aoc.js"]
+    }
+  ]
+}

@@ -20,20 +20,20 @@ class ChronometerApp:
         self.original_frame = tk.Frame(root, bg="black")
         self.original_frame.pack(pady=20)
         self.original1_label = tk.Label(
-            self.original_frame, text="00:00:00", font=self.digital_font, bg="black", fg="white")
+                self.original_frame, text="00:00:00", font=self.digital_font, bg="black", fg="white")
         self.original1_label.pack(side=tk.LEFT, padx=10)
         self.original2_label = tk.Label(
-            self.original_frame, text="00:00:00", font=self.digital_font, bg="black", fg="white")
+                self.original_frame, text="00:00:00", font=self.digital_font, bg="black", fg="white")
         self.original2_label.pack(side=tk.LEFT, padx=10)
 
         # Create labels to display timers
         self.timer_frame = tk.Frame(root, bg="black")
         self.timer_frame.pack()
         self.timer1_label = tk.Label(
-            self.timer_frame, text="00:00:00", font=self.digital_font, bg="black", fg="white")
+                self.timer_frame, text="00:00:00", font=self.digital_font, bg="black", fg="white")
         self.timer1_label.pack(side=tk.LEFT, padx=10)
         self.timer2_label = tk.Label(
-            self.timer_frame, text="00:00:00", font=self.digital_font, bg="black", fg="white")
+                self.timer_frame, text="00:00:00", font=self.digital_font, bg="black", fg="white")
         self.timer2_label.pack(side=tk.LEFT, padx=10)
 
         # Create buttons
@@ -63,12 +63,19 @@ class ChronometerApp:
                 with conn:
                     data = conn.recv(1024)
                     # Start timers if the received data is the start signal
-                    if data and data.decode().startswith('start'):
-                        _, t1, t2 = data.decode().split()
-                        self.original1_label.config(text=t2)
-                        self.original2_label.config(text=t1)
-                        self.start_timers()
-                        conn.close()
+                    if data:
+                      match data.decode().strip().split():
+                        case "start", t1, t2:
+                          self.original1_label.config(text=t2)
+                          self.original2_label.config(text=t1)
+                          self.start_timers()
+                          conn.close()
+                        case "stop", "1":
+                          self.running1 = False
+                          conn.close()
+                        case "stop", "2":
+                          self.running2 = False
+                          conn.close()
 
     def start_timers(self):
         self.running1 = True

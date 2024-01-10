@@ -8,6 +8,19 @@ from dataclasses import dataclass
 
 ddict = defaultdict
 
+def spiral(visitor=lambda m, j, i, cur: cur):
+  m = ddict(lambda: 0, {(0, 0): 1})
+  cur, vdir = 1, -1j
+  for stride in itertools.count(1):
+    pos = stride * (1 + 1j)
+    for side in range(4):
+      for w in range(2 * stride):
+        cur, pos = cur + 1, pos + vdir
+        j, i = int(pos.imag), int(pos.real)
+        m[(j, i)] = visitor(m, j, i, cur)
+        yield j, i, m[(j, i)]
+      vdir *= -1j
+
 def ints(seq):
   return [int(i) for i in seq]
 
@@ -100,6 +113,12 @@ DIRECTIONS2 = {">": (0, 1), "<": (0, -1), "^": (-1, 0), "v": (1, 0)}
 
 def iter_neigh4(y, x):
   for dj, di in DIRECTIONS.values():
+    yield y + dj, x + di
+
+def iter_neigh8(y, x):
+  for dj, di in itertools.product(range(-1, 2), repeat=2):
+    if dj == 0 and di == 0:
+      continue
     yield y + dj, x + di
 
 def line_blocks():

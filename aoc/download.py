@@ -27,9 +27,6 @@ for pane in session.panes:
 
 year = re.match(r".*?(\d+)", os.getcwd()).group(1)
 problem = sys.argv[1].strip()
-f = open("advcurrent.txt", "wt")
-f.write("%02d" % int(problem))
-f.close()
 
 url_problem = f"https://adventofcode.com/{year}/day/{problem}"
 page = requests.get(url_problem, cookies=cookies)
@@ -70,6 +67,10 @@ elif not os.path.exists(filename_part2):
   webbrowser.open_new_tab(url_problem)
   shutil.copy(filename_part1, filename_part2)
   part = 2
+
+f = open("advcurrent.txt", "wt")
+f.write("%02d %d" % (int(problem), part))
+f.close()
 
 if part == 1:
   subprocess.Popen(['python', 'timer.py'])

@@ -1,3 +1,21 @@
+# P06
+
+Goal: 05:40 25:21
+Time: 12:12 46:48
+
+Algo: topological sorting
+
+### Fails
+
+- Misread the problem, should have returned weight, instead returned name.
+  - FIX: Better reading
+- Scrolling on Chrome for P2.
+  - FIX: Script ./download should automatically scroll to the end.
+
+### Wins
+
+- All scripts worked.
+
 # P05
 
 Goal: 03:18 04:46
@@ -5,14 +23,14 @@ Time: 05:12 07:30
 
 Algo: traverse a list
 
-## Fails
+### Fails
 
 - Misread the problem, started to write a bfs which I didn't use.
   - FIX: Better reading
 - Sample numbers in screen are confusing.
   - FIX: Change colors maybe.
 
-## Wins
+### Wins
 
 - Sound was good, window open.
 
@@ -23,14 +41,14 @@ Time: 01:43 03:20
 
 Algo: deduplication, anagrams
 
-## Fails
+### Fails
 
 - Forgot to add the script to stop the timer.
   - FIX: Add the script
 - Very bad echo on sound
   - FIX: I think this was the monitor option in obs, turn it off.
 
-## Wins
+### Wins
 
 - LEADERBOARD for P1 and P2.
 
@@ -41,7 +59,7 @@ Time: 19:58 33:32
 
 Algo: spiral of integers
 
-## Fails
+### Fails
 
 - This is a common problem, I should have had it in my lib.
   - FIX: Add to lib
@@ -58,7 +76,7 @@ Algo: spiral of integers
 - Should have used complex numbers from the start, much easier this way.
   - FIX: If the algo has 90 degrees turns somewhere, use complex.
 
-## Wins
+### Wins
 - Reasonable complex algorithm, worked on first attempt for P1 and P2.
 - Chrome extension to enumerate samples worked.
 - Timer is launched automatically by ./download.
@@ -70,7 +88,7 @@ Time: 02:04 10:42
 
 Algo: max and min, mod and div
 
-## Fails
+### Fails
 
 - Didn't notice P2 had a different sample than P1.
   - FIX: Maybe printing a warning on the python pane using tmux
@@ -85,7 +103,7 @@ Algo: max and min, mod and div
 - Didn't update the browser with P2.
   - FIX: Script download should do that.
 
-## Wins
+### Wins
 
 - LEADERBOARD! (for P1)
 - Timer in black looks nicer.
@@ -101,7 +119,7 @@ Time: 03:55 06:17
 
 Algo: string manipulation
 
-## Fails
+### Fails
 
 - Deducing problem just from the inputs failed. I thought I had to group the values, but actually it was just comparison to neighbour. Also didn't notice the list was circular.
   - FIX: Better reading
@@ -120,7 +138,7 @@ Algo: string manipulation
 - Vim took too much time to open (1s)
   - FIX: Maybe it gets faster without loading autocomplete.
 
-## Wins
+### Wins
 
 - Script worked. (Remember to have only one chrome window open)
 - Timer worked.

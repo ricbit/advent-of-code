@@ -31,9 +31,9 @@ problem = sys.argv[1].strip()
 url_problem = f"https://adventofcode.com/{year}/day/{problem}"
 page = requests.get(url_problem, cookies=cookies)
 soup = BS(page.text, "html.parser")
-for i, pre in enumerate(soup.find_all("pre")):
+for i, code in enumerate(soup.find_all("code")):
   f = open("sample.%02d.%d.txt" % (int(problem), i + 1) , "wt")
-  f.write(pre.find("code").text)
+  f.write(code.text)
   f.close()
 
 url_leaderboard = f"https://adventofcode.com/{year}/leaderboard/day/{problem}"
@@ -72,15 +72,21 @@ f = open("advcurrent.txt", "wt")
 f.write("%02d %d" % (int(problem), part))
 f.close()
 
-if part == 1:
-  subprocess.Popen(['python', 'timer.py'])
+def send_command(cmd):
   while True:
     try: 
       with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.connect(('localhost', 12345))
-        s.sendall(bytes(f'start {times[0]} {times[1]}', encoding="ascii"))
+        s.sendall(bytes(cmd, encoding="ascii"))
         break
     except socket.error:
       time.sleep(1)
+
+match part:
+  case 1:
+    subprocess.Popen(['python', 'timer.py'])
+    send_command(f"start {times[0]} {times[1]}")
+  case 2:
+    send_command("stop 1")
 
 session.attached_pane.send_keys("vi adv%02i-%d.py" % (int(problem), part))

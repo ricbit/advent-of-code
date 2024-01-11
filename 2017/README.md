@@ -1,3 +1,39 @@
+# P05
+
+Goal: 03:18 04:46
+Time: 05:12 07:30
+
+Algo: traverse a list
+
+## Fails
+
+- Misread the problem, started to write a bfs which I didn't use.
+  - FIX: Better reading
+- Sample numbers in screen are confusing.
+  - FIX: Change colors maybe.
+
+## Wins
+
+- Sound was good, window open.
+
+# P04
+
+Goal: 01:53 03:40
+Time: 01:43 03:20
+
+Algo: deduplication, anagrams
+
+## Fails
+
+- Forgot to add the script to stop the timer.
+  - FIX: Add the script
+- Very bad echo on sound
+  - FIX: I think this was the monitor option in obs, turn it off.
+
+## Wins
+
+- LEADERBOARD for P1 and P2.
+
 # P03
 
 Goal: 08:29 23:19

@@ -14,4 +14,4 @@ def direct(lines, func):
 
 lines = sys.stdin.readlines()
 print(direct(lines, lambda x: x))
-print(direct(lines, lambda x: list(reversed(x))))
+print(direct(lines, lambda x: x[::-1]))

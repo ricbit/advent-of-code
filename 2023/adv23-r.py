@@ -3,6 +3,7 @@ import itertools
 from collections import defaultdict, Counter, deque
 import copy
 from multiprocessing import Pool
+import numpy
 
 EMPTY = ".v^<>"
 
@@ -98,7 +99,6 @@ class DFS:
       pos = self.final[pos]
     return score + self.sizes[self.end]
 
-
   def dfs_search(self, score, pos):
     maxscore = 0
     for new_pos in self.graph[pos]:
@@ -119,14 +119,14 @@ class DFS:
       return
     for new_pos in self.graph[pos]:
       if not self.visited[new_pos]:
-        x = []
+        removed = []
         for g in self.graph[pos]:
           if not self.visited[g]:
             self.visited[g] = True
-            x.append(g)
+            removed.append(g)
         yield from self.dfs_shallow(score + self.sizes[new_pos], new_pos, steps + 1)
-        for g in x:
-          self.visited[g] = False
+        for node in removed:
+          self.visited[node] = False
 
   def shallow_search(self):
     self.visited[self.start] = True
@@ -149,6 +149,14 @@ def draw_graph(graph, path):
         print(f"v{k} -- v{vv};")
   print("} ")
 
+def maxplus(graph):
+  k = max(graph.keys())
+  a = numpy.zeros((k, k))
+  a += numpy.inf
+  print(a)
+  return 0
+
+
 t = aoc.Table.read()
 groups = build_groups(t)
 graph, sizes, start, end = build_graph(t, groups)
@@ -156,5 +164,6 @@ graph = collapse(graph, sizes)
 #for k, v in graph.items():
 #  print(k, sizes[k], sum(sizes[n] for n in v), [(j, sizes[j]) for j in v])
 #draw_graph(graph)
-d = DFS(graph, sizes, start, end)
-print(d.shallow_search())
+#d = DFS(graph, sizes, start, end)
+#print(d.shallow_search())
+print(maxplus(graph, sizes))

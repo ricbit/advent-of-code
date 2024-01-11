@@ -1,13 +1,6 @@
 import sys
-import re
-import itertools
-import math
 import aoc
-import heapq
-import functools
-import copy
 from collections import deque
-from dataclasses import dataclass
 
 def toposort(graph):
   front = deque([k for k, v in graph.items() if not v[1]])

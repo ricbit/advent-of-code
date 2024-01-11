@@ -1,13 +1,6 @@
 import sys
-import re
-import itertools
-import math
 import aoc
-import heapq
-import functools
-import copy
 from collections import *
-from dataclasses import dataclass
 
 def sumiter(m, j, i):
   return sum(m[(jj, ii)] for jj, ii in aoc.iter_neigh8(j, i))

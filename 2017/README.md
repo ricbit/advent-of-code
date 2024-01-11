@@ -1,4 +1,25 @@
-# P06
+# P08
+
+Goal: 07:08 08:22
+Time: 08:01 09:08
+
+Algo: assembly emulation
+
+### Fails
+
+- Stream was still in 4k.
+  - FIX: Settings of OBS.
+- Too slow to write a re parser for integer.
+  - FIX: Add to the lib?
+- Unsure if eval returned the value inline.
+  - FIX: Memorize. It does.
+
+### Wins
+
+- ddict and retuple are awesome.
+- Fast P2.
+
+# P07
 
 Goal: 05:40 25:21
 Time: 12:12 46:48
@@ -15,6 +36,22 @@ Algo: topological sorting
 ### Wins
 
 - All scripts worked.
+
+# P06
+
+Goal: 07:22 09:30
+Time: 07:30 09:40
+
+Algo: circular list
+
+### Fails
+
+- Stream truncated, lost my times.
+  - FIX: Assume I didn't make it.
+
+### Wins
+
+- Quick problem.
 
 # P05
 

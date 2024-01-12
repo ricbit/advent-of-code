@@ -1,3 +1,19 @@
+# P12
+
+Goal: 06:24 09:06
+Time: 04:58 07:36
+
+Algo: connected components
+
+### Fails
+
+- Lacked aoc.first.
+  - FIX: Already added
+
+### Wins
+
+- Leaderboard P1/P2
+
 # P11
 
 Goal: 08:23 11:43

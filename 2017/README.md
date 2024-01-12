@@ -1,3 +1,40 @@
+# P10
+
+Goal: 12:24 25:24
+Time: 09:09 26:00
+
+Algo: reverse a list, xor
+
+## Fails
+
+- Needs to press end when a page is loaded
+  - FIX: Probably on the extension.
+- Xor should have been on the horizontal instead of vertical.
+  - FIX : Better reading.
+
+### Wins
+
+- Leaderboard P1
+- aoc.ints()  
+
+# P09
+
+Goal: 09:25 11:37
+Time: 07:29 09:47
+
+Algo: parser
+
+### Fails
+
+- Sample numbering in screen is confusing.
+  - FIX: More colors.
+- Massive slowdown during streaming.
+  - FIX: Investigate.
+
+### Wins
+
+- Leaderboard P1/P2
+
 # P08
 
 Goal: 07:08 08:22

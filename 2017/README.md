@@ -1,3 +1,19 @@
+# P11
+
+Goal: 08:23 11:43
+Time: 20:42 23:24
+
+Algo: hex grids
+
+### Fails
+
+- Never had to code an hex grid before.
+  - FIX: Learned from reddit.
+
+### Wins
+
+- I was able to deduce how it worked, albeit slowly.
+
 # P10
 
 Goal: 12:24 25:24
@@ -5,7 +21,7 @@ Time: 09:09 26:00
 
 Algo: reverse a list, xor
 
-## Fails
+### Fails
 
 - Needs to press end when a page is loaded
   - FIX: Probably on the extension.

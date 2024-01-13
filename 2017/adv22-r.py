@@ -1,13 +1,5 @@
-import sys
-import re
-import itertools
-import math
 import aoc
-import heapq
-import functools
 import copy
-from collections import *
-from dataclasses import dataclass
 
 def rule1(infected, vdir, y, x, ans):
   if infected[(y, x)] == "#":

@@ -1,3 +1,108 @@
+# P24
+
+Goal: 16:44 21:02
+Time: 08:14 11:45
+
+Algo: memoization
+
+# P23
+
+Goal: 05:03 54:41
+Time: 04:42 54:00 
+
+Algo: assembly emulation, optimization
+
+# P22
+
+Goal: 13:47 20:29
+Time: 10:45 17:42
+
+Algo: celullar automata
+
+# P21
+
+Goal: 41:11 44:51
+Time: 21:55 22:24
+
+Algo: fractal, rotate and flip
+
+# P20
+Goal: 10:45 21:33
+Time: 14:08 123:19
+
+Algo: particles
+
+# P19
+
+Goal: 15:49 18:04
+Time: 17:01 18:29
+
+Algo: path walking
+
+# P18
+
+Goal: 12:50 41:02
+Time: 11:08 121:42
+
+Algo: assembly emulation
+
+# P17
+
+Goal: 06:38 15:51 
+Time: 07:38 20:00
+
+Algo: mod
+
+# P16
+
+Goal: 08:31 26:37
+Time: 15:43 61:05
+
+Algo: permutation power
+
+# P15
+
+Goal: 05:41 09:32
+Time: 16:02 20:30
+
+Algo: rng
+
+# P14
+
+Goal: 09:08 25:06
+Time: 14:27 24:12
+
+Algo: floodfill
+
+### Fails
+
+- Still having keyboard freezes.
+  - FIX: Still don't know.
+- Keybindings not ideal.
+  - FIX: Change it
+
+### Wins
+
+- Leaderboard P2
+
+# P13
+
+Goal: 10:40 21:46
+Time: 11:27 50:35
+
+Algo: simulation, mod
+
+### Fails
+
+- Forgot to ignore trails with no cars.
+  - FIX: Attention
+- To sleepy on the first run.
+  - FIX: Don´t code after midnight.
+
+### Wins
+
+- Time on P1 was ok, missed by little.
+
 # P12
 
 Goal: 06:24 09:06

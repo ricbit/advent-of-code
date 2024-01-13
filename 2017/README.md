@@ -1,3 +1,10 @@
+# P25
+
+Goal: 10:38 11:16
+Time: 09:52 09:57
+
+Algo: turing machine
+
 # P24
 
 Goal: 16:44 21:02

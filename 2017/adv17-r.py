@@ -1,13 +1,6 @@
 import sys
-import re
-import itertools
-import math
 import aoc
-import heapq
-import functools
-import copy
 from collections import deque
-from dataclasses import dataclass
 
 def spin1(rep, cycles):
   lock = deque([0])

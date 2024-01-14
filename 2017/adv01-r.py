@@ -1,19 +1,15 @@
 import sys
 import aoc
-from collections import *
 
 line = sys.stdin.read().strip()
 
-ans = 0
-for a, b in zip(line, line[1:] + line[0]):
-  if a == b:
-    ans += int(a)
-aoc.cprint(ans)
+def solve(line, offset):
+  total, n = 0, len(line)
+  for i, digit in enumerate(line):
+    if digit == line[(i + offset) % n]:
+      total += int(digit)
+  return total
 
-ans = 0
-n = len(line)
-for i, a in enumerate(line):
-  if a == line[(i + n // 2) % n]:
-    ans += int(a)
-aoc.cprint(ans)
+aoc.cprint(solve(line, 1))
+aoc.cprint(solve(line, len(line) // 2))
   

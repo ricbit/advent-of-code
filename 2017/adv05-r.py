@@ -1,6 +1,5 @@
 import sys
 import aoc
-from collections import *
 
 def simple(jumps, comp):
   pos = 0
@@ -17,4 +16,4 @@ def simple(jumps, comp):
 
 lines = [int(line.strip()) for line in sys.stdin]
 aoc.cprint(simple(lines[:], lambda x: False))
-aoc.cprint(simple(lines[:], lambda x: x >= 3))
+aoc.cprint(simple(lines, lambda x: x >= 3))

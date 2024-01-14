@@ -36,15 +36,15 @@ def floodfill(m):
         t[y][x] = g
         for jj, ii in t.iter_neigh4(y, x):
           if type(t[jj][ii]) is str and t[jj][ii] == "1":
-              vnext.append((jj, ii))
+            vnext.append((jj, ii))
   return g
 
 raw_line = sys.stdin.read().strip() 
 ans = 0
 m = []
 for i in range(128):
-  h = [ord(i) for i in f"{raw_line}-{i}"] + [17,31,73,47,23]
+  h = [ord(i) for i in f"{raw_line}-{i}"] + [17, 31, 73, 47, 23]
   h = sparse_hash(apply_rounds(h, 64))
-  m.append(list("".join(("0000" + bin(int(d,16))[2:])[-4:] for d in h)))
+  m.append(list("".join(format(int(d, 16), '04b') for d in h)))
 aoc.cprint(sum(line.count("1") for line in m))
 aoc.cprint(floodfill(m))

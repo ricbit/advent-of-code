@@ -1,12 +1,26 @@
 import sys
 import itertools
 import re
-import pyperclip
 import hashlib
 from collections import namedtuple, defaultdict
 from dataclasses import dataclass
+try:
+  import pyperclip
+except ImportError:
+  pyperclip = None
 
 ddict = defaultdict
+
+def first(seq):
+  return next(iter(seq))
+
+HEX = {
+    'n': [0, -1], 's': [0, 1], 'ne': [1, -1], 
+    'nw': [-1, 0], 'se': [1, 0], 'sw': [-1, 1]
+}
+
+def hex_dist(y, x):
+  return (abs(x) + abs(y) + abs(x + y)) // 2
 
 def spiral(visitor=lambda m, j, i, cur: cur):
   m = ddict(lambda: 0, {(0, 0): 1})
@@ -88,8 +102,8 @@ def md5(text):
 
 def cprint(s):
   print(s)
-  if s is not None:
-    pyperclip.copy(s)
+  if s is not None and pyperclip is not None:
+    pyperclip.copy(str(s))
 
 def retuple(fields, regexp, line):
   field_names = "".join(c for c in fields if c != "_")
@@ -174,4 +188,5 @@ class Table:
   def copy(self):
     return Table([line.copy() for line in self.table])
 
-
+  def flipx(self):
+    return Table([list(reversed(t)) for t in self.table])

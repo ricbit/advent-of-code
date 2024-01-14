@@ -15,13 +15,22 @@ allElements.sort((a, b) => {
 
 // Iterate over the merged and sorted array
 allElements.forEach((elem, index) => {
+    let newElement = document.createElement('span');
+    newElement.style.color = 'lightblue'; // Set the color to light blue
+
     if (elem.tagName.toLowerCase() === 'pre') {
         // For <pre> elements
-        elem.innerHTML = `SAMPLE[${index + 1}]<BR>${elem.innerHTML}`;
+        newElement.innerHTML = `SAMPLE[${index + 1}]<BR>`;
+        elem.prepend(newElement); // Prepend the new element
     } else if (elem.tagName.toLowerCase() === 'code') {
         // For <code> elements
-        const indexTextNode = document.createTextNode(` [[${index + 1}]]`);
-        elem.parentNode.insertBefore(indexTextNode, elem.nextSibling);
+        newElement.textContent = ` [[${index + 1}]]`;
+        elem.parentNode.insertBefore(newElement, elem.nextSibling);
     }
+  
 });
+
+
+// Scroll to the bottom of the page
+//window.scrollTo(0, document.body.scrollHeight);
 

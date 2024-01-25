@@ -12,6 +12,14 @@
 
 # Times:
 
+### P05
+
+Goal: 15:11 22:31
+Time: 31:50 58:26
+(100+ 100+)
+
+Algo: assembly emulation
+
 ### P04
 
 Goal: 03:05 06:25

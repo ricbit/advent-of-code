@@ -1,4 +1,4 @@
-* Advent of Code 2019, personal rules
+# Advent of Code 2019, personal rules
 
 - The objective is to get the answer as fast as possible.
   - I code in mostly in python because it's the fastest language I can type.

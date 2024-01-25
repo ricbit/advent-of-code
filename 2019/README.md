@@ -10,3 +10,20 @@
   - Refactor the problem to make it legible.
   - Make it run under 1s if possible.
 
+# Times:
+
+### P02
+
+Goal: 06:26 10:42
+Time: 05:31 10:07
+(58 76)
+
+Algo: assembly emulation
+
+### P01
+
+Goal: 01:24 04:12
+Time: 01:54 07:09
+(100+ 100+)
+
+Algo: div, round

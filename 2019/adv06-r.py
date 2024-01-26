@@ -16,14 +16,12 @@ def topo(data):
       frontier.append((v, path + [k]))
   return bigmap
 
-def part1(data):
-  bigmap = topo(data)
+def part1(bigmap):
   return sum(len(x) for x in bigmap.values())
 
-def part2(data):
+def part2(bigmap):
   src = "YOU"
   dst = "SAN"
-  bigmap = topo(data)
   middle = set(bigmap[src]).intersection(set(bigmap[dst]))
   lca = max(middle, key = lambda x: len(bigmap[x]))
   a = len(bigmap[src]) - bigmap[src].index(lca)
@@ -31,5 +29,6 @@ def part2(data):
   return a + b - 2
 
 data = aoc.retuple_read("src dst", r"^(\w+)\)(\w+)$", sys.stdin)
-aoc.cprint(part1(data))
-aoc.cprint(part2(data))
+bigmap = topo(data)
+aoc.cprint(part1(bigmap))
+aoc.cprint(part2(bigmap))

@@ -12,6 +12,14 @@
 
 # Times:
 
+### P08
+
+Goal: 04:40 10:20
+Time: 03:16 07:22
+(26 22)
+
+Algo: image processing
+
 ### P07
 
 Goal: 09:20 30:33

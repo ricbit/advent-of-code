@@ -4,13 +4,21 @@
   - I code in mostly in python because it's the fastest language I can type.
   - *Almost* anything goes. It's ok to: use numpy, sympy, networkx, graphviz, edit the input, use Mathematica, C++, CUDA, custom vim scripts, custom tmux scripts, custom python libs, chrome extensions, short variable names, copy and paste, pypy3.
   - It's *forbidden* to: use AI or look up the answer.
-  - Once started, you have to finish. If a pause is needed, the clock countinues ticking.
+  - Once started, you have to finish. If a pause is needed, the clock continues ticking.
 
 - Once the problem is solved:
   - Refactor the problem to make it legible.
   - Make it run under 1s if possible.
 
 # Times:
+
+### P06
+
+Goal: 05:51 11:51
+Time: 17:19 24:41
+(100+ 100+)
+
+Algo: topological sorting
 
 ### P05
 

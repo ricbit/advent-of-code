@@ -12,6 +12,14 @@
 
 # Times:
 
+### P07
+
+Goal: 09:20 30:33
+Time: 05:52 16:43
+(24 11)
+
+Algo: assembly emulation
+
 ### P06
 
 Goal: 05:51 11:51

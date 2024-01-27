@@ -12,6 +12,22 @@
 
 # Times:
 
+### P12
+
+Goal: 11:26 36:37
+Time: 14:01 22:43
+(100+ 21)
+
+Algo: numerical integration
+
+### P11
+
+Goal: 11:12 15:57
+Time: 07:24 13:43
+(18 62)
+
+Algo: assembly emulation, path walking, image processing
+
 ### P10
 
 Goal: 13:49 42:46

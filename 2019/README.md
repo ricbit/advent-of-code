@@ -12,6 +12,22 @@
 
 # Times:
 
+### P10
+
+Goal: 13:49 42:46
+Time: 34:44 73:14
+(100+ 100+)
+
+Algo: geometry
+
+### P09
+
+Goal: 13:50 14:46
+Time: 49:01 50:01
+(100+ 100+)
+
+Algo: assembly emulation
+
 ### P08
 
 Goal: 04:40 10:20

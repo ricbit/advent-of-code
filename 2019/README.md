@@ -12,6 +12,22 @@
 
 # Times:
 
+### P14
+
+Goal: 27:35 42:18
+Time: 34:43 47:00
+(100+ 100+)
+
+Algo: tree, binary search
+
+### P13
+
+Goal: 03:23 20:26
+Time: 03:59 26:49
+(100+ 100+)
+
+Algo: assembly emulation, arkanoid AI
+
 ### P12
 
 Goal: 11:26 36:37

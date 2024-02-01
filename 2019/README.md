@@ -12,6 +12,14 @@
 
 # Times:
 
+### P15
+
+Goal: 26:48 38:50
+Time: 36:35 61:28
+(100+ 100+)
+
+Algo: shortest path, map recognition
+
 ### P14
 
 Goal: 27:35 42:18

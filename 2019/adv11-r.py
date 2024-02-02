@@ -2,8 +2,6 @@ import sys
 import itertools
 import aoc
 from collections import deque
-import pytesseract
-import numpy
 
 class Ref:
   def __init__(self, data, pos):

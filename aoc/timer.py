@@ -11,6 +11,11 @@ class ChronometerApp:
     root.geometry("+3300+1900")
     root.attributes('-topmost', True)
 
+    # Load leaderboard times.
+    times = [list(map(int, line.split(":"))) 
+      for line in open("leaderboard.txt", "rt").readlines()]
+    self.leader = [times[100:], times[:100]]
+
     self.digital_font = tkFont.Font(family="Digital-7", size=30)
 
     # Initialize timers
@@ -23,6 +28,10 @@ class ChronometerApp:
     # Create labels to display timers
     self.timer_label = list(self.create_labels(tk.Label, text))
 
+    # Create labels to display positions
+    text = ["1", "1"]
+    self.leader_label = list(self.create_labels(tk.Label, text))
+        
     # Create buttons
     text = "p1 p2".split()
     cmds = [self.stop_timer1, self.stop_timer2]
@@ -37,7 +46,7 @@ class ChronometerApp:
 
   def create_labels(self, widget, text, cmds=None):
     frame = tk.Frame(root, bg="black")
-    frame.pack(pady=20)
+    frame.pack(pady=10)
     for i in range(2):
       label = widget(
           frame, text=text[i], font=self.digital_font, bg="black", fg="white")
@@ -86,11 +95,18 @@ class ChronometerApp:
       timer[1] = 0
       timer[0] += 1
 
+  def get_leader(self, timer, leader):
+    for i, leader_time in enumerate(leader):
+      if timer < leader_time:
+        return str(i + 1)
+    return "100+"
+
   def update_timer(self, t):
     if self.running[t]:
       self.inctimer(self.timer[t])
       time_string = f"{self.timer[t][0]:02d}:{self.timer[t][1]:02d}:{self.timer[t][2]:02d}"
       self.timer_label[t].config(text=time_string)
+      self.leader_label[t].config(text=self.get_leader(self.timer[t], self.leader[t]))
       self.root.after(1000, self.timer_callback[t])
 
   def update_timer1(self):

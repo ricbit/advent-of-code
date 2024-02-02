@@ -35,7 +35,7 @@ def get_problem():
   if len(sys.argv) >= 2:
     problem = sys.argv[1].strip()
   else:
-    problem = open("advcurrent.txt").read().split()[0]
+    problem = str(int(open("advcurrent.txt").read().split()[0]))
   return year, problem
 
 def get_url_problem(year, problem):
@@ -54,14 +54,19 @@ def get_times(year, problem, cookies):
   url_leaderboard = f"https://adventofcode.com/{year}/leaderboard/day/{problem}"
   page = requests.get(url_leaderboard, cookies=cookies)
   soup = BS(page.text, "html.parser")
-  times = []
+  limit_times = []
+  all_times = []
   for div in soup.find_all(class_="leaderboard-entry"):
     span = div.find(class_="leaderboard-position")
+    timestr = div.find(class_="leaderboard-time").text
+    leader_time = datetime.datetime.strptime(timestr, "%b %d %H:%M:%S").strftime("%H:%M:%S")
+    all_times.append(leader_time)
     if span.text.startswith("100"):
-      timestr = div.find(class_="leaderboard-time").text
-      leader_time = datetime.datetime.strptime(timestr, "%b %d %H:%M:%S")
-      times.append(leader_time.strftime("%H:%M:%S"))
-  return times
+      limit_times.append(leader_time)
+  f = open("leaderboard.txt", "wt")
+  f.write("\n".join(all_times))
+  f.close()
+  return limit_times
 
 def get_input(year, problem, cookies):
   url_problem = get_url_problem(year, problem)
@@ -109,7 +114,7 @@ def start_timer(times, part):
   match part:
     case 1:
       subprocess.Popen(['python', 'timer.py'])
-      send_command(f"start {times[0]} {times[1]}")
+      send_command(f"start {times[1]} {times[0]}")
     case 2:
       send_command("stop 1")
 

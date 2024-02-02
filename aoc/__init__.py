@@ -2,17 +2,126 @@ import sys
 import itertools
 import re
 import hashlib
+import unittest
 from collections import namedtuple, defaultdict
 from dataclasses import dataclass
+from io import StringIO
+
 try:
   import pyperclip
 except ImportError:
   pyperclip = None
 
+def extrapolate(it, goal, calc):
+  seen, inv = {}, {}
+  for time, key in enumerate(it, 1):
+    if time == goal:
+      return calc(key)
+    if key in seen:
+      period = time - seen[key]
+      return inv[(goal - time) % period + seen[key]]
+    else:
+      seen[key] = time
+      inv[time] = calc(key)
+
+def invert(graph):
+  inv = ddict(lambda: set())
+  for key, values in graph.items():
+    for value in values:
+      inv[value].add(key)
+  return inv
+
+@dataclass(repr=True, init=False)
+class Bounds:
+  ymin: int
+  ymax: int
+  xmin: int
+  xmax: int
+
+def bounds(points):
+  b = Bounds()
+  b.ymin = min(line[0] for line in points)
+  b.ymax = max(line[0] for line in points)
+  b.xmin = min(line[1] for line in points)
+  b.xmax = max(line[1] for line in points)
+  return b
+
+class bidi:
+  def __init__(self, orig, circular=True):
+    self.start = 0
+    self.values = [[i - 1, i + 1, value] for i, value in enumerate(orig)]
+    self.size = len(self.values)
+    self.top = len(self.values)
+    if circular:
+      self.values[self.start][0] = self.top - 1
+      self.values[self.top - 1][1] = 0
+    else:
+      self.values[self.start][0] = -1
+      self.values[self.top - 1][1] = -1
+
+  def valid(self, pos):
+    return pos >= 0
+
+  def __iter__(self):
+    self.current = self.start
+    self.stop = self.start
+    self.loaded = False
+    return self
+
+  def __next__(self):
+    if self.current != -1:
+      if self.loaded and self.current == self.stop:
+        raise StopIteration
+      value = self.values[self.current][2]
+      self.current = self.next(self.current)
+      self.loaded = True
+      return value
+    else:
+      raise StopIteration
+
+  def next(self, pos):
+    return self.values[pos][1]
+
+  def value(self, pos):
+    return self.values[pos][2]
+
+  def prev(self, pos):
+    return self.values[pos][0]
+
+  def remove(self, pos):
+    if pos == self.start:
+      self.start = self.values[pos][1]
+    if self.values[pos][0] != -1:
+      self.values[self.values[pos][0]][1] = self.values[pos][1]
+    if self.values[pos][1] != -1:
+      self.values[self.values[pos][1]][0] = self.values[pos][0]
+    self.size -= 1
+
+  def insert(self, pos, value):
+    self.values.append([pos, self.values[pos][1], value])
+    self.values[self.values[pos][1]][0] = self.top
+    self.values[pos][1] = self.top
+    self.size += 1
+    self.top += 1
+    return self.top - 1
+
+  def __len__(self):
+    return self.size
+
+
+def maxindex(x):
+  if isinstance(x, list):
+    return max(range(len(x)), key=lambda q: x[q])
+  else:
+    return max(x.keys(), key=lambda q: x[q])
+
 ddict = defaultdict
 
 def first(seq):
   return next(iter(seq))
+
+def ifirst(seq):
+  return itertools.islice(seq, 0, 1)
 
 HEX = {
     'n': [0, -1], 's': [0, 1], 'ne': [1, -1], 
@@ -25,6 +134,7 @@ def hex_dist(y, x):
 def spiral(visitor=lambda m, j, i, cur: cur):
   m = ddict(lambda: 0, {(0, 0): 1})
   cur, vdir = 1, -1j
+  yield 0, 0, 1
   for stride in itertools.count(1):
     pos = stride * (1 + 1j)
     for side in range(4):
@@ -112,21 +222,40 @@ def retuple(fields, regexp, line):
           zip(values, fields.split())]
   return namedtuple("autogen", field_names)(*integers)
 
+def retuple_read(fields, regexp, src=sys.stdin):
+  out = []
+  for line in src:
+    out.append(retuple(fields, regexp, line.strip()))
+  return out
+
 def flatten(composite):
   return itertools.chain.from_iterable(composite)
 
 def shoelace(points):
+  # points in (y, x) format, counterclockwise is negative
   area = 0
   pairs = zip(points, itertools.islice(itertools.cycle(points), 1, None))
   for (y1, x1), (y2, x2) in pairs:
     area += x1 * y2 - x2 * y1
   return area / 2
 
-DIRECTIONS = {"R": (0, 1), "L": (0, -1), "U": (-1, 0), "D": (1, 0)}
-DIRECTIONS2 = {">": (0, 1), "<": (0, -1), "^": (-1, 0), "v": (1, 0)}
+CDIRECTIONS = {"R": 1, "L": -1, "U": -1j, "D": 1j}
+CDIRECTIONS2 = {">": 1, "<": -1, "^": -1j, "v": 1j}
+CDIRECTIONS3 = {"E": 1, "W": -1, "N": -1j, "S": 1j}
+
+def get_cdir(vdir):
+  for i in [CDIRECTIONS, CDIRECTIONS2, CDIRECTIONS3]:
+    if vdir in i.keys():
+      return i
+
+def get_dir(vdir):
+  vmap = {}
+  for k, v in get_cdir(vdir).items():
+    vmap[k] = (v.real, v.imag)
+  return vmap
 
 def iter_neigh4(y, x):
-  for dj, di in DIRECTIONS.values():
+  for dj, di in [(0, 1), (0, -1), (-1, 0), (1, 0)]:
     yield y + dj, x + di
 
 def iter_neigh8(y, x):
@@ -146,7 +275,7 @@ class Table:
 
   @staticmethod
   def read():
-    return Table([list(line.strip()) for line in sys.stdin])
+    return Table([list(line.rstrip()) for line in sys.stdin])
 
   def iter_all(self, conditional=lambda x: True):
     for j, i in itertools.product(range(self.h), range(self.w)):
@@ -180,7 +309,7 @@ class Table:
     return self.table[int(complex_position.imag)][int(complex_position.real)]
 
   def transpose(self):
-    return Table(["".join(t) for t in zip(*self.table)])
+    return Table([list(t) for t in zip(*self.table)])
   
   def clock90(self):
     return Table([list(reversed(col)) for col in zip(*self.table)])
@@ -190,3 +319,288 @@ class Table:
 
   def flipx(self):
     return Table([list(reversed(t)) for t in self.table])
+
+  def iter_quad(self, y, x, h, w):
+    for j in range(h):
+      for i in range(w):
+        yield y + j, x + i
+
+# unit tests
+
+class TestMaxindex(unittest.TestCase):
+    def test_maxindex_with_list(self):
+        self.assertEqual(maxindex([1, 3, 2]), 1)
+
+    def test_maxindex_with_dict(self):
+        self.assertEqual(maxindex({0: 1, 1: 3, 2: 2}), 1)
+
+
+class TestBidi(unittest.TestCase):
+    def setUp(self):
+        self.sequence = bidi("abc")
+
+    def test_initial_length(self):
+        self.assertEqual(len(self.sequence), 3)
+
+    def test_remove(self):
+        self.sequence.remove(1)  # remove 'b'
+        self.assertEqual(len(self.sequence), 2)
+        self.assertEqual(['a', 'c'], list(self.sequence))
+
+    def test_iteration(self):
+        values = list(self.sequence)
+        self.assertEqual(values, ['a', 'b', 'c'])
+
+
+class TestMd5(unittest.TestCase):
+    def test_md5(self):
+        self.assertEqual(md5("hello"), "5d41402abc4b2a76b9719d911017c592")
+
+
+class TestInterval(unittest.TestCase):
+    def test_sub_no_overlap(self):
+        interval = Interval(1, 5)
+        result = list(interval.sub(Interval(6, 10)))
+        self.assertEqual(result, [interval])
+
+    def test_sub_overlap(self):
+        interval = Interval(1, 10)
+        result = list(interval.sub(Interval(5, 7)))
+        self.assertEqual(result, [Interval(1, 4), Interval(8, 10)])
+
+
+class TestHexDist(unittest.TestCase):
+    def test_hex_dist(self):
+        # Test cases for hex_dist function
+        self.assertEqual(hex_dist(0, 0), 0)
+        self.assertEqual(hex_dist(1, -1), 1)
+        self.assertEqual(hex_dist(2, -1), 2)
+        self.assertEqual(hex_dist(-3, 2), 3)
+
+
+class TestSpiral(unittest.TestCase):
+    def test_spiral(self):
+        # Test cases for spiral function
+        result = list(itertools.islice(spiral(), 5))
+        expected = [(0, 0, 1), (0, 1, 2), (-1, 1, 3), (-1, 0, 4), (-1, -1, 5)]
+        self.assertEqual(result, expected)
+
+
+class TestRetuple(unittest.TestCase):
+    def test_retuple(self):
+        # Test the retuple function
+        fields = "x_ y_ label"
+        regexp = r"(\d+) (\d+) (\w+)"
+        line = "123 456 label123"
+        result = retuple(fields, regexp, line)
+        self.assertEqual(result.x, 123)
+        self.assertEqual(result.y, 456)
+        self.assertEqual(result.label, "label123")
+
+
+class TestRetupleRead(unittest.TestCase):
+    def test_retuple_read(self):
+        # Test the retuple_read function
+        fields = "x_ y_ label"
+        regexp = r"(\d+) (\d+) (\w+)"
+        input_data = "123 456 label123\n789 1011 label456"
+        src = StringIO(input_data)
+        result = retuple_read(fields, regexp, src)
+        self.assertEqual(len(result), 2)
+        self.assertEqual(result[0].x, 123)
+        self.assertEqual(result[1].label, "label456")
+
+
+class TestFlatten(unittest.TestCase):
+    def test_flatten(self):
+        # Test the flatten function
+        composite = [[1, 2, 3], [4, 5], [6]]
+        result = list(flatten(composite))
+        self.assertEqual(result, [1, 2, 3, 4, 5, 6])
+
+
+class TestTable(unittest.TestCase):
+    def setUp(self):
+        self.table = Table([
+            ['1', '2', '3'],
+            ['4', '5', '6'],
+            ['7', '8', '9']
+        ])
+
+    def test_iter_all(self):
+        result = list(self.table.iter_all())
+        expected = [(j, i) for j, i in itertools.product(range(3), range(3))]
+        self.assertEqual(result, expected)
+
+    def test_valid(self):
+        self.assertTrue(self.table.valid(0, 0))
+        self.assertFalse(self.table.valid(-1, 0))
+        self.assertFalse(self.table.valid(3, 3))
+
+    def test_cvalid(self):
+        self.assertTrue(self.table.cvalid(complex(0, 0)))
+        self.assertFalse(self.table.cvalid(complex(-1, 0)))
+        self.assertFalse(self.table.cvalid(complex(3, 3)))
+
+    def test_iter_neigh8(self):
+        neighbors = list(self.table.iter_neigh8(1, 1))
+        expected = [(0, 0), (0, 1), (0, 2), (1, 0), (1, 2), (2, 0), (2, 1), (2, 2)]
+        self.assertEqual(sorted(neighbors), expected)
+
+    def test_iter_neigh4(self):
+        neighbors = list(self.table.iter_neigh4(1, 1))
+        expected = [(0, 1), (1, 0), (1, 2), (2, 1)]
+        self.assertEqual(sorted(neighbors), expected)
+
+    def test_transpose(self):
+        transposed = self.table.transpose()
+        expected = Table([
+            ['1', '4', '7'],
+            ['2', '5', '8'],
+            ['3', '6', '9']
+        ])
+        self.assertEqual(transposed.table, expected.table)
+
+    def test_clock90(self):
+        rotated = self.table.clock90()
+        expected = Table([
+            ['7', '4', '1'],
+            ['8', '5', '2'],
+            ['9', '6', '3']
+        ])
+        self.assertEqual(rotated.table, expected.table)
+
+    def test_copy(self):
+        copy_table = self.table.copy()
+        self.assertEqual(copy_table.table, self.table.table)
+        self.assertIsNot(copy_table, self.table)
+
+    def test_flipx(self):
+        flipped = self.table.flipx()
+        expected = Table([
+            ['3', '2', '1'],
+            ['6', '5', '4'],
+            ['9', '8', '7']
+        ])
+        self.assertEqual(flipped.table, expected.table)
+
+    def test_iter_quad(self):
+        quad = list(self.table.iter_quad(1, 1, 2, 2))
+        expected = [(1, 1), (1, 2), (2, 1), (2, 2)]
+        self.assertEqual(quad, expected)
+
+
+class TestShoelace(unittest.TestCase):
+    def test_shoelace(self):
+        # Testing the shoelace formula for area calculation
+        points = [(1, 6), (3, 1), (7, 2), (4, 4), (8, 5)]
+        self.assertAlmostEqual(shoelace(points), -16.5)
+
+
+class TestIterNeigh4(unittest.TestCase):
+    def test_iter_neigh4(self):
+        # Testing 4-neighbor iteration
+        neighbors = list(iter_neigh4(1, 1))
+        expected = [(0, 1), (1, 2), (2, 1), (1, 0)]
+        self.assertEqual(sorted(neighbors), sorted(expected))
+
+
+class TestIterNeigh8(unittest.TestCase):
+    def test_iter_neigh8(self):
+        # Testing 8-neighbor iteration
+        neighbors = list(iter_neigh8(1, 1))
+        expected = [(0, 0), (0, 1), (0, 2), (1, 0), (1, 2), (2, 0), (2, 1), (2, 2)]
+        self.assertEqual(sorted(neighbors), expected)
+
+
+class TestLineBlocks(unittest.TestCase):
+    def test_line_blocks(self):
+        # Mocking stdin for testing line_blocks function
+        test_input = 'line1\nline2\n\nline3\nline4'
+        sys.stdin = StringIO(test_input)
+        result = line_blocks()
+        expected = [['line1', 'line2'], ['line3', 'line4']]
+        self.assertEqual(result, expected)
+        sys.stdin = sys.__stdin__  # Reset stdin
+
+
+class TestBq(unittest.TestCase):
+
+    def test_negative_keys(self):
+        queue = bq(start=[(-2, 'a'), (-1, 'b')])
+        self.assertEqual(queue.pop(), (-2, 'a'))
+        self.assertEqual(queue.pop(), (-1, 'b'))
+
+    def test_large_keys(self):
+        queue = bq(start=[(305, 'a'), (400, 'b')], size=500)
+        self.assertEqual(queue.pop(), (305, 'a'))
+        self.assertEqual(queue.pop(), (400, 'b'))
+
+    def test_sporadic_keys(self):
+        queue = bq(start=[(10, 'a'), (1, 'b'), (50, 'c')])
+        self.assertEqual(queue.pop(), (1, 'b'))
+        self.assertEqual(queue.pop(), (10, 'a'))
+        self.assertEqual(queue.pop(), (50, 'c'))
+
+    def test_repeated_push_pop(self):
+        queue = bq(start=[(1, 'a')])
+        queue.push((2, 'b'))
+        self.assertEqual(queue.pop(), (1, 'a'))
+        self.assertEqual(queue.pop(), (2, 'b'))
+
+    def test_pop_empty_queue(self):
+        queue = bq(start=[])
+        self.assertFalse(queue)
+
+    def test_same_key_items(self):
+        original = [(1, 'a'), (1, 'b')]
+        queue = bq(start=original)
+        items = set([queue.pop(), queue.pop()])
+        self.assertEqual(items, set(original))
+
+    def test_descending_order_push(self):
+        queue = bq(start=[(3, 'c'), (2, 'b'), (1, 'a')])
+        self.assertEqual(queue.pop(), (1, 'a'))
+        self.assertEqual(queue.pop(), (2, 'b'))
+        self.assertEqual(queue.pop(), (3, 'c'))
+
+    def test_complex_items(self):
+        queue = bq(start=[(1, {'key': 'value'}), (2, [1, 2, 3])])
+        self.assertEqual(queue.pop(), (1, {'key': 'value'}))
+        self.assertEqual(queue.pop(), (2, [1, 2, 3]))
+
+    def test_large_number_of_items(self):
+        queue = bq(start=[(i, i) for i in range(1000)], size=2000)
+        for i in range(1000):
+            self.assertEqual(queue.pop(), (i, i))
+
+
+class TestFirstFunction(unittest.TestCase):
+    def test_normal_case(self):
+        self.assertEqual(first([1, 2, 3]), 1)
+
+    def test_empty_sequence(self):
+        with self.assertRaises(StopIteration):
+            first([])
+
+    def test_different_types(self):
+        self.assertEqual(first("hello"), 'h')
+        self.assertEqual(first({1, 2, 3}), 1)
+
+
+class TestIntsFunction(unittest.TestCase):
+    def test_normal_case(self):
+        self.assertEqual(ints(["1", "2", "3"]), [1, 2, 3])
+
+    def test_mixed_input(self):
+        self.assertEqual(ints([1, "2", 3.0]), [1, 2, 3])
+
+    def test_empty_sequence(self):
+        self.assertEqual(ints([]), [])
+
+    def test_non_numeric_strings(self):
+        with self.assertRaises(ValueError):
+            ints(["a", "b", "c"])
+
+if __name__ == '__main__':
+    unittest.main()

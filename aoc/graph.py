@@ -10,7 +10,7 @@ def times():
   goal = []
   time = []
   for line in open("README.md", "rt").readlines():
-    parse = re.match(r"(Goal|Time): (\d\d:\d\d) (\d+:\d\d)\s*$", line)
+    parse = re.match(r"(Goal|Time): (\d+:\d\d) (\d+:\d\d)\s*$", line)
     if parse:
       match parse.groups():
         case "Goal", t1, t2:

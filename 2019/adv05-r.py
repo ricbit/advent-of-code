@@ -60,6 +60,9 @@ class IntCode:
         break
 
 data = [int(i) for i in sys.stdin.read().split(",")]
+cpu = IntCode(data, [1])
+cpu.run()
+aoc.cprint(cpu.output[-1])
 cpu = IntCode(data, [5])
 cpu.run()
 aoc.cprint(cpu.output[0])

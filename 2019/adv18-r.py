@@ -1,46 +1,41 @@
-import sys
-import string
-import re
-import itertools
-import math
-import cmath
 import aoc
-import heapq
 import functools
-import copy
-from collections import Counter, deque
-from dataclasses import dataclass
-from aoc.refintcode import IntCode
+from collections import deque
 
-def get_keys(t, y, x):
-  vnext = deque([(0, y, x, [])])
-  visited = {}
+def get_keys(t, y, x, keybit):
+  vnext = deque([(y, x, 0)])
+  visited = set()
   keys = []
   while vnext:
-    steps, y, x, doors = vnext.popleft()
+    y, x, doors = vnext.popleft()
     if (y, x) in visited:
       continue
-    visited[(y, x)] = steps
+    visited.add((y, x))
     if t[y][x].isupper():
-      doors = doors[:] + [t[y][x]]
+      doors |= keybit[t[y][x].lower()]
     if t[y][x].islower():
-      keys.append((t[y][x], y, x, doors))
+      keys.append((t[y][x], keybit[t[y][x]], y, x, doors))
     for j, i in t.iter_neigh4(y, x):
       if t[j][i] != "#" and (j, i) not in visited:
-        vnext.append((steps + 1, j, i, doors))
+        vnext.append((j, i, doors))
   return keys
 
 def get_robots(t):
   robots = []
+  keys = set()
+  for j, i in t.iter_all():
+    if t[j][i].isalpha():
+      keys.add(t[j][i].lower())
+  keybit = {k: (1 << i) for i, k in enumerate(sorted(keys))}
   for j, i in t.iter_all():
     if t[j][i] == "@":
-      robots.append((j, i, get_keys(t, j, i)))
+      robots.append((j, i, get_keys(t, j, i, keybit)))
   return robots
 
 def newencode(state):
   _, _, pos, _, keys = state
   pos = ",".join(",".join(str(i) for i in pair) for pair in pos)
-  keys = "".join(sorted(keys))
+  keys = str(keys)
   return pos + keys
 
 table = None
@@ -53,7 +48,6 @@ def get_distance(pos, j, i):
   while vnext:
     steps, y, x = vnext.popleft()
     if y == j and x == i:
-      del vnext
       return steps, (y, x)
     if (y, x) in visited:
       continue
@@ -64,17 +58,17 @@ def get_distance(pos, j, i):
   return None
 
 def get_available(keys, col_keys):
-  for name, (robot, j, i, doors) in keys.items():
-    if name in col_keys:
+  for name, (robot, bitname, j, i, doors) in keys.items():
+    if (bitname & col_keys) > 0:
       continue
-    if any(door.lower() not in col_keys for door in doors):
+    if (doors & col_keys) != doors:
       continue
-    yield name, (robot, j, i, doors)
+    yield name, (robot, bitname, j, i, doors)
 
 def heuristic(pos, col_keys, keys, robot):
   ans = []
-  for name, (r, j, i, doors) in keys.items():
-    if name not in col_keys and robot == r:
+  for name, (r, bitname, j, i, doors) in keys.items():
+    if (bitname & col_keys) == 0 and robot == r:
       ans.append(get_distance(tuple(pos), j, i))
   return max((steps for steps, _ in ans), default = 0)
 
@@ -82,11 +76,13 @@ def solve2(t, robots):
   global table
   table = t
   keys = {}
+  all_keys = 0
   for r, (y, x, robot_keys) in enumerate(robots):
-    for name, j, i, doors in robot_keys:
-      keys[name] = (r, j, i, doors)
-  hh = [heuristic((y, x), "", keys, r) for r, (y, x, robot_keys) in enumerate(robots)]
-  state = (sum(hh), 0, [(y, x) for y, x, keys in robots], hh, "")
+    for name, bitname, j, i, doors in robot_keys:
+      keys[name] = (r, bitname, j, i, doors)
+      all_keys |= bitname
+  hh = [heuristic((y, x), 0, keys, r) for r, (y, x, robot_keys) in enumerate(robots)]
+  state = (sum(hh), 0, [(y, x) for y, x, keys in robots], hh, 0)
   vnext = aoc.bq([state], size = 3000)
   visited = set()
   ticks = 0
@@ -96,14 +92,14 @@ def solve2(t, robots):
     ticks += 1
     if ticks % 10000 == 0:
       print(ticks, score, old_hsum, len(vnext), len(visited))
-    if len(col_keys) == len(keys):
+    if col_keys == all_keys:
       return score
     visited.add(newencode(state))
-    for name, (robot, j, i, doors) in get_available(keys, col_keys):
+    for name, (robot, bitname, j, i, doors) in get_available(keys, col_keys):
       dist, pos_robot = get_distance(pos[robot], j, i)
       newpos = pos[:]
       newpos[robot] = pos_robot
-      encoded_keys = "".join(sorted(col_keys + name))
+      encoded_keys = (col_keys | bitname)
       new_hh = hh[:]
       new_hh[robot] = heuristic(newpos[robot], encoded_keys, keys, robot)
       state = (score + dist + sum(new_hh), score + dist, newpos, new_hh, encoded_keys)

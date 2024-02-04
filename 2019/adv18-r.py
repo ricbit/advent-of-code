@@ -32,13 +32,10 @@ def get_robots(t):
       robots.append((j, i, get_keys(t, j, i, keybit)))
   return robots
 
-def newencode(state):
+def encode(state):
   _, _, pos, _, keys = state
-  pos = ",".join(",".join(str(i) for i in pair) for pair in pos)
-  keys = str(keys)
-  return pos + keys
-
-table = None
+  pos = ",".join(str(i) for i in aoc.flatten(pos))
+  return pos + str(keys)
 
 @functools.lru_cache(maxsize=None)
 def get_distance(pos, j, i):
@@ -66,25 +63,27 @@ def get_available(keys, col_keys):
     yield name, (robot, bitname, j, i, doors)
 
 def heuristic(pos, col_keys, keys, robot):
-  ans = []
+  ans = 0
   for name, (r, bitname, j, i, doors) in keys.items():
     if (bitname & col_keys) == 0 and robot == r:
-      ans.append(get_distance(tuple(pos), j, i))
-  return max((steps for steps, _ in ans), default = 0)
+      ans = max(ans, get_distance(tuple(pos), j, i)[0])
+  return ans
 
-def solve2(t, robots):
-  global table
-  table = t
+def build_keys(robots):
   keys = {}
   all_keys = 0
   for r, (y, x, robot_keys) in enumerate(robots):
     for name, bitname, j, i, doors in robot_keys:
       keys[name] = (r, bitname, j, i, doors)
       all_keys |= bitname
+  return keys, all_keys
+
+def solve2(robots):
+  keys, all_keys = build_keys(robots)
   hh = [heuristic((y, x), 0, keys, r) for r, (y, x, robot_keys) in enumerate(robots)]
   state = (sum(hh), 0, [(y, x) for y, x, keys in robots], hh, 0)
-  vnext = aoc.bq([state], size = 3000)
-  visited = set()
+  vnext = aoc.bq([state], size = 8000)
+  visited = set([encode(state)])
   ticks = 0
   while vnext:
     state = vnext.pop()
@@ -94,7 +93,6 @@ def solve2(t, robots):
       print(ticks, score, old_hsum, len(vnext), len(visited))
     if col_keys == all_keys:
       return score
-    visited.add(newencode(state))
     for name, (robot, bitname, j, i, doors) in get_available(keys, col_keys):
       dist, pos_robot = get_distance(pos[robot], j, i)
       newpos = pos[:]
@@ -103,8 +101,9 @@ def solve2(t, robots):
       new_hh = hh[:]
       new_hh[robot] = heuristic(newpos[robot], encoded_keys, keys, robot)
       state = (score + dist + sum(new_hh), score + dist, newpos, new_hh, encoded_keys)
-      if newencode(state) not in visited:
+      if (ns := encode(state)) not in visited:
         vnext.push(state)
+        visited.add(ns)
   return None
 
 def enlarge(t):
@@ -116,6 +115,6 @@ def enlarge(t):
       return t
 
 t = aoc.Table.read()
-lt = enlarge(t)
-robots = get_robots(lt)
-aoc.cprint(solve2(lt, robots))
+table = t # enlarge(t)
+robots = get_robots(table)
+aoc.cprint(solve2(robots))

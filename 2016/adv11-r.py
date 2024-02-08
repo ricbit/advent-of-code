@@ -1,11 +1,9 @@
 import sys
 import re
 import itertools
-import math
 import aoc
 import copy
 import heapq
-from collections import *
 
 def all_loadings(old_floor):
   left = list(old_floor)
@@ -65,7 +63,7 @@ def canonical(floors):
   cur = 0
   for line in floors:
     for gg in line:
-      n, g = gg >> 1, gg & 1
+      n, _ = gg >> 1, gg & 1
       if n not in names:
         names[n] = cur
         cur += 2
@@ -84,7 +82,8 @@ def simulate(floors):
     h, score, elevator, floors = heapq.heappop(vnext)
     cc += 1
     if cc % 100 == 0:
-      print(len(vnext), h, score, len(visited))
+      #print(len(vnext), h, score, len(visited))
+      pass
     if finished(floors):
       return score
     visited.add((elevator, floors))
@@ -120,10 +119,12 @@ for line in sys.stdin:
   name = ordinals[re.match(r".*?(" + "|".join(ordinals.keys()) + ")", line).group(1)]
   items = re.findall(r"(\w+)(?:-compatible)? (microchip|generator)", line)
   floors[name].extend([tuple(x[:2]) for x in items])
+aoc.cprint(simulate(rename(copy.deepcopy(floors))))
 floors[0].append(("el", "ge"))
 floors[0].append(("el", "mi"))
 floors[0].append(("di", "ge"))
 floors[0].append(("di", "mi"))
 aoc.cprint(simulate(rename(floors)))
+
 
   

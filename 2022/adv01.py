@@ -1,10 +1,10 @@
 import sys
+import aoc
+import heapq
 
-calories = [0]
-for line in sys.stdin:
-  if not line.strip():
-    calories.append(0)
-  else:
-    calories[-1] += int(line)
-calories.sort(reverse=True)
-print(sum(calories[:3]))
+blocks = aoc.line_blocks()
+sum_blocks = [sum(int(line) for line in block) for block in blocks]
+aoc.cprint(max(sum_blocks))
+aoc.cprint(sum(heapq.nlargest(3, sum_blocks)))
+
+

@@ -1,17 +1,17 @@
 import itertools
+import aoc
+import sys
 
-dirs = {">": (0, 1), "<": (0, -1), "^": (1, 0), "v": (-1, 0)}
-visited = set([(0, 0)])
-j, i = 0, 0
-rj, ri = 0, 0
-for c, rc in itertools.batched(input().strip(), 2):
-  dj, di = dirs[c]
-  j += dj
-  i += di
-  visited.add((j, i))
-  dj, di = dirs[rc]
-  rj += dj
-  ri += di
-  visited.add((rj, ri))
-print(len(visited))
-  
+def walk(data, size):
+  visited = set([0])
+  dirs = aoc.get_cdir(">")
+  pos = [0] * size
+  for vdir in itertools.batched(data, size):
+    for i in range(size):
+      pos[i] += dirs[vdir[i]]
+      visited.add(pos[i])
+  return len(visited)
+
+data = sys.stdin.read().strip()
+aoc.cprint(walk(data, 1))
+aoc.cprint(walk(data, 2))

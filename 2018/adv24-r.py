@@ -60,35 +60,46 @@ def finished(units):
       unit_types[unit.ctype] += 1
   return len(unit_types) == 1
 
+def select_choosing_order(units):
+  alive = [unit for unit in units if not unit.dead]
+  alive.sort(reverse=True, key=lambda unit: (unit.size * unit.attack, unit.init))
+  return alive
+
+def choose_targets(alive):
+  chosen = [False] * len(alive)
+  target = [None] * len(alive)
+  for a, unit in enumerate(alive):
+    enemies = []
+    for b, enemy in enumerate(alive):
+      if enemy.ctype != unit.ctype and not chosen[b] and not enemy.dead:
+        enemies.append((enemy, b))
+    if enemies:
+      enemy, b = max(enemies, key=lambda enemy:
+        (damage(unit, enemy[0]), enemy[0].size * enemy[0].attack, enemy[0].init))
+      if damage(unit, enemy) > 0:
+        target[a] = b
+        chosen[b] = True
+  return target
+
+def fight(alive, target):
+  for i in sorted(range(len(alive)), reverse=True, key=lambda q: alive[q].init):
+    if target[i] is not None and not alive[i].dead:
+      a = alive[i]
+      b = alive[target[i]]
+      dead = damage(a, b) // b.hp
+      b.size -= dead
+      if b.size <= 0:
+        b.dead = True
+
 def simulate(units):
   visited = set()
   while not finished(units):
-    alive = [unit for unit in units if not unit.dead]
-    alive.sort(reverse=True, key=lambda unit: (unit.size * unit.attack, unit.init))
+    alive = select_choosing_order(units)
     if tuple(alive) in visited:
       return False
     visited.add(tuple(alive))
-    chosen = [False] * len(alive)
-    target = [None] * len(alive)
-    for a, unit in enumerate(alive):
-      enemies = []
-      for b, enemy in enumerate(alive):
-        if enemy.ctype != unit.ctype and not chosen[b] and not enemy.dead:
-          enemies.append((enemy, b))
-      if enemies:
-        enemy, b = max(enemies, key=lambda enemy:
-          (damage(unit, enemy[0]), enemy[0].size * enemy[0].attack, enemy[0].init))
-        if damage(unit, enemy) > 0:
-          target[a] = b
-          chosen[b] = True
-    for i in sorted(range(len(alive)), reverse=True, key=lambda q: alive[q].init):
-      if target[i] is not None and not alive[i].dead:
-        a = alive[i]
-        b = alive[target[i]]
-        dead = damage(a, b) // b.hp
-        b.size -= dead
-        if b.size <= 0:
-          b.dead = True
+    targets = choose_targets(alive)
+    fight(alive, targets)
   return any(unit.ctype == 0 and not unit.dead for unit in units)
 
 def find_boost(units):

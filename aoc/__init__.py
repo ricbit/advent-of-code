@@ -3,6 +3,7 @@ import itertools
 import re
 import hashlib
 import unittest
+import _md5
 from collections import namedtuple, defaultdict
 from dataclasses import dataclass
 from io import StringIO
@@ -206,7 +207,7 @@ class Interval:
     return self.end - self.begin + 1
 
 def md5(text):
-  m = hashlib.md5()
+  m = _md5.md5()
   m.update(bytes(text, "ascii"))
   return m.hexdigest()
 
@@ -251,7 +252,7 @@ def get_cdir(vdir):
 def get_dir(vdir):
   vmap = {}
   for k, v in get_cdir(vdir).items():
-    vmap[k] = (v.real, v.imag)
+    vmap[k] = (int(v.imag), int(v.real))
   return vmap
 
 def iter_neigh4(y, x):

@@ -18,12 +18,10 @@ def solve1(data):
   return from_digits(data, 8)
 
 def solve2(data):
-  newdata = np.zeros(len(data), dtype=np.uint32)
   data = np.flip(np.array(data, dtype=np.uint32))
   for _ in range(100):
-    data.cumsum(out=newdata)
-    newdata = np.abs(newdata) % 10
-    data, newdata = newdata, data
+    data.cumsum(out=data)
+    data = np.abs(data) % 10
   return np.flip(data)
 
 data = aoc.ints(sys.stdin.read().strip())

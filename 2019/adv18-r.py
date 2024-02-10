@@ -165,6 +165,24 @@ def reduce_graph(graph):
       changed = True
   return changed
 
+def shrink(graph):
+  for node, children in graph.items():
+    if len(children) == 4:
+      save = children.copy()
+      print(graph[node])
+      for dist, child in save:
+        for subdist, subchild in graph[child]:
+          if node != subchild:
+            graph[node].add((subdist, subchild))
+          graph[subchild].add((subdist, node))
+          graph[subchild].remove((dist, child))
+      print(graph[node])
+      print(save)
+      for dist, child in save:
+        #graph[node].remove((dist, child))
+        del graph[child]
+      return graph
+
 def create_graph():
   graph = aoc.ddict(lambda: set())
   for j, i in table.iter_all(lambda x: x != "#"):
@@ -172,7 +190,8 @@ def create_graph():
       graph[(j, i)].add((1, (jj, ii)))
   while reduce_graph(graph):
     pass
-  return graph
+  return shrink(graph)
+  #return graph
 
 def write_dot(graph):
   f = open("graph.18.dot", "wt")

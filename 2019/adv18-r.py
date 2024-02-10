@@ -15,6 +15,8 @@ def get_keys(t, y, x, keybit):
       doors |= keybit[t[y][x].lower()]
     if t[y][x].islower():
       keys.append((t[y][x], keybit[t[y][x]], y, x, doors))
+    if t[y][x].islower():
+      doors |= keybit[t[y][x].lower()]
     for j, i in t.iter_neigh4(y, x):
       if t[j][i] != "#" and (j, i) not in visited:
         vnext.append((j, i, doors))
@@ -62,14 +64,11 @@ def get_available(keys, col_keys):
       continue
     yield name, (robot, bitname, j, i, doors)
 
-def self_sum(y, x, keys, col_keys):
+def is_key_alive(keys, col_keys, y, x):
   if table[y][x].islower():
-    if (keys[table[y][x]][1] | col_keys) == col_keys:
-      return 0
-    else:
-      return 1
+    return (keys[table[y][x]][1] & col_keys) == 0
   else:
-    return 0
+    return False
 
 def dfs(pos, col_keys, keys, visited, graph):
   visited.add(pos)
@@ -77,17 +76,19 @@ def dfs(pos, col_keys, keys, visited, graph):
   branches = []
   for dist, (j, i) in graph[(y, x)]:
     if (j, i) not in visited:
-      branches.append(dist + dfs((j, i), col_keys, keys, visited, graph))
+      branches.append((dist, dfs((j, i), col_keys, keys, visited, graph)))
   if not branches:
-    return self_sum(y, x, keys, col_keys)
-  children = sum(branches)
-  if children > 0:
-    return children + 1
-  else:
-    return self_sum(y, x, keys, col_keys)  
+    #print(pos, is_key_alive(keys, col_keys, y, x), 0)
+    return is_key_alive(keys, col_keys, y, x), 0
+  beyond = sum((dist1 + dist2 for dist1, (alive, dist2) in branches if alive)) #, default=0)
+  self_alive = any(alive for _, (alive, _) in branches) or is_key_alive(keys, col_keys, y, x)
+  #print(pos, self_alive, beyond)
+  return self_alive, beyond
 
 def heuristic(pos, col_keys, keys, robot, graph):
-  #return dfs(pos, col_keys, keys, set(), graph)
+  #return 0
+  #print("----",bin(col_keys), table[pos[0]][pos[1]])
+  return dfs(pos, col_keys, keys, set(), graph)[0]
   ans = 0
   for name, (r, bitname, j, i, doors) in keys.items():
     if (bitname & col_keys) == 0 and robot == r:
@@ -108,7 +109,7 @@ def solve2(robots, graph):
   hh = [heuristic((y, x), 0, keys, r, graph) for r, (y, x, robot_keys) in enumerate(robots)]
   state = (sum(hh), 0, [(y, x) for y, x, keys in robots], hh, 0)
   vnext = aoc.bq([state], size = 8000)
-  visited = set([encode(state)])
+  visited = set() #[encode(state)])
   ticks = 0
   while vnext:
     state = vnext.pop()
@@ -118,6 +119,9 @@ def solve2(robots, graph):
       print(ticks, score, old_hsum, len(vnext), len(visited))
     if col_keys == all_keys:
       return score
+    if encode(state) in visited:
+      continue
+    visited.add(encode(state))
     for name, (robot, bitname, j, i, doors) in get_available(keys, col_keys):
       dist, pos_robot = get_distance(pos[robot], j, i)
       newpos = pos[:]
@@ -129,7 +133,7 @@ def solve2(robots, graph):
       ns = encode(state)
       if ns not in visited:
         vnext.push(state)
-        visited.add(ns)
+        #visited.add(ns)
   return None
 
 def enlarge(t):
@@ -169,17 +173,13 @@ def shrink(graph):
   for node, children in graph.items():
     if len(children) == 4:
       save = children.copy()
-      print(graph[node])
       for dist, child in save:
         for subdist, subchild in graph[child]:
           if node != subchild:
             graph[node].add((subdist, subchild))
           graph[subchild].add((subdist, node))
           graph[subchild].remove((dist, child))
-      print(graph[node])
-      print(save)
       for dist, child in save:
-        #graph[node].remove((dist, child))
         del graph[child]
       return graph
 
@@ -190,8 +190,8 @@ def create_graph():
       graph[(j, i)].add((1, (jj, ii)))
   while reduce_graph(graph):
     pass
-  return shrink(graph)
-  #return graph
+  return graph
+  #return shrink(graph)
 
 def write_dot(graph):
   f = open("graph.18.dot", "wt")
@@ -210,7 +210,7 @@ def write_dot(graph):
   return 0
 
 t = aoc.Table.read()
-table = t # enlarge(t)
+table =  enlarge(t)
 graph = create_graph()
 write_dot(graph)
 robots = get_robots(table)

@@ -297,11 +297,15 @@ class Table:
       if self.valid(jj, ii) and conditional(self.table[jj][ii]):
         yield jj, ii
 
-  def iter_neigh4(self, j, i, conditional=lambda x: True):
-    for dj, di in [(0, 1), (1, 0), (0, -1), (-1, 0)]:
-      jj, ii = j + dj, i + di
-      if self.valid(jj, ii) and conditional(self.table[jj][ii]):
-        yield jj, ii
+  def iter_neigh4(self, j, i):
+    if j > 0:
+      yield j - 1, i
+    if j < self.h - 1:
+      yield j + 1, i
+    if i > 0:
+      yield j, i - 1
+    if i < self.w - 1:
+      yield j, i + 1
 
   def __getitem__(self, j):
     return self.table[j]

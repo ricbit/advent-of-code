@@ -44,5 +44,5 @@ jobs:
           echo $PYTHONPATH
           mkdir -p 2019/aoc
           cp -r aoc/* 2019/aoc
-          time python 2019/adv01-r.py < 2019/input.${{ matrix.problem }}.txt > out.txt
+          time python 2019/adv${{ matrix.problem }}-r.py < 2019/input.${{ matrix.problem }}.txt > output.${{ matrix.problem }}.txt
           #diff out.txt 2019/output.${{ matrix.problem }}.txt

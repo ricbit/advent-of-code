@@ -24,4 +24,6 @@ jobs:
         env:
           AOC_SECRET: ${{ secrets.AOC_SECRET }}
       - name: Run p01
-        run: time python3.12 2019/adv01-r.py < 2019/input.01.txt
+        run: |
+          ln -s aoc 2019/aoc
+          time python3.12 2019/adv01-r.py < 2019/input.01.txt

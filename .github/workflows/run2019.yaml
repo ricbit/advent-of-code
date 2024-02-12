@@ -28,4 +28,6 @@ jobs:
           PYTHONPATH: ${{ github.workspace }}/aoc
         run: |
           echo $PYTHONPATH
+          mkdir -p 2019/aoc
+          cp aoc/* 2019/aoc
           time python 2019/adv01-r.py < 2019/input.01.txt

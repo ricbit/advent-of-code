@@ -20,6 +20,7 @@ jobs:
       - name: Run aoc lib test
         run: pytest aoc/__init__.py
   test-2019-problems:
+    runs-on: ubuntu-latest
     needs: test-aoc-library
     strategy:
       matrix:

@@ -12,6 +12,7 @@ jobs:
         with:
             python-version: 3.12
             cache: 'pip'
+      - name: Install pip
         run: pip install -r requirements.txt
       - name: Run aoc lib test
         run: pytest aoc/__init__.py
@@ -29,6 +30,7 @@ jobs:
         with:
             python-version: 3.12
             cache: 'pip'
+      - name: Install pip
         run: pip install -r requirements.txt
       - name: Decrypt input ${{ matrix.problem }}
         run: gpg --quiet --batch --yes --decrypt --passphrase="$AOC_SECRET" --output 2019/input.${{ matrix.problem }}.txt 2019/input.${{ matrix.problem }}.txt.gpg

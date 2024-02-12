@@ -2,14 +2,15 @@ name: run-2019
 run-name: Run AoC 2019 problems
 on: [push]
 jobs:
-  runs-on: ubuntu-latest
-  steps:
-    - name: Check out repository
-      uses: actions/checkout@v4
-    - name: Install Python 3.12
-      run: |
-        sudo apt update
-        sudo apt install software-properties-common -y
-        sudo add-apt-repository ppa:deadsnakes/ppa
-        sudo apt update
-        sudo apt install python3.12
+  check-install:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Install Python 3.12
+        run: |
+          sudo apt update
+          sudo apt install software-properties-common -y
+          sudo add-apt-repository ppa:deadsnakes/ppa
+          sudo apt update
+          sudo apt install python3.12

@@ -26,7 +26,7 @@ jobs:
         problem: ["01", "02", "03"]
     steps:
       - name: Decrypt input ${{ matrix.problem }}
-        run: gpg --quiet --batch --yes --decrypt --passphrase="$AOC_SECRET" --output 2019/input.${{ natrix.problem }}.txt 2019/input.${{ matrix.problem }}.txt.gpg
+        run: gpg --quiet --batch --yes --decrypt --passphrase="$AOC_SECRET" --output 2019/input.${{ matrix.problem }}.txt 2019/input.${{ matrix.problem }}.txt.gpg
         env:
           AOC_SECRET: ${{ secrets.AOC_SECRET }}
       - name: Run p01

@@ -34,10 +34,12 @@ jobs:
       - name: Install pip
         run: pip install -r requirements.txt
       - name: Decrypt input ${{ matrix.problem }}
-        run: gpg --quiet --batch --yes --decrypt --passphrase="$AOC_SECRET" --output 2019/input.${{ matrix.problem }}.txt 2019/encrypted_input/input.${{ matrix.problem }}.txt.gpg
+        run: |
+          gpg --quiet --batch --yes --decrypt --passphrase="$AOC_SECRET" --output 2019/input.${{ matrix.problem }}.txt 2019/encrypted_input/input.${{ matrix.problem }}.txt.gpg
+          gpg --quiet --batch --yes --decrypt --passphrase="$AOC_SECRET" --output 2019/output.${{ matrix.problem }}.txt 2019/encrypted_input/output.${{ matrix.problem }}.txt.gpg
         env:
           AOC_SECRET: ${{ secrets.AOC_SECRET }}
-      - name: Run p01
+      - name: Run problem ${{ matrix.problem }}
         env:
           PYTHONPATH: ${{ github.workspace }}/aoc
         run: |
@@ -46,3 +48,5 @@ jobs:
           cp -r aoc/* 2019/aoc
           time python 2019/adv${{ matrix.problem }}-r.py < 2019/input.${{ matrix.problem }}.txt > output.${{ matrix.problem }}.txt
           #diff out.txt 2019/output.${{ matrix.problem }}.txt
+      - name: Check answer ${{ matrix.problem }}
+        run: diff output.${{ matrix.problem }}.txt 2019/output.${{ matrix.problem }}.txt

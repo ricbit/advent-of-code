@@ -2,7 +2,7 @@ name: run-2019
 run-name: Run AoC 2019 problems
 on: [push]
 jobs:
-  check-install:
+  test-aoc-library:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository

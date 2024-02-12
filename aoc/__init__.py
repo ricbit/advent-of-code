@@ -595,7 +595,7 @@ class TestFirstFunction(unittest.TestCase):
 
 class TestIntsFunction(unittest.TestCase):
     def test_normal_case(self):
-        self.assertEqual(ints(["1", "2", "3"]), [0, 2, 3])
+        self.assertEqual(ints(["1", "2", "3"]), [1, 2, 3])
 
     def test_mixed_input(self):
         self.assertEqual(ints([1, "2", 3.0]), [1, 2, 3])

@@ -8,9 +8,10 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
       - name: Install Python 3.12
-        run: |
-          sudo apt update
-          sudo apt install software-properties-common -y
-          sudo add-apt-repository ppa:deadsnakes/ppa
-          sudo apt update
-          sudo apt install python3.12
+        uses: actions/setup-python@v4
+        with:
+            python-version: 3.12
+      - name: Check Python version
+        run: python -c "import sys; print(sys.version)"
+      - name: Run aoc lib test
+        run: python aoc/__init__.py

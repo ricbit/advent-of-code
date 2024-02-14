@@ -188,10 +188,16 @@ class bq:
   def __len__(self):
     return self.size
 
+# Intervals are inclusive
 @dataclass(repr=True, init=True)
 class Interval:
   begin: int
   end: int
+
+  def inter(self, b):
+    m = Interval(max(self.begin, b.begin), min(self.end, b.end))
+    if m.begin <= m.end:
+      yield m
 
   def sub(self, b):
     m = Interval(max(self.begin, b.begin), min(self.end, b.end))

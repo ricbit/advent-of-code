@@ -18,7 +18,6 @@ def check(j, i, data):
           cpu.input = j
           state = 2
       case cpu.OUTPUT:
-        state = 0
         return cpu.output
 
 def part1(data):

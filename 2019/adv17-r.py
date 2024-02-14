@@ -23,14 +23,11 @@ def read_table(data):
     match cpu.state:
       case cpu.OUTPUT:
         if cpu.output == 10:
-          line = ["."] + line + ["."]
           table.append(line)
           line = []
         else:
           line.append(chr(cpu.output))
-  empty = ["."] * len(table[0])
-  table = [empty] + table[:-1] + [empty]
-  return aoc.Table(table)
+  return aoc.Table(table[:-1]).grow(".")
 
 def get_pos(t):
   for j, i in t.iter_all():

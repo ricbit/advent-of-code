@@ -57,10 +57,8 @@ def solve(t, teleport, start, end, add):
           vnext.append((score + 1, add(level, +1), (j, i)))
 
 def build_table(lines):
-  size = len(lines[0])
-  empty = [" "] * (size + 2)
-  tt = [empty] + [" " + line + " " for line in lines] + [empty]
-  return aoc.Table(tt)
+  t = aoc.Table([list(line) for line in lines])
+  return t.grow(" ")
 
 t = build_table([line.rstrip("\n") for line in sys.stdin])
 teleport, start, end = build_maze(t)

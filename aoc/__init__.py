@@ -289,6 +289,11 @@ class Table:
       if conditional(self.table[j][i]):
         yield j, i
 
+  def grow(self, empty=" "):
+    empty_line = [empty] * (self.w + 2)
+    new_table = [empty_line] + [[empty] + line + [empty] for line in self.table] + [empty_line]
+    return Table(new_table)
+ 
   def valid(self, j, i):
     return 0 <= j < self.h and 0 <= i < self.w
 

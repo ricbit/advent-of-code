@@ -22,7 +22,7 @@ jobs:
     strategy:
       matrix:
         problem: ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10",
-                  "11", "12", "13", "14", "15", "16", "17", "18"]
+                  "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"]
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -43,10 +43,8 @@ jobs:
         env:
           PYTHONPATH: ${{ github.workspace }}/aoc
         run: |
-          echo $PYTHONPATH
           mkdir -p 2019/aoc
           cp -r aoc/* 2019/aoc
           time python 2019/adv${{ matrix.problem }}-r.py < 2019/input.${{ matrix.problem }}.txt > output.${{ matrix.problem }}.txt
-          #diff out.txt 2019/output.${{ matrix.problem }}.txt
       - name: Check answer ${{ matrix.problem }}
         run: diff output.${{ matrix.problem }}.txt 2019/output.${{ matrix.problem }}.txt

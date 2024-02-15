@@ -12,6 +12,14 @@
 
 # Times:
 
+### P21
+
+Goal: 15:47 33:30
+Time: 37:14 53:05
+(100+ 100+)
+
+Algo: boolean logic
+
 ### P20
 
 Goal: 26:31 53:46

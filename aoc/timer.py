@@ -8,7 +8,7 @@ class ChronometerApp:
     self.root = root
     root.title("AOC Goal")
     root.configure(bg="black")
-    root.geometry("+3300+1900")
+    root.geometry("+4300+1900")
     root.attributes('-topmost', True)
 
     # Load leaderboard times.

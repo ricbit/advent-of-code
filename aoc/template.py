@@ -13,8 +13,13 @@ from dataclasses import dataclass
 from aoc.refintcode import IntCode
 
 def solve(data):
-  return 0
+  cpu = IntCode(data)
+  while cpu.run():
+    match cpu.state:
+      case cpu.INPUT:
+        value = cpu.input
+      case cpu.OUTPUT:
+        cpu.output = value
 
-data = sys.stdin.read().strip()
-data = [line.strip() for line in sys.stdin]
+data = aoc.ints(sys.stdin.read().strip().split(","))
 aoc.cprint(solve(data))

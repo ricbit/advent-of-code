@@ -1,4 +1,5 @@
 import sys
+import aoc
 
 points = 0
 lines = sys.stdin.readlines()
@@ -10,5 +11,5 @@ for pos, line in enumerate(lines):
     card_copies[pos + i + 1] += card_copies[pos]
   points += 2 ** (common_cards - 1) if common_cards > 0 else 0
 
-print(points)
-print(sum(card_copies))
+aoc.cprint(points)
+aoc.cprint(sum(card_copies))

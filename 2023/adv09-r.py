@@ -1,5 +1,6 @@
 import sys
 import itertools
+import aoc
 
 def direct(lines, func):
   ans = 0
@@ -13,5 +14,5 @@ def direct(lines, func):
   return ans
 
 lines = sys.stdin.readlines()
-print(direct(lines, lambda x: x))
-print(direct(lines, lambda x: x[::-1]))
+aoc.cprint(direct(lines, lambda x: x))
+aoc.cprint(direct(lines, lambda x: x[::-1]))

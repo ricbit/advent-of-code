@@ -1,5 +1,6 @@
 import sys
 import itertools
+import aoc
 
 first_order = "AKQJT98765432"
 second_order = "AKQT98765432J"
@@ -37,5 +38,5 @@ def winnings(hands, score, order):
   return sum((i + 1) * hand[2] for i, hand in enumerate(scored_hands))
 
 hands = [line.strip().split() for line in sys.stdin]
-print(winnings(hands, first_score, first_order))
-print(winnings(hands, second_score, second_order))
+aoc.cprint(winnings(hands, first_score, first_order))
+aoc.cprint(winnings(hands, second_score, second_order))

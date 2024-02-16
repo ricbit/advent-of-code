@@ -1,6 +1,7 @@
 import sys
 import itertools
 from dataclasses import dataclass
+import aoc
 
 @dataclass(repr=True, init=True)
 class SeedMap:
@@ -57,5 +58,5 @@ def transform(seed_intervals, seed_maps):
   return min(begins)
 
 seeds, maps = read_input()
-print(transform(((i, 1) for i in seeds), maps))
-print(transform(itertools.batched(seeds, 2), maps))
+aoc.cprint(transform(((i, 1) for i in seeds), maps))
+aoc.cprint(transform(itertools.batched(seeds, 2), maps))

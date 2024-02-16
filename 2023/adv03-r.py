@@ -37,5 +37,5 @@ for j, i in table.iter_all(issymbol):
   if len(gears_visited) == 2:
     gears_total += gears_value
 
-print(parts_total)
-print(gears_total)
+aoc.cprint(parts_total)
+aoc.cprint(gears_total)

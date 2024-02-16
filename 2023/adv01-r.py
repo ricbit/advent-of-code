@@ -1,5 +1,6 @@
 import sys
 import re
+import aoc
 
 lines = sys.stdin.readlines()
 numbers = "one|two|three|four|five|six|seven|eight|nine"
@@ -9,5 +10,5 @@ build = lambda regexp: lambda line: values[re.search(regexp, line).group(1)]
 first = build(fr"^.*?(\d|{numbers})")
 last = build(fr"^.*(\d|{numbers}).*?$")
 digits = lambda line: "".join(d for d in line if d.isdecimal())
-print(sum(first(digits(line)) * 10 + last(digits(line)) for line in lines))
-print(sum(first(line) * 10 + last(line) for line in lines))
+aoc.cprint(sum(first(digits(line)) * 10 + last(digits(line)) for line in lines))
+aoc.cprint(sum(first(line) * 10 + last(line) for line in lines))

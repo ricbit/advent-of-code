@@ -1,6 +1,7 @@
 import sys
 import re
 import math
+import aoc
 
 games = {}
 for line in sys.stdin:
@@ -25,5 +26,5 @@ def second(games):
     ans += math.prod(rgb.values())
   return ans
 
-print(first(games))
-print(second(games))
+aoc.cprint(first(games))
+aoc.cprint(second(games))

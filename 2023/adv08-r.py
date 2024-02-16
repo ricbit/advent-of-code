@@ -2,6 +2,7 @@ import sys
 import re
 import itertools
 import math
+import aoc
 
 lines = [line.strip() for line in sys.stdin.readlines()]
 commands = lines[0].strip()
@@ -16,5 +17,5 @@ def simulate(cur):
     if (cur := graph[cur][command]).endswith("Z"):
       return steps + 1
 
-print(simulate("AAA"))
-print(math.lcm(*(simulate(node) for node in start)))
+aoc.cprint(simulate("AAA"))
+aoc.cprint(math.lcm(*(simulate(node) for node in start)))

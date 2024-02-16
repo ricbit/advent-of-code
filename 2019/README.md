@@ -12,6 +12,22 @@
 
 # Times:
 
+### P23
+
+Goal: 11:48 20:53
+Time: 26:21 46:39
+(100+ 100+)
+
+Algo: network simulation
+
+### P22
+
+Goal: 12:13 123:46
+Time: 12:17 56:16
+(100+ 36)
+
+Algo: number theory
+
 ### P21
 
 Goal: 15:47 33:30

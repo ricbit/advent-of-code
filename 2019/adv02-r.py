@@ -21,6 +21,6 @@ def part1(data):
   cpu.run()
   return cpu.data[0]
 
-original_data = [int(i) for i in sys.stdin.read().split(",")]
+original_data = aoc.ints(sys.stdin.read().split(","))
 aoc.cprint(part1(original_data))
 aoc.cprint(part2(original_data))

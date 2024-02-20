@@ -11,6 +11,7 @@ class CpuState:
   y: int
   addr: int
   iq: [(int, int)]
+  output: [int]
 
 def init(data):
   cpus = []
@@ -20,14 +21,18 @@ def init(data):
     cpu.run()
     cpu.input = i
     cpus.append(cpu)
-    state.append(CpuState(0, 0, 0, 0, []))
+    state.append(CpuState(0, 0, 0, 0, [], []))
   return cpus, state
+
+def idle(state, cpus):
+  return (
+      all(not s.iq for s in state) and 
+      all(cpu.state == cpu.INPUT for cpu in cpus) and
+      all(s.state == 0 for s in state))
 
 def solve(data):
   cpus, state = init(data)
-  nat = None
-  lasty = [0, 0]
-  firsty = None
+  nats = []
   for tick in itertools.count(0):
     for i in range(50):
       cpus[i].run()
@@ -44,32 +49,18 @@ def solve(data):
             state[i].state = 0
             state[i].iq.pop(0)
         case IntCode.OUTPUT:
-          if state[i].state == 0:
-            state[i].addr = cpus[i].output
-            state[i].state = 1
-          elif state[i].state == 1:
-            state[i].x = cpus[i].output
-            state[i].state = 2
-          elif state[i].state == 2:
-            state[i].y = cpus[i].output
-            state[i].state = 0
-            if state[i].addr == 255:
-              nat = (state[i].x, state[i].y)
-              if firsty is None:
-                firsty = state[i].y
-              continue
-            state[state[i].addr].iq.append((state[i].x, state[i].y))
-    if (all(not s.iq for s in state) and 
-        all(cpu.state == cpu.INPUT for cpu in cpus) and
-        all(s.state == 0 for s in state)):
-      if nat is not None:
-        state[0].iq.append(nat)
-        if lasty[0] == nat[1]:
-          lasty[1] += 1
-        else:
-          lasty[0] = nat[1]
-        if lasty[1] > 3:
-          return firsty, lasty[0]
+          state[i].output.append(cpus[i].output)
+          if len(state[i].output) == 3:
+            addr, x, y = state[i].output
+            state[i].output.clear()
+            if addr == 255:
+              nats.append((x, y))
+            else:
+              state[addr].iq.append((x, y))
+    if idle(state, cpus) and nats:
+      state[0].iq.append(nats[-1])
+      if len(nats) > 3 and all(n[1] == nats[-1][1] for n in nats[-4:]):
+        return nats[0][1], nats[-1][1]
 
 data = aoc.ints(sys.stdin.read().strip().split(","))
 ans1, ans2 = solve(data)

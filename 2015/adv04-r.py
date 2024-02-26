@@ -7,7 +7,7 @@ def search(seed, size):
   zeros = "0" * size
   for i in itertools.count(0):
     m = hashlib.md5()
-    m.update(b"ckczppom" + bytes(str(i), "ascii"))
+    m.update(bytes(seed, "ascii") + bytes(str(i), "ascii"))
     ans = m.hexdigest()
     if ans.startswith(zeros):
       return i

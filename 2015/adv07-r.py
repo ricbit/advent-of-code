@@ -57,7 +57,8 @@ def process_all(lines, fixed):
   return wires['a']
 
 lines = sys.stdin.readlines()
-aoc.cprint(process_all(lines, {}))
-aoc.cprint(process_all(lines, {"b": 16076}))
+first = process_all(lines, {})
+aoc.cprint(first)
+aoc.cprint(process_all(lines, {"b": first}))
 
       

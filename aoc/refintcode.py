@@ -16,11 +16,10 @@ class Ref:
 
 
 class IntCode:
-  def __init__(self, data):
-    self.data = aoc.ddict(lambda: 0)
+  def __init__(self, data, data_type=aoc.ddict):
+    self.data = data_type(lambda: 0)
     self.data.update({i:value for i, value in enumerate(data)})
     self.pos = 0
-    self.output = []
     self.state = self.RUNNING
     self.base = 0
     self.input = None
@@ -51,7 +50,7 @@ class IntCode:
       return False
 
     self.state = self.RUNNING
-    while self.pos < len(self.data):
+    while True:
       cmd = self.data[self.pos] % 100
       if cmd == 1: # ADD
         a, b, c = self.decode(3)

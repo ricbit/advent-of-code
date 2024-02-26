@@ -3,6 +3,7 @@ import re
 import itertools
 import aoc
 import copy
+import bisect
 from aoc.refintcode import IntCode
 from dataclasses import dataclass
 
@@ -136,27 +137,26 @@ def find_total_weights(cpu, objects, object_weights):
   total_weights.sort()
   return total_weights
 
-def test_weight(cpu, total_weights, objects, wm):
+def compute_weight(cpu, total_weights, objects, wm):
   newcpu = copy_cpu(cpu)
   for addr in itertools.compress(objects.values(), total_weights[wm][1]):
      newcpu.data[addr] = -1
   return cpu_step(newcpu, "north\n")
 
+def test_weight(cpu, total_weights, objects, wm):
+  newcpu, output = compute_weight(cpu, total_weights, objects, wm)
+  if (comp := re.search(r"(heavier|lighter)", output)) is None:
+    return 0
+  else:
+    return 1 if comp.group(1) == "lighter" else -1
+
 def find_password(cpu, objects):
   object_weights = find_weights(cpu, objects)
   total_weights = find_total_weights(cpu, objects, object_weights)
-  wa, wb = 0, len(total_weights) - 1
-  while wa <= wb:
-    wm = wa + (wb - wa) // 2
-    newcpu, output = test_weight(cpu, total_weights, objects, wm)
-    if newcpu.state == cpu.HALTED:
-      return re.search(r"(\d{3,})", output).group(1)
-    else:
-      comp = re.search(r"(heavier|lighter)", output).group(1)
-      if comp != "lighter":
-        wa = wm + 1
-      else:
-        wb = wm - 1
+  key = lambda wm : test_weight(cpu, total_weights, objects, wm)
+  m = bisect.bisect_left(range(len(total_weights)), 0, key=key)
+  _, output = compute_weight(cpu, total_weights, objects, m)
+  return re.search(r"(\d{3,})", output).group(1)
 
 data = aoc.ints(sys.stdin.read().split(","))
 checkpoint, objects = visit_rooms(data)

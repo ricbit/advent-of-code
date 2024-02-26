@@ -12,6 +12,14 @@
 
 # Times:
 
+### P25
+
+Goal: 31:41 35:01
+Time: 91:09 91:09
+(100+ 100+)
+
+Algo: text-based adventure
+
 ### P24
 
 Goal: 11:04 42:18

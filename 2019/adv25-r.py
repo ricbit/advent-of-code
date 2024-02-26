@@ -1,16 +1,10 @@
 import sys
-import string
 import re
 import itertools
-import math
-import cmath
 import aoc
-import heapq
-import functools
 import copy
-from collections import Counter, deque
+from aoc.refintcode import IntCode
 from dataclasses import dataclass
-from aoc.refintcode import IntCode, Ref
 
 def parse(output, state):
   lines = "".join(output).split("\n")
@@ -47,6 +41,9 @@ def cpu_step(cpu, cmd):
         cpu.input = ord(cmd.pop(0))
       case cpu.OUTPUT:
         output.append(chr(cpu.output))
+        if len(output) > 1000:
+          cpu.state = cpu.HALTED
+          break
   return cpu, "".join(output)
 
 class DataType:
@@ -72,7 +69,7 @@ class DataType:
     newdata.modified = copy.deepcopy(self.modified)
     return newdata
 
-BLACKLIST = set(["infinite loop", "giant electromagnet", "photons", "escape pod", "molten lava"])
+BLACKLIST = set(["giant electromagnet"])
 
 def search_items(cpu, state, objects):
   if state.items and state.items[0] not in BLACKLIST:
@@ -80,6 +77,8 @@ def search_items(cpu, state, objects):
     fakecpu = copy.copy(cpu)
     fakecpu.data = cpu.data.copy()
     fakecpu, _ = cpu_step(fakecpu, "take " + state.items[0] + "\n")
+    if fakecpu.state == cpu.HALTED:
+      return
     after_data = fakecpu.data.modified
     for addr in after_data.keys():
       if before_data[addr] != after_data[addr] and after_data[addr] == -1:
@@ -108,7 +107,7 @@ def visit_rooms(data):
     if state.room in visited:
       continue
     visited.add(state.room)
-    if state.room == "Securiy Checkpoint":
+    if state.room == "Security Checkpoint":
       checkpoint = copy_cpu(cpu)
     search_items(cpu, state, objects)
     for cmd in state.exits:
@@ -120,10 +119,44 @@ def visit_rooms(data):
         vnext.append((newstate, newcpu))
   return checkpoint, objects
 
+def find_weights(cpu, objects):
+  weights = {}
+  for name, addr in objects.items():
+    newcpu = copy_cpu(cpu)
+    newcpu.data[addr] = -1
+    newcpu, _ = cpu_step(newcpu, "north\n")
+    weights[name] = newcpu.data[1550]
+  return weights
+
+def find_total_weights(cpu, objects, object_weights):
+  total_weights = []
+  for combinations in itertools.product(range(2), repeat=8):
+    weight = sum(itertools.compress(object_weights.values(), combinations))
+    total_weights.append((weight, combinations))
+  total_weights.sort()
+  return total_weights
+
+def test_weight(cpu, total_weights, objects, wm):
+  newcpu = copy_cpu(cpu)
+  for addr in itertools.compress(objects.values(), total_weights[wm][1]):
+     newcpu.data[addr] = -1
+  return cpu_step(newcpu, "north\n")
+
 def find_password(cpu, objects):
-  print(objects)
-  for i in itertools.product(range(2), repeat=8):
-    pass
+  object_weights = find_weights(cpu, objects)
+  total_weights = find_total_weights(cpu, objects, object_weights)
+  wa, wb = 0, len(total_weights) - 1
+  while wa < wb:
+    wm = wa + (wb - wa) // 2
+    newcpu, output = test_weight(cpu, total_weights, objects, wm)
+    if newcpu.state == cpu.HALTED:
+      return re.search(r"(\d{3,})", output).group(1)
+    else:
+      comp = re.search(r"(heavier|lighter)", output).group(1)
+      if comp != "lighter":
+        wa = wm
+      else:
+        wb = wm
 
 data = aoc.ints(sys.stdin.read().split(","))
 checkpoint, objects = visit_rooms(data)

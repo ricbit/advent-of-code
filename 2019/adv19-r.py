@@ -7,32 +7,31 @@ from aoc.refintcode import IntCode
 
 def check(j, i, data):
   cpu = IntCode(data)
-  state = 0
+  stream = [i, j]
   while cpu.run():
     match cpu.state:
       case cpu.INPUT:
-        if state == 0:
-          cpu.input = i
-          state = 1
-        elif state == 1:
-          cpu.input = j
-          state = 2
+        cpu.input = stream.pop(0)
       case cpu.OUTPUT:
         return cpu.output
 
-def part1(data):
+def get_starting_coords(data):
   ans = 0
   first, last = 0, 0
-  size = 7
-  for j in range(size):
+  for j in itertools.count(0):
     line = []
-    for i in range(size + 2):
+    for i in range(j + 10):
       line.append(check(j, i, data))
     count = line.count(1)
     ans += count
-    if count == 2:
+    if line[0] == line[-1] == 0 and count == 2:
       first = line.index(1)
       last = len(line) - line[::-1].index(1)
+      size = j + 1
+      return ans, first, last, size
+
+def part1(data):
+  ans, first, last, size = get_starting_coords(data)
   first_array = []
   last_array = []
   outer = aoc.Interval(0, 49)
@@ -54,8 +53,8 @@ def part1(data):
 
 def part2(data, first, last):
   x = (99 * first * (49 + last)) / 49 / (last - first)
-  y = int(math.floor(49 / first * x))
-  x = int(math.floor(x))
+  y = int(math.floor(49 / first * x)) - 3
+  x = int(math.floor(x)) - 6
   while check(y, x, data) == 0:
     x += 1
   size = 100

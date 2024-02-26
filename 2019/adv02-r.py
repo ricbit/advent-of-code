@@ -4,7 +4,7 @@ import aoc
 from aoc.refintcode import IntCode
 
 def part2(data):
-  for a, b in itertools.product(range(50), repeat=2):
+  for a, b in itertools.product(range(80), repeat=2):
     data = original_data[:]
     data[1] = a
     data[2] = b

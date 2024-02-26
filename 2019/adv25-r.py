@@ -146,7 +146,7 @@ def find_password(cpu, objects):
   object_weights = find_weights(cpu, objects)
   total_weights = find_total_weights(cpu, objects, object_weights)
   wa, wb = 0, len(total_weights) - 1
-  while wa < wb:
+  while wa <= wb:
     wm = wa + (wb - wa) // 2
     newcpu, output = test_weight(cpu, total_weights, objects, wm)
     if newcpu.state == cpu.HALTED:
@@ -154,9 +154,9 @@ def find_password(cpu, objects):
     else:
       comp = re.search(r"(heavier|lighter)", output).group(1)
       if comp != "lighter":
-        wa = wm
+        wa = wm + 1
       else:
-        wb = wm
+        wb = wm - 1
 
 data = aoc.ints(sys.stdin.read().split(","))
 checkpoint, objects = visit_rooms(data)

@@ -24,9 +24,9 @@ def idle(state, cpus):
       all(not s.iq for s in state) and 
       all(cpu.state == cpu.INPUT for cpu in cpus))
 
-def solve(data):
+def execute(data):
   cpus, state = init(data)
-  nats = []
+  nats = None
   while True:
     for i in range(50):
       cpus[i].run()
@@ -42,13 +42,21 @@ def solve(data):
             addr, x, y = state[i].output
             state[i].output.clear()
             if addr == 255:
-              nats.append((x, y))
+              nats = (x, y)
             else:
               state[addr].iq.extend([x, y])
-    if idle(state, cpus) and nats:
-      state[0].iq.extend(nats[-1])
-      if len(nats) > 3 and all(n[1] == nats[-1][1] for n in nats[-4:]):
-        return nats[0][1], nats[-1][1]
+    if idle(state, cpus) and nats is not None:
+      state[0].iq.extend(nats)
+      yield nats[1]
+
+def solve(data):
+  nats = aoc.ddict(lambda: 0)
+  it = execute(data)
+  first = next(it)
+  for y in it:
+    nats[y] += 1
+    if nats[y] > 3:
+      return first, y
 
 data = aoc.ints(sys.stdin.read().strip().split(","))
 ans1, ans2 = solve(data)

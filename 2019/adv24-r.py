@@ -5,7 +5,7 @@ def gen_frac():
   ans = {}
   INNER = {1: 0, 3: 4}
   OUTER_Y = {0: (1, 2), 4: (3, 2)}
-  OUTER_X = {0: (2, 1), 4: (3, 2)}
+  OUTER_X = {0: (2, 1), 4: (2, 3)}
   for j, i in itertools.product(range(5), repeat=2):
     if j == i == 2:
       continue

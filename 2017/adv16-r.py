@@ -20,17 +20,7 @@ def execute(prog, cmd):
 def iter_cycle(prog, cmd):
   for _ in itertools.count(1):
     prog = list(execute(prog, cmd))
-    yield prog
-
-def find_cycle(prog, cmd):
-  cprog = prog[:]
-  for i, goal in enumerate(iter_cycle(cprog, cmd)):
-    if goal == prog:
-      return i
-
-def long_cycle(prog, cmd, n):
-  m = find_cycle(prog, cmd)
-  return "".join(aoc.first(itertools.islice(iter_cycle(prog, cmd), n % m, n % m + 1)))
+    yield tuple(prog)
 
 line = sys.stdin.read().strip()
 cmd = []
@@ -39,4 +29,4 @@ for p in line.split(","):
   cmd.append(q)
 prog = list(chr(i) for i in range(ord("a"), ord("p") + 1))
 aoc.cprint("".join(execute(prog[:], cmd)))
-aoc.cprint(long_cycle(prog, cmd, 1000000000))
+aoc.cprint("".join(aoc.extrapolate(iter_cycle(prog, cmd), 1000000000)))

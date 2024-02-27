@@ -13,17 +13,17 @@ try:
 except ImportError:
   pyperclip = None
 
-def extrapolate(it, goal, calc):
+def extrapolate(it, goal):
   seen, inv = {}, {}
   for time, key in enumerate(it, 1):
     if time == goal:
-      return calc(key)
+      return key
     if key in seen:
       period = time - seen[key]
       return inv[(goal - time) % period + seen[key]]
     else:
       seen[key] = time
-      inv[time] = calc(key)
+      inv[time] = key
 
 def invert(graph):
   inv = ddict(lambda: set())

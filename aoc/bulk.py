@@ -15,7 +15,7 @@ os.makedirs("altinputs", exist_ok=True)
 year = sys.argv[1].strip()
 for problem in range(1, 26):
   print(f"Downloading problem {problem}")
-  url_problem = "https://adventofcode.com/2015/day/" + str(problem)
+  url_problem = "https://adventofcode.com/" + str(year) + "/day/" + str(problem)
   input_text = requests.get(url_problem + "/input", cookies=cookies)
   f = open("altinputs/input.%02d.txt" % problem, "wt")
   f.write(input_text.text)

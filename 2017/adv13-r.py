@@ -1,6 +1,5 @@
 import sys
 import aoc
-from collections import *
 
 def walk1(layers):
   m = max(layers)

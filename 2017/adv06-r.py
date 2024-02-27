@@ -1,6 +1,5 @@
 import sys
 import aoc
-from collections import *
 
 def search(banks, comp):
   steps = 0

@@ -32,6 +32,8 @@ def weight(graph, src):
   return graph[src][0] + sum(weight(graph, i) for i in graph[src][1])
 
 def fix(graph, reverse, wrong):
+  if wrong not in reverse:
+    return None
   if (top := reverse[wrong]) is None:
     return None
   sons = [weight(graph, i) for i in graph[top][1]]

@@ -1,13 +1,5 @@
 import sys
-import re
-import itertools
-import math
 import aoc
-import heapq
-import functools
-import copy
-from collections import *
-from dataclasses import dataclass
 
 def parser(chars):
   pos = 0

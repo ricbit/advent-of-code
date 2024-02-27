@@ -1,16 +1,8 @@
 import sys
-import re
-import itertools
-import math
 import aoc
-import heapq
-import functools
-import copy
-from collections import *
-from dataclasses import dataclass
 
 def conv(s):
-  return [int(i) for i in s.split(",")]
+  return aoc.ints(s.split(","))
 
 def simulate(p):
   avail = set(range(len(p)))
@@ -38,8 +30,8 @@ def simulate(p):
 lines = [line.strip() for line in sys.stdin]
 particles = []
 for line in lines:
-  q=aoc.retuple("p v a", r"p=<(.*?)>, v=<(.*?)>, a=<(.*?)>", line)
+  q = aoc.retuple("p v a", r"p=<(.*?)>, v=<(.*?)>, a=<(.*?)>", line)
   particles.append([conv(q.p), conv(q.v), conv(q.a)])
-p1, p2 = simulate(particles)
+p2, p1 = simulate(particles)
 aoc.cprint(p1)
 aoc.cprint(p2)

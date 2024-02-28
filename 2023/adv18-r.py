@@ -2,12 +2,14 @@ import sys
 import re
 import aoc
 
+DIRECTIONS = aoc.get_dir("U")
+
 def area(commands):
   y, x = 0, 0
   points = [(y, x)]
   perimeter = 0
   for vdir, vlen in commands:
-    dy, dx = aoc.DIRECTIONS[vdir]
+    dy, dx = DIRECTIONS[vdir]
     y += dy * vlen
     x += dx * vlen
     points.append((y, x))
@@ -25,5 +27,5 @@ for line in sys.stdin:
   p1cmd.append((vdir, int(vlen)))
   p2cmd.append(parse_color(color))
 
-print(area(p1cmd))
-print(area(p2cmd))
+aoc.cprint(area(p1cmd))
+aoc.cprint(area(p2cmd))

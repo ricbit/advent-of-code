@@ -1,4 +1,5 @@
 import sys
+import aoc
 import functools
 
 def empty(opensize, groups):
@@ -42,5 +43,5 @@ def unfold(lines, n):
   return ans
 
 lines = sys.stdin.readlines()
-print(unfold(lines, 1))
-print(unfold(lines, 5))
+aoc.cprint(unfold(lines, 1))
+aoc.cprint(unfold(lines, 5))

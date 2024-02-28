@@ -60,6 +60,6 @@ for line in sys.stdin:
 bricks.sort(key=lambda a: a[0][2])
 supports = list(drop_bricks(bricks))
 flat = aoc.flatten(list(s) for s in supports if len(s) == 1)
-print(len(bricks) - len(set(flat)))
+aoc.cprint(len(bricks) - len(set(flat)))
 tops = invert_supports(supports)
-print(disintegrate(bricks, supports, tops))
+aoc.cprint(disintegrate(bricks, supports, tops))

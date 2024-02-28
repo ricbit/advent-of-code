@@ -1,6 +1,7 @@
 import sys
 import re
 import functools
+import aoc
 
 def apply_hash(code):
   return functools.reduce(lambda acc, x: (acc + ord(x)) * 17 % 256, code, 0)
@@ -16,11 +17,11 @@ def initialize(codes):
   return boxes
 
 codes = sys.stdin.read().strip().split(",")
-print(sum(apply_hash(code) for code in codes))
+aoc.cprint(sum(apply_hash(code) for code in codes))
 
 boxes = initialize(codes)
 ans = 0
 for box, contents in boxes.items():
   for i, (label, focal) in enumerate(contents.items()):
     ans += (box + 1) * (i + 1) * focal
-print(ans)
+aoc.cprint(ans)

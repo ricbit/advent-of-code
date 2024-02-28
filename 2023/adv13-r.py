@@ -23,5 +23,5 @@ def sum_mirrors(tables, distance):
   return ans
 
 tables = aoc.line_blocks()
-print(sum_mirrors(tables, 0))
-print(sum_mirrors(tables, 1))
+aoc.cprint(sum_mirrors(tables, 0))
+aoc.cprint(sum_mirrors(tables, 1))

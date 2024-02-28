@@ -58,5 +58,5 @@ def validate(flows, part):
 
 flows, parts = aoc.line_blocks()
 flows = {re.match(r"(\w+)\{", f).group(1): f for f in flows}
-print(sum(validate(flows, part) for part in parts))
-print(count(flows))
+aoc.cprint(sum(validate(flows, part) for part in parts))
+aoc.cprint(count(flows))

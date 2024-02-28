@@ -1,23 +1,18 @@
 import sys
 import itertools
-
-lines = [line.strip() for line in sys.stdin]
+import aoc
 
 def empty_rows(lines):
   current = 0
-  for line in lines:
+  for line in lines.table:
     if "#" not in line:
       current += 1
     yield current
 
-def transpose(lines):
-  return list(zip(*lines))
-
 def find_galaxies(lines):
-  for j, row in enumerate(lines):
-    for i, c in enumerate(row):
-      if c == "#":
-        yield (j, i)
+  for j, i in lines.iter_all():
+    if lines[j][i] == "#":
+      yield (j, i)
 
 def shortest(sj, si, j, i, rows, cols, expand):
   dist = abs(j - sj) + abs(i - si)
@@ -31,8 +26,9 @@ def all_distances(galaxies, rows, cols, expand):
     ans += shortest(j, i, sj, si, rows, cols, expand)
   return ans
 
+lines = aoc.Table.read()
 rows = list(empty_rows(lines))
-cols = list(empty_rows(transpose(lines)))
+cols = list(empty_rows(lines.transpose()))
 galaxies = list(find_galaxies(lines))
-print(all_distances(galaxies, rows, cols, 2))
-print(all_distances(galaxies, rows, cols, 1000000))
+aoc.cprint(all_distances(galaxies, rows, cols, 2))
+aoc.cprint(all_distances(galaxies, rows, cols, 1000000))

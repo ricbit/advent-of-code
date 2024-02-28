@@ -1,4 +1,5 @@
 import sys
+import aoc
 import re
 import itertools
 import math
@@ -63,5 +64,5 @@ for line in sys.stdin:
 inputs = get_inputs(modules)
 nands = list(simple_nands(modules, inputs))
 
-print(simulate(modules, inputs, nands, 1000))
-print(simulate(modules, inputs, nands, None))
+aoc.cprint(simulate(modules, inputs, nands, 1000))
+aoc.cprint(simulate(modules, inputs, nands, None))

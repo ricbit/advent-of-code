@@ -26,9 +26,7 @@ def walk(t, py, px, n):
       for j, i in reachable:
         visited.add((j, i))
     for j, i in reachable:
-      for dj, di in aoc.DIRECTIONS.values():
-        jj = j + dj
-        ii = i + di
+      for jj, ii in aoc.iter_neigh4(j, i):
         if t[jj % t.h][ii % t.w] == ".":
           newreach.add((jj, ii))
     reachable = set((x for x in newreach if notseen(x)))
@@ -60,5 +58,5 @@ def simulate(t, py, px, n):
 
 t = aoc.Table.read()
 py, px = find_s(t)
-print(direct(t, py, px, 64))
-print(simulate(t, py, px, 26501365))
+aoc.cprint(direct(t, py, px, 64))
+aoc.cprint(simulate(t, py, px, 26501365))

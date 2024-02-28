@@ -40,5 +40,5 @@ def search(table, n):
       return scores[(n - visited[h]) % period + visited[h]]
 
 table = aoc.Table.read()
-print(score(scroll(table.copy())))
-print(search(table, 10 ** 9))
+aoc.cprint(score(scroll(table.copy())))
+aoc.cprint(search(table, 10 ** 9))

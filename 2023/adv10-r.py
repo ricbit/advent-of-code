@@ -22,9 +22,22 @@ def check(y, x, visited, nextp, distance):
     visited.add((y, x))
     heapq.heappush(nextp, (distance, y, x))
 
+def deduce_start(mat, y, x):
+  if mat[y][x + 1] in "-J7":
+    if mat[y + 1][x] in "|LJ":
+      return "F"
+    elif mat[y - 1][x] in "|F7":
+      return "L"
+  elif mat[y][x - 1] in "-LF":
+    if mat[y + 1][x] in "|LJ":
+      return "7"
+    elif mat[y - 1][x] in "|F7":
+      return "J"
+  return None
+
 def build_loop(mat):
   initial_y, initial_x = find_s(mat)
-  mat[initial_y][initial_x] = "L" # hardcoded
+  mat[initial_y][initial_x] = deduce_start(mat, initial_y, initial_x)
   visited = set((initial_y, initial_x))
   nextp = [(0, initial_y, initial_x)]
   distances = []
@@ -55,6 +68,6 @@ def count_area(mat):
   return ans
 
 visited, max_distance = build_loop(mat)
-print(max_distance)
+aoc.cprint(max_distance)
 erase_not_loop(mat, visited)
-print(count_area(mat))
+aoc.cprint(count_area(mat))

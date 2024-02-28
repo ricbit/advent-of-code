@@ -1,5 +1,5 @@
 import re
-from aoc import Table
+import aoc
 
 def issymbol(c):
   return (not c.isnumeric()) and c != "."
@@ -18,7 +18,7 @@ def unique(j, i, visited):
   visited.add((j, i))
   return insert
 
-table = Table.read()
+table = aoc.Table.read()
 parts_visited = set()
 parts_total = 0
 gears_total = 0

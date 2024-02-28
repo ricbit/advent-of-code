@@ -34,5 +34,5 @@ def search(m, minsize, maxsize):
 
 lines = [[int(i) for i in line.strip()] for line in sys.stdin]
 m = aoc.Table(lines)
-print(search(m, 1, 3))
-print(search(m, 4, 10))
+aoc.cprint(search(m, 1, 3))
+aoc.cprint(search(m, 4, 10))

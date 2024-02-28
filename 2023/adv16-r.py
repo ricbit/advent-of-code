@@ -56,7 +56,7 @@ def count_batched(batched):
   return max(count(task) for task in batched)
 
 m = aoc.Table.read()
-print(count((m, 0, 1)))
+aoc.cprint(count((m, 0, 1)))
 with Pool(8) as p:
   batched = itertools.batched(all_rays(m), 15)
-  print(max(p.imap_unordered(count_batched, batched)))
+  aoc.cprint(max(p.imap_unordered(count_batched, batched)))

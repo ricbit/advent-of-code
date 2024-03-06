@@ -11,13 +11,14 @@ double = set()
 mult = set()
 for n, quad in enumerate(quads):
   for j, i in t.iter_quad(quad.y, quad.x, quad.h, quad.w):
-      if t[j][i] >= 0:
-        double.add(t[j][i])
-        double.add(n)
-        mult.add((j, i))
-      t[j][i] = n
+    if t[j][i] >= 0:
+      double.add(t[j][i])
+      double.add(n)
+      mult.add((j, i))
+    t[j][i] = n
 aoc.cprint(len(mult))
 for i in range(len(quads)):
   if i not in double:
     aoc.cprint(i + 1)
+    break
 

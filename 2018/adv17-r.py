@@ -4,13 +4,17 @@ def count_water(soil, wet):
   jjs = [k for k,v in soil.items() if "#" in v.values()]
   iis = set(aoc.flatten(soil[j].keys() for j in jjs if soil[j]))
   water, sand = 0, 0
-  for j in range(min(jjs), max(jjs) + 1):
-    for i in range(min(iis), max(iis) + 1): 
-      c = "|" if (soil[j][i]=="." and (j, i) in wet) else soil[j][i]
-      if c == "~":
-        water += 1
-      elif c == "|":
-        sand += 1
+  min_jjs, max_jjs = min(jjs), max(jjs)
+  min_iis, max_iis = min(iis), max(iis)
+  for j, v in soil.items():
+    if min_jjs <= j <= max_jjs:
+      for i, c in v.items():
+        if min_iis <= i <= max_iis:
+          cc = "|" if (c == "." and (j, i) in wet) else c
+          if cc == "~":
+            water += 1
+          elif cc == "|":
+            sand += 1
   return water, sand
 
 def fill_soil(clay, soil):
@@ -82,10 +86,10 @@ def simulate_water(soil):
     wj, wi = source
     down(soil, wj, wi, wet, ymax, set())
     ans = count_water(soil, wet)
-    print(ans)
     if ans == last and ans[0] != 0:
       return sum(ans), ans[0]
     last = ans
+  return sum(ans), ans[0]
 
 clay = aoc.retuple_read("d1 n1_ d2 begin2_ end2_", r"(.)=(\d+), (.)=(\d+)\.\.(\d+)")
 soil = aoc.ddict(lambda: aoc.ddict(lambda: "."))

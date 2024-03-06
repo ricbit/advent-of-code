@@ -3,11 +3,13 @@ import re
 import aoc
 from collections import deque
 
+DIRECTIONS = aoc.get_dir("N")
+
 def find_doors(data, pos, py, px, doors):
   while data[pos] != "$":
-    if data[pos] in aoc.DIRECTIONS3.keys():
-      ny = py + aoc.DIRECTIONS3[data[pos]][0]
-      nx = px + aoc.DIRECTIONS3[data[pos]][1]
+    if data[pos] in DIRECTIONS.keys():
+      ny = py + DIRECTIONS[data[pos]][0]
+      nx = px + DIRECTIONS[data[pos]][1]
       pos += 1
       doors[(py, px)].add((ny, nx))
       py, px = ny, nx

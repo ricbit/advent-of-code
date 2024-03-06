@@ -1,14 +1,6 @@
 import sys
-import string
-import re
-import itertools
-import math
 import aoc
 import heapq
-import functools
-import copy
-from collections import Counter, deque
-from dataclasses import dataclass
 
 def solve(depth, y, x, factor):
   geolevel = aoc.Table([[0] * (factor * x + 1) for _ in range(factor * y + 1)])

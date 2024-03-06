@@ -41,10 +41,10 @@ class Bounds:
 
 def bounds(points):
   b = Bounds()
-  b.ymin = min(line[0] for line in points)
-  b.ymax = max(line[0] for line in points)
-  b.xmin = min(line[1] for line in points)
-  b.xmax = max(line[1] for line in points)
+  b.ymin = min(point[0] for point in points)
+  b.ymax = max(point[0] for point in points)
+  b.xmin = min(point[1] for point in points)
+  b.xmax = max(point[1] for point in points)
   return b
 
 class bidi:
@@ -53,12 +53,13 @@ class bidi:
     self.values = [[i - 1, i + 1, value] for i, value in enumerate(orig)]
     self.size = len(self.values)
     self.top = len(self.values)
-    if circular:
-      self.values[self.start][0] = self.top - 1
-      self.values[self.top - 1][1] = 0
-    else:
-      self.values[self.start][0] = -1
-      self.values[self.top - 1][1] = -1
+    if self.size > 0:
+      if circular:
+        self.values[self.start][0] = self.top - 1
+        self.values[self.top - 1][1] = 0
+      else:
+        self.values[self.start][0] = -1
+        self.values[self.top - 1][1] = -1
 
   def valid(self, pos):
     return pos >= 0
@@ -70,6 +71,8 @@ class bidi:
     return self
 
   def __next__(self):
+    if not self.size:
+      raise StopIteration
     if self.current != -1:
       if self.loaded and self.current == self.stop:
         raise StopIteration
@@ -98,7 +101,7 @@ class bidi:
       self.values[self.values[pos][1]][0] = self.values[pos][0]
     self.size -= 1
 
-  def insert(self, pos, value):
+  def insert_after(self, pos, value):
     self.values.append([pos, self.values[pos][1], value])
     self.values[self.values[pos][1]][0] = self.top
     self.values[pos][1] = self.top
@@ -351,23 +354,6 @@ class TestMaxindex(unittest.TestCase):
         self.assertEqual(maxindex({0: 1, 1: 3, 2: 2}), 1)
 
 
-class TestBidi(unittest.TestCase):
-    def setUp(self):
-        self.sequence = bidi("abc")
-
-    def test_initial_length(self):
-        self.assertEqual(len(self.sequence), 3)
-
-    def test_remove(self):
-        self.sequence.remove(1)  # remove 'b'
-        self.assertEqual(len(self.sequence), 2)
-        self.assertEqual(['a', 'c'], list(self.sequence))
-
-    def test_iteration(self):
-        values = list(self.sequence)
-        self.assertEqual(values, ['a', 'b', 'c'])
-
-
 class TestMd5(unittest.TestCase):
     def test_md5(self):
         self.assertEqual(md5("hello"), "5d41402abc4b2a76b9719d911017c592")
@@ -617,6 +603,84 @@ class TestIntsFunction(unittest.TestCase):
     def test_non_numeric_strings(self):
         with self.assertRaises(ValueError):
             ints(["a", "b", "c"])
+
+class TestBidi(unittest.TestCase):
+
+    def setUp(self):
+        self.sequence = bidi("abc")
+
+    def test_initial_length(self):
+        self.assertEqual(len(self.sequence), 3)
+
+    def test_remove(self):
+        self.sequence.remove(1)  # remove 'b'
+        self.assertEqual(len(self.sequence), 2)
+        self.assertEqual(['a', 'c'], list(self.sequence))
+
+    def test_simple_iteration(self):
+        values = list(self.sequence)
+        self.assertEqual(values, ['a', 'b', 'c'])
+
+    def test_init(self):
+        # Empty list
+        bd = bidi([])
+        self.assertEqual(len(bd), 0)
+
+        # Non-empty list
+        bd = bidi([1, 2, 3])
+        self.assertEqual(len(bd), 3)
+
+        # Circular list
+        bd = bidi([1, 2, 3], circular=True)
+        self.assertEqual(bd.next(2), 0)
+        self.assertEqual(bd.prev(0), 2)
+
+        # Non-circular list
+        bd = bidi([1, 2, 3], circular=False)
+        self.assertEqual(bd.next(2), -1)
+        self.assertEqual(bd.prev(0), -1)
+
+    def test_valid(self):
+        bd = bidi([1, 2, 3])
+        self.assertTrue(bd.valid(1))
+        self.assertFalse(bd.valid(-1))
+
+    def test_iteration(self):
+        bd = bidi([])
+        self.assertEqual(list(bd), [])
+
+        bd = bidi([1, 2, 3])
+        self.assertEqual(list(bd), [1, 2, 3])
+
+    def test_navigation(self):
+        bd = bidi([1, 2, 3])
+        self.assertEqual(bd.next(0), 1)
+        self.assertEqual(bd.prev(1), 0)
+        self.assertEqual(bd.value(1), 2)
+
+    def test_modification(self):
+        bd = bidi([1, 2, 3])
+
+        # Remove
+        bd.remove(1)
+        self.assertEqual(list(bd), [1, 3])
+
+        # Insert
+        bd.insert_after(0, 2)
+        self.assertEqual(list(bd), [1, 2, 3])
+
+    def test_length(self):
+        bd = bidi([])
+        self.assertEqual(len(bd), 0)
+
+        bd = bidi([1, 2, 3])
+        self.assertEqual(len(bd), 3)
+
+        bd.remove(1)
+        self.assertEqual(len(bd), 2)
+
+        bd.insert_after(1, 4)
+        self.assertEqual(len(bd), 3)
 
 if __name__ == '__main__':
     unittest.main()

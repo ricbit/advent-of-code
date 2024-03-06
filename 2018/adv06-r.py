@@ -2,31 +2,44 @@ import sys
 import aoc
 from collections import Counter
 
-def solve1(data):
-  b, count = aoc.bounds(data), Counter()
-  smalldata = [(dy, dx) for dy, dx in data 
-      if dy not in [b.miny, b.maxy] and dx not in [b.minx, b.maxx]]
-  for j in range(b.miny, b.maxy + 1):
-    for i in range(b.minx, b.maxx + 1):
-      kset, kval = [], 1e6
-      for k, (ky, kx) in enumerate(smalldata):
-        if (d := abs(j - ky) + abs(i - kx)) < kval:
-          kval = d
-          kset = [k]
-        elif d == kval:
-          kset.append(k)
-      if len(kset) == 1:
-        count[kset[0]] += 1
+def closest(j, i, points):
+  kset, kval = set(), 1e6
+  for ky, kx in points:
+    if (d := abs(j - ky) + abs(i - kx)) < kval:
+      kval = d
+      kset = set([(ky, kx)])
+    elif d == kval:
+      kset.add((ky, kx))
+  return kset
+
+def find_forbidden(points, bounds):
+  forbidden = set()
+  for y in range(bounds.ymin, bounds.ymax + 1):
+    for x in [bounds.xmin, bounds.xmax]:
+      forbidden |= closest(y, x, points)
+  for x in range(bounds.xmin, bounds.xmax + 1):
+    for y in [bounds.ymin, bounds.ymax]:
+      forbidden |= closest(y, x, points)
+  return forbidden
+
+def solve1(points):
+  bounds, count = aoc.bounds(points), Counter()
+  forbidden = find_forbidden(points, bounds)
+  for j in range(bounds.ymin, bounds.ymax + 1):
+    for i in range(bounds.xmin, bounds.xmax + 1):
+      kset = closest(j, i, points)
+      if len(kset) == 1 and (q := aoc.first(kset)) not in forbidden:
+        count[q] += 1
   return max(count.values())
 
-def solve2(data, n):
-  b, area = aoc.bounds(data), 0
-  for j in range(b.miny, b.maxy + 1):
-    for i in range(b.minx, b.maxx + 1):
-      if sum(abs(j - ky) + abs(i - kx) for ky, kx in data) < n:
+def solve2(points, n):
+  b, area = aoc.bounds(points), 0
+  for j in range(b.ymin, b.ymax + 1):
+    for i in range(b.xmin, b.xmax + 1):
+      if sum(abs(j - ky) + abs(i - kx) for ky, kx in points) < n:
         area += 1
   return area
 
-data = [aoc.ints(line.strip().split(", ")) for line in sys.stdin]
-aoc.cprint(solve1(data))
-aoc.cprint(solve2(data, 10000))
+points = [aoc.ints(line.strip().split(", ")) for line in sys.stdin]
+aoc.cprint(solve1(points))
+aoc.cprint(solve2(points, 10000))

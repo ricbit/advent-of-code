@@ -11,7 +11,7 @@ def criteria1(size):
   return criteria
 
 def criteria2(size):
-  size = [int(i) for i in size]
+  size = aoc.ints(size)
   def criteria(recipes):
     for pos in range(max(0, len(recipes) - len(size) * 2), len(recipes) - len(size)):
       if recipes[pos:pos + len(size)] == size:

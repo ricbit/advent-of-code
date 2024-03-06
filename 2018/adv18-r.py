@@ -30,5 +30,5 @@ def resource(key):
   return tree * lumber 
 
 t = aoc.Table.read()
-aoc.cprint(aoc.extrapolate(solve(t), 10, resource))
-aoc.cprint(aoc.extrapolate(solve(t), 1000000000, resource))
+aoc.cprint(resource(aoc.extrapolate(solve(t), 10)))
+aoc.cprint(resource(aoc.extrapolate(solve(t), 1000000000)))

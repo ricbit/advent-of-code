@@ -13,9 +13,10 @@ class Car:
   state: int
   active: bool
 
+CDIR = aoc.get_cdir(">")
+
 def get_cars(t):
   cars = []
-  CDIR = {">": 1, "<": -1, "^": -1j, "v": +1j}
   for j, i in t.iter_all():
     if t[j][i] in CDIR.keys():
       cars.append(Car(j, i, j * 1j + i, CDIR[t[j][i]], 0, True))

@@ -5,7 +5,7 @@ def solve(points):
   lastarea, ans = 1e15, (0, 0)
   for time in range(100000):
     b = aoc.bounds(positions)
-    area = (b.maxy - b.miny) * (b.maxx - b.minx)
+    area = (b.ymax - b.ymin) * (b.xmax - b.xmin)
     if area > lastarea:
       for line in ans[1]:
         print(line)
@@ -14,9 +14,9 @@ def solve(points):
     if area < 100 ** 2:
       message = []
       fastpoints = set(tuple(x) for x in positions)
-      for y in range(b.miny, b.maxy + 1):
+      for y in range(b.ymin, b.ymax + 1):
         line = []
-        for x in range(b.minx, b.maxx + 1):
+        for x in range(b.xmin, b.xmax + 1):
           line.append("#" if (y, x) in fastpoints else ".")
         message.append("".join(line))
       ans = (time, message)

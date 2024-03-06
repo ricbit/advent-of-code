@@ -4,7 +4,7 @@ import aoc
 import re
 
 def count(line):
-  seq = aoc.bidi(line)
+  seq = aoc.bidi(line, circular=False)
   prev, pos = seq.start, seq.next(seq.start)
   while seq.valid(pos):
     if seq.value(pos) == seq.value(prev).swapcase():

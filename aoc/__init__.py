@@ -226,12 +226,6 @@ def md5(text):
   m.update(bytes(text, "ascii"))
   return m.hexdigest()
 
-def histogram(seq):
-  hist = Counter()
-  for s in seq:
-    hist[s] += 1
-  return hist
-
 def cprint(s):
   print(s)
   if s is not None and pyperclip is not None:

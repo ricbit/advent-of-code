@@ -4,7 +4,7 @@ import re
 import hashlib
 import unittest
 import _md5
-from collections import namedtuple, defaultdict
+from collections import namedtuple, defaultdict, Counter
 from dataclasses import dataclass
 from io import StringIO
 
@@ -152,6 +152,12 @@ def spiral(visitor=lambda m, j, i, cur: cur):
 def ints(seq):
   return [int(i) for i in seq]
 
+def ints_read(src=sys.stdin):
+  ans = []
+  for line in src:
+    ans.append(ints(line.strip().split()))
+  return ans
+
 def cls():
   print("\033c", end="")
 
@@ -220,6 +226,12 @@ def md5(text):
   m.update(bytes(text, "ascii"))
   return m.hexdigest()
 
+def histogram(seq):
+  hist = Counter()
+  for s in seq:
+    hist[s] += 1
+  return hist
+
 def cprint(s):
   print(s)
   if s is not None and pyperclip is not None:
@@ -276,6 +288,10 @@ def iter_neigh8(y, x):
 
 def line_blocks():
   return [line.strip().split("\n") for line in sys.stdin.read().split("\n\n")]
+
+def transpose(table):
+  return [list(t) for t in zip(*table)]
+  
 
 class Table:
   def __init__(self, lines):

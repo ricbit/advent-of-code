@@ -5,7 +5,7 @@ def sign(x):
 
 def safe(data):
   diff = [a - b for a, b in zip(data, data[1:])]
-  return all(sign(i) == sign(diff[0]) for i in diff) and all(0 < abs(i) < 4 for i in diff)
+  return all(sign(i) == sign(diff[0]) and 0 < abs(i) < 4 for i in diff)
 
 def almost_safe(x):
   return any(safe(x[:i] + x[i + 1:]) for i in range(len(x)))

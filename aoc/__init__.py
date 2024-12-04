@@ -270,6 +270,9 @@ def get_dir(vdir):
     vmap[k] = (int(v.imag), int(v.real))
   return vmap
 
+def get_diagonals():
+  return [1, -1, 1j, -1j, 1+1j, 1-1j, -1+1j, -1-1j]
+
 def iter_neigh4(y, x):
   for dj, di in [(0, 1), (0, -1), (-1, 0), (1, 0)]:
     yield y + dj, x + di

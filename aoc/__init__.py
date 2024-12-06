@@ -340,6 +340,9 @@ class Table:
   def get(self, complex_position):
     return self.table[int(complex_position.imag)][int(complex_position.real)]
 
+  def put(self, complex_position, value):
+    self.table[int(complex_position.imag)][int(complex_position.real)] = value
+
   def transpose(self):
     return Table([list(t) for t in zip(*self.table)])
   

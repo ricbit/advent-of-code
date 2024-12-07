@@ -21,6 +21,7 @@ class Line:
       return True
     if self.concat and self.search(int(str(current) + str(self.values[pos])), pos + 1):
       return True
+    return False
 
   def check(self):
     return self.search(self.values[0], 1)

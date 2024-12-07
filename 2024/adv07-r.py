@@ -1,6 +1,5 @@
 import multiprocessing
 import sys
-import itertools
 import aoc
 
 class Line:
@@ -35,9 +34,9 @@ def solve(data):
   with multiprocessing.Pool() as pool:
     part1 = list(pool.imap(process_line,
         ((line, 0, False) for line in data)))
-    part2b = list(pool.imap(process_line, 
+    part2 = list(pool.imap(process_line, 
         ((line, done, True) for line, done in zip(data, part1))))
-  return sum(part1), sum(part2b)
+  return sum(part1), sum(part2)
 
 data = sys.stdin.readlines()
 part1, part2 = solve(data)

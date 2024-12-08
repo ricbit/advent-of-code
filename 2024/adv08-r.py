@@ -9,32 +9,25 @@ def find_antennas(t):
       pos[t[j][i]].append(j * 1j + i)
   return pos
 
-def part1(t, antennas):
+def find_antinodes(t, antennas, directions):
   anti = set()
   for k, v in antennas.items():
     for a, b in itertools.combinations(v, 2):
       d = b - a
-      for i in [2, -1]:
-        if t.cvalid(a + i * d):
-          anti.add(a + i * d)
+      for direction in directions():
+        for i in direction:
+          if t.cvalid(a + i * d):
+            anti.add(a + i * d)
+          else:
+            break
   return len(anti)
 
+def part1(t, antennas):
+  return find_antinodes(t, antennas, lambda: [[2], [-1]])
+
 def part2(t, antennas):
-  anti = set()
-  for k, v in antennas.items():
-    for a, b in itertools.combinations(v, 2):
-      d = b - a
-      for i in itertools.count(0):
-        if t.cvalid(a + i * d):
-          anti.add(a + i * d)
-        else:
-          break
-      for i in itertools.count(-1, -1):
-        if t.cvalid(a + i * d):
-          anti.add(a + i * d)
-        else:
-          break 
-  return len(anti)
+  directions = lambda: [itertools.count(0), itertools.count(-1, -1)]
+  return find_antinodes(t, antennas, directions)
 
 t = aoc.Table.read()
 antennas = find_antennas(t)

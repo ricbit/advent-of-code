@@ -11,8 +11,8 @@ def find_antennas(t):
 
 def find_antinodes(t, antennas, directions):
   anti = set()
-  for k, v in antennas.items():
-    for a, b in itertools.combinations(v, 2):
+  for positions in antennas.values():
+    for a, b in itertools.combinations(positions, 2):
       d = b - a
       for direction in directions():
         for i in direction:

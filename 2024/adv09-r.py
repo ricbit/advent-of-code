@@ -7,23 +7,15 @@ class Defrag:
     self.blocks = []
     pos = 0
     self.spaceheap = aoc.ddict(list)
-    self.spacesize = [0] * (10 * len(data))
     for i, size in enumerate(data):
       if i % 2 == 0:
         self.blocks.append([i // 2, size, pos])
       else:
         heapq.heappush(self.spaceheap[size], pos)
-        self.spacesize[pos] = size
       pos += size
 
   def first_space(self, space_size):
-    while self.spaceheap[space_size]:
-      top = self.spaceheap[space_size][0]
-      if self.spacesize[top] > 0:
-        return top
-      else:
-        heapq.heappop(self.spacesize[space_size])
-    return 1e10
+    return self.spaceheap[space_size][0]
 
   def get_valid_space(self, block_pos, block_size):
     best_size, best_pos = block_size, block_pos
@@ -35,7 +27,7 @@ class Defrag:
   def checksum(self, pos, size, uid):
     return sum((pos + i) * uid for i in range(size))
   
-  def solve(self):
+  def part2(self):
     ans = 0
     for uid, block_size, block_pos in reversed(self.blocks):
       if block_size == 0:
@@ -48,11 +40,9 @@ class Defrag:
         ans += self.checksum(block_pos, block_size, uid)
         continue
       heapq.heappop(self.spaceheap[space_size])
-      self.spacesize[space_pos] = 0
       ans += self.checksum(space_pos, block_size, uid)
       if (space_left := space_size - block_size) > 0:
-        heapq.heappush(self.spaceheap[space_left], new_pos := (space_pos + block_size))
-        self.spacesize[new_pos] = space_left
+        heapq.heappush(self.spaceheap[space_left], (space_pos + block_size))
     return ans
  
 def part1(data):
@@ -79,4 +69,4 @@ def part1(data):
 data = aoc.ints(list(sys.stdin.read().strip()))
 aoc.cprint(part1(data))
 defrag = Defrag(data)
-aoc.cprint(defrag.solve())
+aoc.cprint(defrag.part2())

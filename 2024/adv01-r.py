@@ -1,4 +1,3 @@
-import sys
 import aoc
 from collections import Counter
 

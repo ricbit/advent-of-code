@@ -5,45 +5,38 @@ class Grow:
     self.t = t
     self.mask = t.copy()
 
-  def sides(self, t, y, x):
+  def common_sides(self, visited):
     ans = 0
-    for j, i in t.iter_all():
-      if t[j][i] != -1:
-        continue
-      if t[j][i] == -1 and t[j][i-1] == -1 and t[j-1][i] != -1 and t[j-1][i-1] != -1:
-        ans -= 1
-      if t[j][i] == -1 and t[j][i-1] == -1 and t[j+1][i] != -1 and t[j+1][i-1] != -1:
-        ans -= 1
-      if t[j][i] == -1 and t[j-1][i] == -1 and t[j][i-1] != -1 and t[j-1][i-1] != -1:
-        ans -= 1
-      if t[j][i] == -1 and t[j-1][i] == -1 and t[j][i+1] != -1 and t[j-1][i+1] != -1:
-        ans -= 1
+    for j, i in visited:
+      if (j, i-1) in visited and (j-1, i) not in visited and (j-1, i-1) not in visited:
+        ans += 1
+      if (j, i-1) in visited and (j+1, i) not in visited and (j+1, i-1) not in visited:
+        ans += 1
+      if (j-1, i) in visited and (j, i-1) not in visited and (j-1, i-1) not in visited:
+        ans += 1
+      if (j-1, i) in visited and (j, i+1) not in visited and (j-1, i+1) not in visited:
+        ans += 1
     return ans
 
   def grow(self, y, x):
     pnext = [(y, x)]
     visited = set()
-    area, perimeter, sides = 0, 0, 0
-    tt = self.t.copy()
-    sy,sx=y,x
+    area, perimeter = 0, 0
     while pnext:
       y, x = pnext.pop()
       if (y, x) in visited:
         continue
       visited.add((y, x))
       self.mask[y][x] = 0
-      tt[y][x] = -1
       area += 1
       perimeter += 4
-      sides += 4
       for j, i in self.t.iter_neigh4(y, x):
         if (j, i) in visited:
           perimeter -= 2
-          sides -= 2
       for j, i in self.t.iter_neigh4(y, x):
         if self.t[j][i] == self.t[y][x] and self.mask[j][i] != 0:
           pnext.append((j, i))
-    return area * perimeter, area*(perimeter + self.sides(tt,sy,sx))
+    return area * perimeter, area * (perimeter - self.common_sides(visited))
 
   def solve(self):
     ans1, ans2 = 0, 0

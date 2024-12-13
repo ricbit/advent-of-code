@@ -3,9 +3,9 @@ from fractions import Fraction as F
 
 def solve(blocks, offset):
   cost = 0
-  for ba, bb, prize in blocks:
-    ainc = aoc.retuple("x_ y_", r".*: X([-+0-9]+), Y([-+0-9]+)", ba)
-    binc = aoc.retuple("x_ y_", r".*: X([-+0-9]+), Y([-+0-9]+)", bb)
+  for linea, lineb, prize in blocks:
+    ainc = aoc.retuple("x_ y_", r".*: X.(\d+), Y.(\d+)", linea)
+    binc = aoc.retuple("x_ y_", r".*: X.(\d+), Y.(\d+)", lineb)
     pos = aoc.retuple("x_ y_", r".*: X=(\d+), Y=(\d+)", prize)
     py, px = F(pos.y + offset, 1), F(pos.x + offset, 1)
     xa, xb = F(ainc.x, 1), F(binc.x, 1)

@@ -119,6 +119,12 @@ def maxindex(x):
   else:
     return max(x.keys(), key=lambda q: x[q])
 
+def minindex(x):
+  if isinstance(x, list):
+    return min(range(len(x)), key=lambda q: x[q])
+  else:
+    return min(x.keys(), key=lambda q: x[q])
+
 ddict = defaultdict
 
 def first(seq):
@@ -309,6 +315,11 @@ class Table:
     empty_line = [empty] * (self.w + 2)
     new_table = [empty_line] + [[empty] + line + [empty] for line in self.table] + [empty_line]
     return Table(new_table)
+
+  def find(self, value):
+    for j, i in self.iter_all():
+      if self.table[j][i] == value:
+        return (j, i)
  
   def valid(self, j, i):
     return 0 <= j < self.h and 0 <= i < self.w

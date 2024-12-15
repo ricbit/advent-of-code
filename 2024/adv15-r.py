@@ -28,10 +28,9 @@ def part1(data):
       while t.get(walk) == "O":
         walk += pdir
       if t.get(walk) != "#":
-        t.put(pos, ".")
         t.put(walk, "O")
         pos += pdir
-      t.put(pos, ".")
+        t.put(pos, ".")
   return score(t, "O")
 
 class Maze:

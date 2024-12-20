@@ -1,4 +1,7 @@
+import sys
+import itertools
 import aoc
+import multiprocessing
 
 def iter_diamond(t, y, x, d):
   for j in range(max(0, y - d), min(t.h, y + d + 1)):
@@ -28,14 +31,13 @@ def build_path(t):
 def build_distance(path):
   return {p: i for i, p in enumerate(path)}
 
-class Solver:
+class CheatFinder:
   def __init__(self, path, t):
     self.path = path
     self.t = t
     self.distance = build_distance(self.path)
 
-  def solve_from(self, encoded):
-    y, x = encoded
+  def solve_from(self, y, x):
     p1, p2 = 0, 0
     for j, i, d in iter_diamond(self.t, y, x, 20):
       if self.t[j][i] != ".":
@@ -47,12 +49,24 @@ class Solver:
         p2 += 1
     return p1, p2
 
-  def solve(self):
-    ans = map(self.solve_from, self.path)
+  def find(self, lines):
+    ans = [self.solve_from(y, x) for y, x in self.path if y in lines]
     return [sum(line) for line in zip(*ans)]
 
-t = aoc.Table.read()
-path = build_path(t)
-part1, part2 = Solver(path, t).solve()
+def solve(encoded):
+  grid, lines = encoded
+  t = aoc.Table([list(x) for x in grid])
+  path = build_path(t)
+  part1, part2 = CheatFinder(path, t).find(lines)
+  return part1, part2
+
+CPUS = 8
+input_grid = sys.stdin.read().splitlines()
+height = len(input_grid)
+lines = itertools.batched(range(height), height // CPUS + 1)
+with multiprocessing.Pool() as pool:
+  ans = list(pool.imap(solve, ((input_grid, line) for line in lines)))
+part1, part2 = [sum(line) for line in zip(*ans)]
 aoc.cprint(part1)
 aoc.cprint(part2)
+

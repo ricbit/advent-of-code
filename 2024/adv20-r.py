@@ -3,14 +3,6 @@ import itertools
 import aoc
 import multiprocessing
 
-def iter_diamond(t, y, x, d):
-  for j in range(max(0, y - d), min(t.h, y + d + 1)):
-    dj = abs(j - y)
-    for i in range(max(0, x - d + dj), min(t.w, x + d - dj + 1)):
-      dist = dj + abs(x - i)
-      if 1 < dist <= d:
-        yield j, i, dist
-
 def build_path(t):
   sy, sx = t.find("S")
   ey, ex = t.find("E")
@@ -39,8 +31,8 @@ class CheatFinder:
 
   def solve_from(self, y, x):
     p1, p2 = 0, 0
-    for j, i, d in iter_diamond(self.t, y, x, 20):
-      if self.t[j][i] != ".":
+    for j, i, d in self.t.iter_diamond(y, x, 20):
+      if self.t[j][i] != "." or d <= 1:
         continue
       if (save := self.distance[(j, i)] - self.distance[(y, x)]) <= 0:
         continue

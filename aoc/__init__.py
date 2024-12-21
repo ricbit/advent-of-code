@@ -345,6 +345,14 @@ class Table:
     if i < self.w - 1:
       yield j, i + 1
 
+  def iter_diamond(self, y, x, d):
+    for j in range(max(0, y - d), min(self.h, y + d + 1)):
+      dj = abs(j - y)
+      for i in range(max(0, x - d + dj), min(self.w, x + d - dj + 1)):
+        dist = dj + abs(x - i)
+        if dist <= d:
+          yield j, i, dist
+
   def __getitem__(self, j):
     return self.table[j]
 

@@ -350,8 +350,7 @@ class Table:
       dj = abs(j - y)
       for i in range(max(0, x - d + dj), min(self.w, x + d - dj + 1)):
         dist = dj + abs(x - i)
-        if dist <= d:
-          yield j, i, dist
+        yield j, i, dist
 
   def __getitem__(self, j):
     return self.table[j]

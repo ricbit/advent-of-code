@@ -30,11 +30,9 @@ def run(t, start, skipmap, cpos):
   return pos
 
 def original_path(t):
-  for j, i in t.iter_all():
-    if t[j][i] == "^":
-      start = j * 1j + i
-      t[j][i] = "."
-      break
+  sy, sx = t.find("^")
+  t[sy][sx] = "."
+  start = sy * 1j + sx
   pos, visited, prevmap = walk(t, start)
   return visited, start, prevmap
 

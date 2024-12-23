@@ -1,6 +1,5 @@
 import aoc
 import functools
-import multiprocessing
 
 def combo(regs, val):
   if val < 4:
@@ -63,15 +62,13 @@ class Sim:
   def rec(self, x):
     back, shift = x
     if shift == len(self.prog):
-      x = simulate(back)
-      if x == self.prog:
+      if simulate(back) == self.prog:
         self.minback = min(back, self.minback)
       return
     for i in range(128 * 8):
       stable = 2 ** (3 * shift)
       n = back + i * stable
-      x = simulate(n)
-      if x[:shift + 1] == self.prog[:shift + 1]:
+      if simulate(n)[:shift + 1] == self.prog[:shift + 1]:
         if n < self.minback:
           self.rec((n % (stable * 8), shift + 1))
 

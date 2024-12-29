@@ -1,5 +1,4 @@
 import aoc
-import functools
 
 def combo(regs, val):
   if val < 4:
@@ -15,12 +14,14 @@ def parse(data):
   program = aoc.ints(program[0].split(":")[1].strip().split(","))
   return regs, program
 
-def solve_part1(regs, program):
+def solve(regs, program):
   pc, ans = 0, []
+  regs = [regs[i] for i in range(3)]
   while pc < len(program):
     match program[pc]:
       case 0: # adv
-        regs[0] = regs[0] // (2 ** combo(regs, program[pc + 1]))
+        d = regs[0] // (2 ** combo(regs, program[pc + 1]))
+        regs[0] = d
       case 1: # bxl
         regs[1] ^= program[pc + 1]
       case 2: # bst
@@ -33,51 +34,36 @@ def solve_part1(regs, program):
       case 5: # out
         ans.append(combo(regs, program[pc + 1]) % 8)
       case 6: # bdv
-        regs[1] = regs[0] // (2 ** combo(regs, program[pc + 1]))
+        d = regs[0] // (2 ** combo(regs, program[pc + 1]))
+        regs[1] = d
       case 7: # cdv
-        regs[2] = regs[0] // (2 ** combo(regs, program[pc + 1]))
+        d = regs[0] // (2 ** combo(regs, program[pc + 1]))
+        regs[2] = d
     pc += 2
-  return ",".join(str(i) for i in ans)
-
-@functools.cache
-def simulate(a):
-  b, c = 0, 0
-  ans = []
-  while a:
-    b = a % 8
-    b = b ^ 5 
-    c = a >> b
-    b = b ^ 6
-    a = a >> 3
-    b = b ^ c
-    ans.append(b % 8)
   return ans
 
 class Sim:
   def __init__(self, prog):
     self.prog = prog
-    self.minback = 1e20
 
-  @functools.cache
-  def rec(self, x):
-    back, shift = x
-    if shift == len(self.prog):
-      if simulate(back) == self.prog:
-        self.minback = min(back, self.minback)
-      return
-    for i in range(128 * 8):
-      stable = 2 ** (3 * shift)
-      n = back + i * stable
-      if simulate(n)[:shift + 1] == self.prog[:shift + 1]:
-        if n < self.minback:
-          self.rec((n % (stable * 8), shift + 1))
+  def rec(self, front, psize, shift, size):
+    if shift == 0:
+      return front
+    incr = 2 ** (shift * 3 - 3)
+    limit = incr * (2 ** size)
+    for i in range(0, limit, incr):
+      regs = {0: front + i, 1: 0, 2: 0}
+      ans = solve(regs, self.prog)
+      if ans[-psize:] == self.prog[-psize:]:
+        found = self.rec(front + i, psize + 1, shift - 1, 3)
+        if found is not None:
+          return found
+    return None
 
   def search(self):
-    self.rec((0, 0))
-    return self.minback
+    return self.rec(0, 1, len(self.prog), 9)
 
 data = aoc.line_blocks()
 regs, program = parse(data)
-aoc.cprint(solve_part1(regs, program))
-s = Sim(program)
-aoc.cprint(s.search())
+aoc.cprint(",".join(map(str, solve(regs, program))))
+aoc.cprint(Sim(program).search())

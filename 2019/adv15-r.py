@@ -1,5 +1,4 @@
 import sys
-import copy
 import aoc
 from collections import deque
 

@@ -1,7 +1,5 @@
 import sys
-import itertools
 import aoc
-from collections import deque
 from aoc.refintcode import IntCode
 
 data = [int(i) for i in sys.stdin.read().split(",")]

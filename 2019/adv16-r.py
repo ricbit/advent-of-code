@@ -1,5 +1,4 @@
 import sys
-import itertools
 import math
 import aoc
 import numpy as np

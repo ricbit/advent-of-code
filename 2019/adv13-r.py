@@ -1,5 +1,4 @@
 import sys
-import itertools
 import aoc
 from dataclasses import dataclass
 

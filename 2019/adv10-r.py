@@ -70,4 +70,3 @@ colinear = get_colinear(slopes)
 max_detected, station = get_station(asteroids, colinear)
 aoc.cprint(max_detected)
 aoc.cprint(get_vaporized(station, asteroids, 200))
-

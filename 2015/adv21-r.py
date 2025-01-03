@@ -1,7 +1,6 @@
 import sys
 import re
 import itertools
-import math
 import aoc
 from collections import namedtuple
 

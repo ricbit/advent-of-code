@@ -1,5 +1,4 @@
 import sys
-import re
 import aoc
 from collections import Counter
 

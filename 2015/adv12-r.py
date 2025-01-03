@@ -1,6 +1,5 @@
 import json
 import sys
-import re
 import aoc
 
 def jsum(j, forbidden):

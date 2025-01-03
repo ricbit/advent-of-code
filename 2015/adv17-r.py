@@ -8,7 +8,8 @@ def count(n, flask, used):
     return 1
   if not flask:
     return 0
-  return count(n - flask[0], tuple(flask[1:]), used - 1) + count(n, tuple(flask[1:]), used)
+  return (count(n - flask[0], tuple(flask[1:]), used - 1) +
+          count(n, tuple(flask[1:]), used))
 
 def search(flask):
   for i in range(1, 10):

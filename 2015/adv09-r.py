@@ -7,13 +7,12 @@ def dfs(graph, visited, src, score, choose):
   if sum(visited.values()) == len(graph):
     visited[src] = False
     return score
-  else:
-    dists = []
-    for (dst, val) in graph[src]:
-      if not visited[dst]:
-        dists.append(dfs(graph, visited, dst, score + val, choose))
-    visited[src] = False
-    return choose(dists)
+  dists = []
+  for (dst, val) in graph[src]:
+    if not visited[dst]:
+      dists.append(dfs(graph, visited, dst, score + val, choose))
+  visited[src] = False
+  return choose(dists)
 
 def walk(graph, choose):
   visited = {k: False for k in graph}

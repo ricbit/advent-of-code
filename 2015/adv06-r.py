@@ -1,6 +1,5 @@
 import numpy
 import sys
-import re
 import aoc
 
 def part1(cmds):

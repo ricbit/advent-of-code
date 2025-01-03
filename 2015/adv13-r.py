@@ -12,7 +12,8 @@ def happy(graph, perm):
   return ans
 
 def best(graph):
-  return max(happy(graph, perm) for perm in itertools.permutations(graph.keys()))
+  perms = itertools.permutations(graph.keys())
+  return max(happy(graph, perm) for perm in perms)
 
 graph = aoc.ddict(lambda: aoc.ddict(lambda: 0))
 for line in sys.stdin:

@@ -61,4 +61,3 @@ with multiprocessing.Pool() as pool:
 part1, part2 = [sum(line) for line in zip(*ans)]
 aoc.cprint(part1)
 aoc.cprint(part2)
-

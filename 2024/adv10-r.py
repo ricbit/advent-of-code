@@ -29,4 +29,3 @@ lines = sys.stdin.read().splitlines()
 data = aoc.Table([[(int(i) if i != "." else -10) for i in j] for j in lines])
 aoc.cprint(solve(data, walk, check=True))
 aoc.cprint(solve(data, walk, check=False))
-

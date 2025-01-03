@@ -43,7 +43,7 @@ class Regions:
     ans1, ans2 = 0, 0
     for j, i in self.t.iter_all():
       if self.mask[j][i] != 0:
-        x, y =  self.grow(j, i)
+        x, y = self.grow(j, i)
         ans1 += x
         ans2 += y
     return ans1, ans2

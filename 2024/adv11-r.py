@@ -12,7 +12,7 @@ def rec(stone, depth):
     value = rec(int(s[:x // 2]), depth - 1)
     value += rec(int(s[x // 2:]), depth - 1)
   else:
-    value = rec(stone * 2024, depth -1)
+    value = rec(stone * 2024, depth - 1)
   return value
 
 def solve(stones, depth):

@@ -18,8 +18,9 @@ class Line:
       return True
     if self.search(current * self.values[pos], pos + 1):
       return True
-    if self.concat and self.search(int(str(current) + str(self.values[pos])), pos + 1):
-      return True
+    if self.concat:
+      if self.search(int(str(current) + str(self.values[pos])), pos + 1):
+        return True
     return False
 
   def check(self):
@@ -33,9 +34,9 @@ def process_line(packed):
 def solve(data):
   with multiprocessing.Pool() as pool:
     part1 = list(pool.imap(process_line,
-        ((line, 0, False) for line in data)))
+      ((line, 0, False) for line in data)))
     part2 = list(pool.imap(process_line,
-        ((line, done, True) for line, done in zip(data, part1))))
+      ((line, done, True) for line, done in zip(data, part1))))
   return sum(part1), sum(part2)
 
 data = sys.stdin.readlines()

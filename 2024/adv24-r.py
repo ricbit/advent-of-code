@@ -10,7 +10,7 @@ def create_graph(ops):
   return g
 
 def simulate(g, nodes, ops):
-  values= {}
+  values = {}
   for node in reversed(list(nx.topological_sort(g))):
     if node in nodes:
       values[node] = nodes[node]

@@ -1,5 +1,4 @@
 import sys
-import itertools
 import aoc
 import numpy as np
 
@@ -21,7 +20,7 @@ def solve_numpy(data):
   # Now we build a matrix will all secrets.
   # The first row has the original data.
   all_secrets = np.zeros((secrets, monkeys), dtype=np.int32)
-  all_secrets[0,:] = n
+  all_secrets[0, :] = n
 
   # Construct each row from the previous one.
   # The operations on each column are vectorized,
@@ -34,7 +33,7 @@ def solve_numpy(data):
     n ^= (n << 6) & mask
     n ^= (n >> 5)
     n ^= (n << 11) & mask
-    all_secrets[i,:] = n
+    all_secrets[i, :] = n
 
   # Part one is just the sum of the final secret numbers for each monkey,
   # which at this point is still stored in the array "n".
@@ -65,7 +64,8 @@ def solve_numpy(data):
 
   # If we multiply the index of each monkey by "maxvalue",
   # and add it to the "encoded" matrix,
-  # then each element of the matrix will be unique for a pair (4-value, monkey).
+  # then each element of the matrix will be
+  # unique for a pair (4-value, monkey).
   # The objetive is to emulate a list[set] using numpy matrixes.
   encoded += np.arange(monkeys) * maxvalue
 

@@ -19,24 +19,24 @@ def solve(regs, program):
   regs = [regs[i] for i in range(3)]
   while pc < len(program):
     match program[pc]:
-      case 0: # adv
+      case 0:  # adv
         d = regs[0] // (2 ** combo(regs, program[pc + 1]))
         regs[0] = d
-      case 1: # bxl
+      case 1:  # bxl
         regs[1] ^= program[pc + 1]
-      case 2: # bst
+      case 2:  # bst
         regs[1] = combo(regs, program[pc + 1]) % 8
-      case 3: # jnz
+      case 3:  # jnz
         if regs[0] != 0:
           pc = program[pc + 1] - 2
-      case 4: # bxc
+      case 4:  # bxc
         regs[1] ^= regs[2]
-      case 5: # out
+      case 5:  # out
         ans.append(combo(regs, program[pc + 1]) % 8)
-      case 6: # bdv
+      case 6:  # bdv
         d = regs[0] // (2 ** combo(regs, program[pc + 1]))
         regs[1] = d
-      case 7: # cdv
+      case 7:  # cdv
         d = regs[0] // (2 ** combo(regs, program[pc + 1]))
         regs[2] = d
     pc += 2

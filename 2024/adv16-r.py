@@ -8,7 +8,7 @@ def build_graph(t):
   t[ey][ex] = "."
   empty = lambda x: x == "."
   g = nx.DiGraph()
-  for y, x in t.iter_all(conditional = empty):
+  for y, x in t.iter_all(conditional=empty):
     pos = y * 1j + x
     for pdir in [1, -1, 1j, -1j]:
       for turn in [1j, -1j]:
@@ -17,7 +17,7 @@ def build_graph(t):
         g.add_edge((pos, pdir), (pos + pdir, pdir), weight=1)
   for pdir in [1, -1, 1j, -1j]:
     g.add_edge((ey * 1j + ex, pdir), "goal", weight=0)
-  g.add_edge("start", (sy * 1j + sx, 1), weight = 0)
+  g.add_edge("start", (sy * 1j + sx, 1), weight=0)
   return g
 
 def part1(g):

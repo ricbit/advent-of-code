@@ -23,7 +23,7 @@ def run(t, start, skipmap, cpos):
     while t.cvalid(pos + vdir) and t.get(pos + vdir) == "#":
       vdir *= 1j
     if (t.cvalid(pos + vdir) and not
-        ((pos+vdir).real == cpos.real or (pos+vdir).imag == cpos.imag)):
+       ((pos + vdir).real == cpos.real or (pos + vdir).imag == cpos.imag)):
       pos = skipmap[vdir][pos]
     else:
       pos += vdir

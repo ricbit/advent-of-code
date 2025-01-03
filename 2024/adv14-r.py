@@ -23,14 +23,6 @@ def part1(data, ty, tx, n):
       h[a + b + c + d] += 1
   return math.prod(h.values())
 
-def draw_tree(bots, ty, tx):
-  t = [["."] * tx for _ in range(ty)]
-  for y, x in bots:
-    t[y][x] = "1"
-  for line in t:
-    print("".join(line))
-  print()
-
 def check_tree(data, ty, tx, n):
   m = set()
   for y, x in bots(data, ty, tx, n):
@@ -38,7 +30,6 @@ def check_tree(data, ty, tx, n):
       return False
     m.add((y, x))
   if len(m) == len(data):
-    #draw_tree(m, ty, tx)
     return True
   return False
 
@@ -48,6 +39,7 @@ def part2(data, ty, tx):
       return n
   return None
 
-data = aoc.retuple_read("px_ py_ vx_ vy_", r"p=(-?\d+),(-?\d+) v=(-?\d+),(-?\d+)")
+data = aoc.retuple_read(
+    "px_ py_ vx_ vy_", r"p=(-?\d+),(-?\d+) v=(-?\d+),(-?\d+)")
 aoc.cprint(part1(data, 103, 101, 100))
 aoc.cprint(part2(data, 103, 101))

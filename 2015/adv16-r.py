@@ -2,33 +2,32 @@ import aoc
 import re
 import sys
 from collections import defaultdict
-
-equal = lambda a, b: a == b
-lt = lambda a, b: a < b
-gt = lambda a, b: a > b
+from operator import eq, lt, gt
 
 target = {
-  "children": (3, equal),
+  "children": (3, eq),
   "cats": (7, gt),
-  "samoyeds": (2, equal),
+  "samoyeds": (2, eq),
   "pomeranians": (3, lt),
-  "akitas": (0, equal),
-  "vizslas": (0, equal),
+  "akitas": (0, eq),
+  "vizslas": (0, eq),
   "goldfish": (5, lt),
   "trees": (3, gt),
-  "cars": (2, equal),
-  "perfumes": (1, equal)
+  "cars": (2, eq),
+  "perfumes": (1, eq)
 }
 
 def search(sues):
   for sue, items in sues.items():
     if all(items[k] == target[k][0] for k in items.keys()):
       return sue
+  return None
 
 def search2(sues):
   for sue, items in sues.items():
     if all(target[k][1](items[k], target[k][0]) for k in items.keys()):
       return sue
+  return None
 
 sues = defaultdict(lambda: {})
 for line in sys.stdin:
@@ -40,5 +39,3 @@ for line in sys.stdin:
 
 aoc.cprint(search(sues))
 aoc.cprint(search2(sues))
-
-

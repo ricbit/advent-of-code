@@ -42,7 +42,7 @@ def simulate(orchp, orcdmg, bleeding):
       new_path = path[:] + [name]
       if state.mana >= cost:
         match i:
-          case 0: 
+          case 0:
             new_state.orchp -= 4
             new_spent += cost
             new_state.mana -= cost
@@ -90,4 +90,3 @@ orchp = int(re.match(r".*?(\d+)", lines[0]).groups()[0])
 orcdmg = int(re.match(r".*?(\d+)", lines[1]).groups()[0])
 aoc.cprint(simulate(orchp, orcdmg, 0))
 aoc.cprint(simulate(orchp, orcdmg, 1))
-

@@ -34,4 +34,3 @@ def search(ing, goal=None):
 
 aoc.cprint(search(ing))
 aoc.cprint(search(ing, 500))
-

@@ -28,7 +28,7 @@ def valid(wires, op1, op2):
   return True
 
 def process_wire(wires, line):
-  src, dst = line.strip().split(" -> ")  
+  src, dst = line.strip().split(" -> ")
   match src.split():
     case [val] if val.isdigit() or val in wires:
       wires[dst] = wires[val]
@@ -60,5 +60,3 @@ lines = sys.stdin.readlines()
 first = process_all(lines, {})
 aoc.cprint(first)
 aoc.cprint(process_all(lines, {"b": first}))
-
-      

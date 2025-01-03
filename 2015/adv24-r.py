@@ -25,4 +25,3 @@ goal = sum(packs) // 3
 aoc.cprint(min(quantum(x) for x in choose(0, 0, tuple(), tuple(packs), goal))[1])
 goal = sum(packs) // 4
 aoc.cprint(min(quantum(x) for x in choose(0, 0, tuple(), tuple(packs), goal))[1])
-  

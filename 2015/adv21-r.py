@@ -31,7 +31,7 @@ Defense +3   80     0       3
 
 def parse(weapon):
   for line in weapon.strip().split("\n")[1:]:
-    yield aoc.retuple("cost_ damage_ armor_", 
+    yield aoc.retuple("cost_ damage_ armor_",
         r"^.*?\s+(\d+)\s+(\d+)\s+(\d+)\s*$", line)
 
 def pc_generator(weapon, armor, rings, Player):
@@ -76,4 +76,3 @@ orc_stats = [int(re.search(r"\d+", line).group(0)) for line in sys.stdin]
 orc = Player(*orc_stats)
 aoc.cprint(min(simulate_all(orc, Player, False)))
 aoc.cprint(max(simulate_all(orc, Player, True)))
-

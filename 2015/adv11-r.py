@@ -8,8 +8,8 @@ def nextpwd(pwd):
     if p[j] != "z":
       p[j] = chr(ord(p[j]) + 1)
       return "".join(p)
-    else:
-      p[j] = "a"
+    p[j] = "a"
+  return None
 
 def triad(pwd, i):
   return pwd[i + 2] == chr(ord(pwd[i + 1]) + 1) == chr(ord(pwd[i]) + 2)
@@ -29,12 +29,10 @@ def nextvalid(pwd):
   pwd = nextpwd(pwd)
   while not valid(pwd):
     pwd = nextpwd(pwd)
-  return pwd    
+  return pwd
 
 pwd = sys.stdin.read().strip()
 pwd = nextvalid(pwd)
 aoc.cprint(pwd)
 pwd = nextvalid(pwd)
 aoc.cprint(pwd)
-
-    

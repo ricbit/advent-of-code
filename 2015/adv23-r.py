@@ -28,4 +28,3 @@ state = {"a": 0, "b": 0}
 aoc.cprint(simulate(prog, state))
 state = {"a": 1, "b": 0}
 aoc.cprint(simulate(prog, state))
-  

@@ -10,7 +10,7 @@ def process(src):
   return "".join(ans)
 
 def apply(src, times):
-  for i in range(times):
+  for _ in range(times):
     src = process(src)
     yield len(src)
 
@@ -18,5 +18,3 @@ src = sys.stdin.read().strip()
 for i, ans in enumerate(apply(src, 50)):
   if (i + 1) in [40, 50]:
     aoc.cprint(ans)
-
-

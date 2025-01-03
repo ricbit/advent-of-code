@@ -17,6 +17,7 @@ def position(horse, t):
     else:
       dist += v * t
       return dist
+  return None
 
 horses = []
 for line in sys.stdin:
@@ -32,5 +33,3 @@ for j in range(1, 2503 + 1):
     if hh == vmax:
       c[ii] += 1
 aoc.cprint(max(c.values()))
-
-

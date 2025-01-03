@@ -11,6 +11,7 @@ def search(seed, size):
     ans = m.hexdigest()
     if ans.startswith(zeros):
       return i
+  return None
 
 seed = sys.stdin.read().strip()
 aoc.cprint(search(seed, 5))

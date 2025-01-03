@@ -12,4 +12,3 @@ for box in boxes:
   ans1 += 2 * sum(areas) + min(areas)
 aoc.cprint(ans1)
 aoc.cprint(ans2)
-

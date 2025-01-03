@@ -13,7 +13,7 @@ def build_chomsky(forward):
         grammar[src].add(dst)
       key, val = src, dst
       while len(val) > 2:
-        newkey = "V%d" % cur
+        newkey = f"V{cur}"
         cur += 1
         grammar[key].add((val[0], newkey))
         key = newkey
@@ -54,4 +54,3 @@ for line in blocks[0]:
 aoc.cprint(simple(forward, terminals(goal)))
 grammar = build_chomsky(forward)
 aoc.cprint(parse(grammar, terminals(goal)))
-

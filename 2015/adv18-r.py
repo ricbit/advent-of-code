@@ -16,7 +16,7 @@ def life(m, stuck):
   return new
 
 def solve(m, stuck):
-  for i in range(100):
+  for _ in range(100):
     m = life(m, stuck)
   return sum(1 for j, i in m.iter_all() if m[j][i] == "#")
 

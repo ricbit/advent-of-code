@@ -14,6 +14,7 @@ def search(flask):
   for i in range(1, 10):
     if (m := count(150, tuple(flask), i)):
       return m
+  return None
 
 flask = [int(line.strip()) for line in sys.stdin]
 flask.sort(reverse=True)

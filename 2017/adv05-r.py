@@ -4,6 +4,7 @@ import aoc
 def simple(jumps, comp):
   pos = 0
   step = 0
+  jumps = list(jumps)
   while 0 <= pos < len(jumps):
     npos = pos + jumps[pos]
     if comp(jumps[pos]):
@@ -14,6 +15,6 @@ def simple(jumps, comp):
     step += 1
   return step
 
-lines = [int(line.strip()) for line in sys.stdin]
-aoc.cprint(simple(lines[:], lambda x: False))
-aoc.cprint(simple(lines, lambda x: x >= 3))
+lines = aoc.ints(sys.stdin.read().splitlines())
+aoc.cprint(simple(tuple(lines[:]), lambda x: False))
+aoc.cprint(simple(tuple(lines), lambda x: x >= 3))

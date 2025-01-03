@@ -31,15 +31,15 @@ def floodfill(m):
       vnext = [(j, i)]
       while vnext:
         y, x = vnext.pop()
-        if type(t[y][x]) is int:
+        if isinstance(t[y][x], int):
           continue
         t[y][x] = g
         for jj, ii in t.iter_neigh4(y, x):
-          if type(t[jj][ii]) is str and t[jj][ii] == "1":
+          if isinstance(t[jj][ii], str) and t[jj][ii] == "1":
             vnext.append((jj, ii))
   return g
 
-raw_line = sys.stdin.read().strip() 
+raw_line = sys.stdin.read().strip()
 ans = 0
 m = []
 for i in range(128):

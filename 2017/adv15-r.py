@@ -10,7 +10,7 @@ def gen(start, mult, mod):
 
 def count(n, m, mod1, mod2):
   ans = 0
-  for i, x, y in zip(range(m), gen(n[0], 16807, mod1), gen(n[1], 48271, mod2)):
+  for _, x, y in zip(range(m), gen(n[0], 16807, mod1), gen(n[1], 48271, mod2)):
     if (x & 0xFFFF) == (y & 0xFFFF):
       ans += 1
   return ans

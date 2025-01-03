@@ -6,7 +6,7 @@ def turing(machine, start, size):
   pos = 0
   state = start
   action = {1: lambda p: tape.add(p), 0: lambda p: tape.remove(p)}
-  for i in range(size):
+  for _ in range(size):
     value = 1 if pos in tape else 0
     m = machine[(state, value)]
     action[m[0]](pos)
@@ -29,4 +29,3 @@ for block in blocks[1:]:
   machine[(name, 0)] = parse_state(block, 2)
   machine[(name, 1)] = parse_state(block, 6)
 aoc.cprint(turing(machine, start, size))
-

@@ -11,7 +11,7 @@ def parser(chars):
     match chars[pos], state:
       case "{", True:
         copen += 1
-        score+= copen
+        score += copen
       case "}", True:
         copen -= 1
       case "<", True:

@@ -22,9 +22,9 @@ def sparse_hash(q):
       sparse[i] ^= q[j + i * 16]
   return "".join("%02x" % i for i in sparse)
 
-raw_line = sys.stdin.read().strip() 
+raw_line = sys.stdin.read().strip()
 line = aoc.ints(raw_line.split(","))
 q = apply_rounds(line, 1)
 aoc.cprint(q[0] * q[1])
-line = [ord(i) for i in raw_line] + [17,31,73,47,23]
+line = [ord(i) for i in raw_line] + [17, 31, 73, 47, 23]
 aoc.cprint(sparse_hash(apply_rounds(line, 64)))

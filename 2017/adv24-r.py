@@ -19,6 +19,6 @@ def build(ports, pos, used, size):
 lines = [line.strip() for line in sys.stdin]
 ports = []
 for line in lines:
-  ports.append(tuple(int(i) for i in line.split("/")))  
+  ports.append(tuple(int(i) for i in line.split("/")))
 aoc.cprint(build(tuple(ports), 0, 0, None)[1])
 aoc.cprint(build(tuple(ports), 0, 0, 0)[1])

@@ -6,7 +6,7 @@ def conv(s):
 
 def simulate(p):
   avail = set(range(len(p)))
-  for i in range(500):
+  for _ in range(500):
     col = aoc.ddict(lambda: [])
     order = []
     for j in range(len(p)):

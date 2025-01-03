@@ -12,10 +12,10 @@ def apply(rules, pattern, size, before, after):
         for ii in range(before):
           kk.append(pattern[j * before + jj][i * before + ii])
         k.append("".join(kk))
-      dst = rules["/".join(k)].split("/")
-      line.append(dst)
+      line.append(rules["/".join(k)].split("/"))
     final.append(line)
-  newp = [[0] * (size // before * after) for _ in range(size // before * after)]
+  newsize = size // before * after
+  newp = [[0] * newsize for _ in range(newsize)]
   for j in range(size // before):
     for i in range(size // before):
       for jj in range(after):
@@ -32,7 +32,7 @@ def fractal(rules, n):
     else:
       pattern = apply(rules, pattern, size, 3, 4)
   return sum(sum(i == "#" for i in line) for line in pattern)
-  
+
 lines = [line.strip() for line in sys.stdin]
 rules = {}
 for line in lines:

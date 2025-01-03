@@ -12,4 +12,3 @@ def solve(line, offset):
 
 aoc.cprint(solve(line, 1))
 aoc.cprint(solve(line, len(line) // 2))
-  

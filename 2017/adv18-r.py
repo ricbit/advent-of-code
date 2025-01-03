@@ -4,8 +4,7 @@ import aoc
 def maybe(state, y):
   if y[0].isalpha():
     return state[y]
-  else:
-    return int(y)
+  return int(y)
 
 class Computer:
   def __init__(self, prog, p, model):
@@ -25,11 +24,10 @@ class Computer:
   def recv_cmd(self, x):
     if self.model == 1:
       return bool(self.state[x])
-    else:
-      self.waiting = not self.recv
-      if self.recv:
-        self.state[x] = self.recv.pop(0)
-      return self.waiting
+    self.waiting = not self.recv
+    if self.recv:
+      self.state[x] = self.recv.pop(0)
+    return self.waiting
 
   def snd_cmd(self, x, send):
     if self.model == 1:
@@ -63,14 +61,11 @@ class Computer:
 
 def multicore(prog):
   comps = [Computer(prog, 0, 2), Computer(prog, 1, 2)]
-  while not all(comps[i].check() for i in range(2)):
+  while not all(comp.check() for comp in comps):
     for i in range(2):
       comps[i].execute(lambda x: comps[1 - i].recv.append(x))
   return comps[1].sent
 
-lines = [line.strip() for line in sys.stdin]
-prog = []
-for line in lines:
-  prog.append(line.split())
+prog = [line.split() for line in sys.stdin.read().splitlines()]
 aoc.cprint(Computer(prog, 0, 1).execute(lambda x: None).freq)
 aoc.cprint(multicore(prog))

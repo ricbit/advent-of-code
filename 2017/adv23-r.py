@@ -14,8 +14,7 @@ def check(state):
 def maybe(state, x):
   if x.isalpha():
     return state[x]
-  else:
-    return int(x)
+  return int(x)
 
 def simulate(prog, a):
   pc = 0

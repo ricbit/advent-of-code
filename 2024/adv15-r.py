@@ -80,7 +80,7 @@ class Maze:
         self.move_v(pos, pdir)
     return check
 
-  def solve(self, data):
+  def solve(self):
     cdir = aoc.get_cdir(">")
     pos = get_initial_pos(self.t)
     for move in self.moves:
@@ -96,4 +96,4 @@ class Maze:
 data = aoc.line_blocks()
 aoc.cprint(part1(data))
 maze = Maze(data)
-aoc.cprint(maze.solve(data))
+aoc.cprint(maze.solve())

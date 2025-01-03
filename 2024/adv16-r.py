@@ -41,4 +41,3 @@ data = aoc.Table.read()
 graph = build_graph(data)
 aoc.cprint(part1(graph))
 aoc.cprint(part2(graph))
-

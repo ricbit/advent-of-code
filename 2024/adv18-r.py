@@ -8,7 +8,7 @@ DIM = 71
 
 def build_grid(data, limit): # limit is inclusive
   grid = nx.grid_2d_graph(DIM, DIM)
-  for i, (x, y) in enumerate(itertools.islice(data, limit + 1)):
+  for x, y in itertools.islice(data, limit + 1):
     grid.remove_node((x, y))
   return grid
 

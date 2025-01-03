@@ -26,7 +26,7 @@ def simulate(g, nodes, ops):
         case "XOR":
           c = a ^ b
       values[node] = c
-  zs = {int(k[1:]): v for k, v in values.items() if k.startswith("z")}  
+  zs = {int(k[1:]): v for k, v in values.items() if k.startswith("z")}
   return int("".join(str(zs[k]) for k in sorted(zs.keys(), reverse=True)), 2)
 
 def parse(data):
@@ -49,8 +49,8 @@ def find_error(g, a, b):
   x = list(reversed("0" * brange + bin(a)[2:]))[:brange]
   y = list(reversed("0" * brange + bin(b)[2:]))[:brange]
   for i in range(brange):
-    nodes["x%02d" % i] = int(x[i])
-    nodes["y%02d" % i] = int(y[i])
+    nodes[f"x{i:02}"] = int(x[i])
+    nodes[f"y{i:02}"] = int(y[i])
   try:
     z = simulate(g, nodes, ops)
   except nx.NetworkXUnfeasible:
@@ -75,19 +75,23 @@ def swap_ops(g, ops, a, b):
   g.add_edge(b, ops[b].b1)
   g.add_edge(b, ops[b].b2)
 
-def part2(nodes, ops):
-  g = create_graph(ops)
+def build_patterns():
   all_ones = 2 ** 45 - 1
   alt01 = int("".join("01" * 24), 2)
   alt10 = int("".join("10" * 24), 2)
   patterns = [
-      (0, 0), 
-      (all_ones, 0), (0, all_ones), 
-      (alt01, alt01), (alt10, alt10), 
+      (0, 0),
+      (all_ones, 0), (0, all_ones),
+      (alt01, alt01), (alt10, alt10),
       (alt01, all_ones), (alt10, all_ones),
       (all_ones, alt01), (all_ones, alt10)]
+  return patterns
+
+def part2(ops):
+  g = create_graph(ops)
+  patterns = build_patterns()
   wires = set()
-  for i in range(4):
+  for _ in range(4):
     wrong_bits = [find_error(g, a, b) for a, b in patterns]
     wrong_bit = min(bit for bit in wrong_bits if bit is not None)
     ug = g.to_undirected()
@@ -103,7 +107,7 @@ def part2(nodes, ops):
       if new_wrong_bit and min(new_wrong_bit) > wrong_bit:
         possible_pairs.add((a, b))
       swap_ops(g, ops, a, b)
-    if len(possible_pairs) > 1 or not len(possible_pairs):
+    if len(possible_pairs) != 1:
       return "bug ", len(possible_pairs)
     sa, sb = aoc.first(possible_pairs)
     swap_ops(g, ops, sa, sb)
@@ -112,4 +116,4 @@ def part2(nodes, ops):
 
 nodes, ops = parse(aoc.line_blocks())
 aoc.cprint(part1(nodes, ops))
-aoc.cprint(part2(nodes, ops))
+aoc.cprint(part2(ops))

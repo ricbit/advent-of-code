@@ -26,7 +26,7 @@ class Defrag:
 
   def checksum(self, pos, size, uid):
     return sum((pos + i) * uid for i in range(size))
-  
+
   def part2(self):
     ans = 0
     for uid, block_size, block_pos in reversed(self.blocks):
@@ -44,7 +44,7 @@ class Defrag:
       if (space_left := space_size - block_size) > 0:
         heapq.heappush(self.spaceheap[space_left], (space_pos + block_size))
     return ans
- 
+
 def part1(data):
   fsys = []
   for i, v in enumerate(data):

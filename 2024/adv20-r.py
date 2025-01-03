@@ -36,7 +36,7 @@ class CheatFinder:
         continue
       if (save := self.distance[(j, i)] - self.distance[(y, x)]) <= 0:
         continue
-      if save - d + 1 >= 100: 
+      if save - d + 1 >= 100:
         p1 += d <= 2
         p2 += 1
     return p1, p2

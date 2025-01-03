@@ -63,7 +63,7 @@ class Solver:
     py, px = table["A"]
     size = 0
     for c in line:
-      ny, nx = table[c] 
+      ny, nx = table[c]
       size += self.small_step(py, px, ny, nx, depth)
       py, px = ny, nx
     return size

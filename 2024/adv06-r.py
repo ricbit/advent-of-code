@@ -33,7 +33,7 @@ def original_path(t):
   sy, sx = t.find("^")
   t[sy][sx] = "."
   start = sy * 1j + sx
-  pos, visited, prevmap = walk(t, start)
+  _, visited, prevmap = walk(t, start)
   return visited, start, prevmap
 
 def is_loop(t, start, skipmap, cpos):
@@ -46,7 +46,7 @@ def build_skipmap(t):
   skipmap = {k: {} for k in dirs}
   for vdir, hdir, limit in zip(dirs, axis, limits):
     for col in itertools.count(0):
-      pos = col * hdir + limit - vdir      
+      pos = col * hdir + limit - vdir
       last = col * hdir + limit
       if not t.cvalid(pos):
         break

@@ -4,7 +4,7 @@ import functools
 class Solver:
   def __init__(self, data):
     colors, stripes = data
-    self.colors = set([color.strip() for color in colors[0].split(",")])
+    self.colors = {color.strip() for color in colors[0].split(",")}
     self.stripes = [x.strip() for x in stripes]
 
   @functools.cache

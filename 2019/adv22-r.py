@@ -22,7 +22,7 @@ def apply(data, size, value):
 
 def invert(data, size, exp, value):
   a, b = parse(data, size)
-  num = (value - (pow(a, exp, size) - 1) * pow(a - 1, -1, size) * b)
+  num = value - (pow(a, exp, size) - 1) * pow(a - 1, -1, size) * b
   return num * pow(a, -exp, size) % size
 
 data = [line.strip() for line in sys.stdin]

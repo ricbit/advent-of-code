@@ -21,7 +21,7 @@ def init(data):
 
 def idle(state, cpus):
   return (
-      all(not s.iq for s in state) and 
+      all(not s.iq for s in state) and
       all(cpu.state == cpu.INPUT for cpu in cpus))
 
 def execute(data):
@@ -57,6 +57,7 @@ def solve(data):
     nats[y] += 1
     if nats[y] > 3:
       return first, y
+  return None
 
 data = aoc.ints(sys.stdin.read().strip().split(","))
 ans1, ans2 = solve(data)

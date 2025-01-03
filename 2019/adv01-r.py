@@ -5,8 +5,7 @@ def count(fuel, recursive=False):
   a = fuel // 3 - 2
   if recursive:
     return a + count(a, recursive) if a > 0 else 0
-  else:
-    return a
+  return a
 
 def count_all(data, recursive=False):
   return sum(count(int(line), recursive) for line in data)

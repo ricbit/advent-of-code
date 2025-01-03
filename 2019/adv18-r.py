@@ -59,25 +59,25 @@ def get_available(keys, col_keys, cache):
   if col_keys in cache:
     return cache[col_keys]
   out = []
-  for name, (robot, bitname, j, i, doors) in keys.items():
+  for robot, bitname, j, i, doors in keys.values():
     if (bitname & col_keys) > 0:
       continue
     if (doors & col_keys) != doors:
       continue
-    out.append((name, (robot, bitname, j, i, doors)))
+    out.append((robot, bitname, j, i))
   cache[col_keys] = out
   return out
 
 def build_keys(robots):
   keys = {}
   all_keys = 0
-  for r, (y, x, robot_keys) in enumerate(robots):
+  for r, (_, _, robot_keys) in enumerate(robots):
     for name, bitname, j, i, doors in robot_keys:
       keys[name] = (r, bitname, j, i, doors)
       all_keys |= bitname
   return keys, all_keys
 
-def solve2(robots, graph):
+def solve2(robots):
   keys, all_keys = build_keys(robots)
   state = (0, [(y, x) for y, x, keys in robots], 0)
   vnext = aoc.bq([state], size=7000)
@@ -91,11 +91,11 @@ def solve2(robots, graph):
     if (ns := encode(state)) in visited:
       continue
     visited.add(ns)
-    for name, (robot, bitname, j, i, doors) in get_available(keys, col_keys, cache):
+    for robot, bitname, j, i in get_available(keys, col_keys, cache):
       dist, pos_robot = get_distance(pos[robot], j, i)
       newpos = pos[:]
       newpos[robot] = pos_robot
-      encoded_keys = (col_keys | bitname)
+      encoded_keys = col_keys | bitname
       state = (score + dist, newpos, encoded_keys)
       ns = encode(state)
       if ns not in visited:
@@ -109,11 +109,12 @@ def enlarge(t):
       t[j + 0][i - 1: i + 2] = ["#", "#", "#"]
       t[j + 1][i - 1: i + 2] = ["@", "#", "@"]
       return t
+  return None
 
 t = aoc.Table.read()
 table = t
 robots = get_robots(table)
-aoc.cprint(solve2(robots, {}))
+aoc.cprint(solve2(robots))
 table = enlarge(t)
 robots = get_robots(table)
-aoc.cprint(solve2(robots, {}))
+aoc.cprint(solve2(robots))

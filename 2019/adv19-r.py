@@ -68,4 +68,3 @@ data = aoc.ints(sys.stdin.read().split(","))
 beam_size, first, last = part1(data)
 aoc.cprint(beam_size)
 aoc.cprint(part2(data, first, last))
-

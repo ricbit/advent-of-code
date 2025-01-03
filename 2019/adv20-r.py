@@ -5,7 +5,7 @@ from collections import deque
 def iter_codes(t):
   for j, i in t.iter_all():
     if t[j][i].isupper() and t[j + 1][i].isupper():
-      if t[j - 1][i] == ".":        
+      if t[j - 1][i] == ".":
         yield t[j][i] + t[j + 1][i], j - 1, i
       else:
         yield t[j][i] + t[j + 1][i], j + 2, i

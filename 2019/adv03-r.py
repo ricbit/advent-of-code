@@ -7,7 +7,7 @@ def solve(cmd):
   pos, dist = 0, 1
   visited = {}
   for c in cmd:
-    for i in range(int(c[1:])):
+    for _ in range(int(c[1:])):
       pos += DIR[c[0]]
       visited[pos] = dist
       dist += 1

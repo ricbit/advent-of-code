@@ -38,7 +38,7 @@ def flat_neigh(level, j, i):
     if 0 <= jj < 5 and 0 <= ii < 5:
       yield (level, jj, ii)
 
-def neigh(bugs, t, callback):
+def neigh(bugs, callback):
   ans = set()
   for level, j, i in bugs:
     for n in callback(level, j, i):
@@ -56,7 +56,7 @@ def bug_iterator(t, callback):
   bugs = extract_bugs(t)
   while True:
     newbugs = set()
-    for level, j, i in neigh(bugs, t, callback):
+    for level, j, i in neigh(bugs, callback):
       n = sum((l2, jj, ii) in bugs for l2, jj, ii in callback(level, j, i))
       if (level, j, i) in bugs:
         if n == 1:

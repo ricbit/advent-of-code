@@ -61,8 +61,7 @@ class DataType:
   def __getitem__(self, key):
     if key in self.modified:
       return self.modified[key]
-    else:
-      return self.data[key]
+    return self.data[key]
 
   def copy(self):
     newdata = DataType(lambda: 0)
@@ -85,7 +84,7 @@ def search_items(cpu, state, objects):
       if before_data[addr] != after_data[addr] and after_data[addr] == -1:
         objects[state.items[0]] = addr
 
-def init_cpu():
+def init_cpu(data):
   cpu = IntCode(data, DataType)
   state = State()
   cpu, output = cpu_step(cpu, "")
@@ -98,7 +97,7 @@ def copy_cpu(cpu):
   return newcpu
 
 def visit_rooms(data):
-  cpu, state = init_cpu()
+  cpu, state = init_cpu(data)
   visited = set()
   vnext = [(state, cpu)]
   objects = {}
@@ -129,7 +128,7 @@ def find_weights(cpu, objects):
     weights[name] = newcpu.data[1550]
   return weights
 
-def find_total_weights(cpu, objects, object_weights):
+def find_total_weights(object_weights):
   total_weights = []
   for combinations in itertools.product(range(2), repeat=8):
     weight = sum(itertools.compress(object_weights.values(), combinations))
@@ -144,15 +143,14 @@ def compute_weight(cpu, total_weights, objects, wm):
   return cpu_step(newcpu, "north\n")
 
 def test_weight(cpu, total_weights, objects, wm):
-  newcpu, output = compute_weight(cpu, total_weights, objects, wm)
+  _, output = compute_weight(cpu, total_weights, objects, wm)
   if (comp := re.search(r"(heavier|lighter)", output)) is None:
     return 0
-  else:
-    return 1 if comp.group(1) == "lighter" else -1
+  return 1 if comp.group(1) == "lighter" else -1
 
 def find_password(cpu, objects):
   object_weights = find_weights(cpu, objects)
-  total_weights = find_total_weights(cpu, objects, object_weights)
+  total_weights = find_total_weights(object_weights)
   key = lambda wm : test_weight(cpu, total_weights, objects, wm)
   m = bisect.bisect_left(range(len(total_weights)), 0, key=key)
   _, output = compute_weight(cpu, total_weights, objects, m)

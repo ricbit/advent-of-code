@@ -29,13 +29,13 @@ def extract_maze(data):
   for j in range(1, size):
     for i in range(1, size):
       ii, jj = i % 2, j % 2
-      addr = offset + (j // 2 + jj - 1) * factor + (i - 1)      
+      addr = offset + (j // 2 + jj - 1) * factor + (i - 1)
       if jj ^ ii:
         maze[j][i] = "#" if data[addr] >= salt else "."
       else:
         maze[j][i] = "#" if jj == ii == 0 else "."
   return aoc.Table(maze), (bally, ballx), (starty, startx)
-        
+
 
 def shortest(maze, start, goal):
   vnext = deque([(0, start)])

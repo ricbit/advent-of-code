@@ -47,4 +47,3 @@ for line in data:
   graph[goal_name] = (int(goal_size), resources)
 aoc.cprint(solve(graph, 1))
 aoc.cprint(search(graph, 1000000000000))
-

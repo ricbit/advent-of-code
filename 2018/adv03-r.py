@@ -1,4 +1,3 @@
-import sys
 import aoc
 
 mx, my = 0, 0
@@ -21,4 +20,3 @@ for i in range(len(quads)):
   if i not in double:
     aoc.cprint(i + 1)
     break
-

@@ -100,6 +100,7 @@ def solve(original, elf_attack, elf_kills=True):
             return None
         if (score := supremacy(units)) is not None:
           kludge = 0 if any((not unit.dead) and (not unit.used) for unit in units) else 1
+          print(tick, kludge, score)
           return (tick + kludge) * score
 
 def search(t):

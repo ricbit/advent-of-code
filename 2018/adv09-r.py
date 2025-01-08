@@ -7,7 +7,7 @@ def solve(players, goal):
   score = [0] * players
   for i in range(1, 1 + goal):
     if i % 23 != 0:
-      pos = marbles.insert(marbles.next(pos), i)
+      pos = marbles.insert_after(marbles.next(pos), i)
     else:
       for j in range(7):
         pos = marbles.prev(pos)

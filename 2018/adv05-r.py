@@ -21,5 +21,6 @@ def checkone(line, c):
 
 line = sys.stdin.read().strip()
 aoc.cprint(count(line))
+lowercase = string.ascii_lowercase
 with multiprocessing.Pool() as pool:
-  aoc.cprint(min(pool.starmap(checkone, ((line, c) for c in string.ascii_lowercase))))
+  aoc.cprint(min(pool.starmap(checkone, ((line, c) for c in lowercase))))

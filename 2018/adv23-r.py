@@ -40,7 +40,7 @@ def count(nano, box):
 def partition(nano, box):
   vnext = [(count(nano, box), box)]
   while vnext:
-    score, box = heapq.heappop(vnext)
+    _, box = heapq.heappop(vnext)
     sides = [(box[i][1] - box[i][0] + 1, i) for i in range(3)]
     sides.sort(reverse=True)
     if sides[0][0] == 1:
@@ -53,11 +53,13 @@ def partition(nano, box):
     heapq.heappush(vnext, (count(nano, newbox1), newbox1))
 
     newbox2 = copy.deepcopy(box)
-    newbox2[side][0] += middle 
+    newbox2[side][0] += middle
     heapq.heappush(vnext, (count(nano, newbox2), newbox2))
+  return None
 
 data = [line.strip() for line in sys.stdin]
-nano = aoc.retuple_read("x_ y_ z_ r_", r"pos=<([-+]?\d+),([-+]?\d+),([-+]?\d+)>, r=(\d+)", data)
+nano = aoc.retuple_read(
+    "x_ y_ z_ r_", r"pos=<([-+]?\d+),([-+]?\d+),([-+]?\d+)>, r=(\d+)", data)
 aoc.cprint(solve1(nano))
 box = [bounds(nano, getcoord[i]) for i in range(3)]
 aoc.cprint(partition(nano, box))

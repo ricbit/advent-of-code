@@ -1,7 +1,7 @@
 import sys
 import string
 import aoc
-import re
+import multiprocessing
 
 def count(line):
   seq = aoc.bidi(line, circular=False)
@@ -11,16 +11,15 @@ def count(line):
       seq.remove(pos)
       seq.remove(prev)
       prev, pos = seq.prev(prev), seq.next(pos)
-      if not seq.valid(prev):
-        prev, pos = pos, seq.next(pos)
-    else:
-      prev, pos = pos, seq.next(pos)
+      if seq.valid(prev):
+        continue
+    prev, pos = pos, seq.next(pos)
   return len(seq)
 
-def checkall(line):
-  for c in string.ascii_lowercase:
-    yield count(line.replace(c, "").replace(c.upper(), ""))
+def checkone(line, c):
+  return count(line.replace(c, "").replace(c.upper(), ""))
 
 line = sys.stdin.read().strip()
 aoc.cprint(count(line))
-aoc.cprint(min(checkall(line)))
+with multiprocessing.Pool() as pool:
+  aoc.cprint(min(pool.starmap(checkone, ((line, c) for c in string.ascii_lowercase))))

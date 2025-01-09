@@ -3,6 +3,7 @@ import aoc
 import copy
 from collections import Counter
 from dataclasses import dataclass
+import multiprocessing
 
 @dataclass(init=False, repr=True, unsafe_hash=True)
 class Unit:
@@ -20,7 +21,8 @@ class Unit:
 def parse_units(block, ctype, etype):
   units = []
   for line in block[1:]:
-    q = aoc.retuple("size_ hp_ weaks atk_ atktype init_",
+    q = aoc.retuple(
+        "size_ hp_ weaks atk_ atktype init_",
         r"(\d+).*?(\d+)[^(]*?((?:\(.*\))?)[^(]*?(\d+) (\w+) .*?(\d+)", line)
     u = Unit()
     u.size = q.size
@@ -62,7 +64,8 @@ def finished(units):
 
 def select_choosing_order(units):
   alive = [unit for unit in units if not unit.dead]
-  alive.sort(reverse=True, key=lambda unit: (unit.size * unit.attack, unit.init))
+  alive_key = lambda unit: (unit.size * unit.attack, unit.init)
+  alive.sort(reverse=True, key=alive_key)
   return alive
 
 def choose_targets(alive):
@@ -74,15 +77,19 @@ def choose_targets(alive):
       if enemy.ctype != unit.ctype and not chosen[b] and not enemy.dead:
         enemies.append((enemy, b))
     if enemies:
-      enemy, b = max(enemies, key=lambda enemy:
-        (damage(unit, enemy[0]), enemy[0].size * enemy[0].attack, enemy[0].init))
+      enemy_lambda = lambda enemy: (
+        damage(unit, enemy[0]),
+        enemy[0].size * enemy[0].attack,
+        enemy[0].init)
+      enemy, b = max(enemies, key=enemy_lambda)
       if damage(unit, enemy) > 0:
         target[a] = b
         chosen[b] = True
   return target
 
 def fight(alive, target):
-  for i in sorted(range(len(alive)), reverse=True, key=lambda q: alive[q].init):
+  alive_key = lambda q: alive[q].init
+  for i in sorted(range(len(alive)), reverse=True, key=alive_key):
     if target[i] is not None and not alive[i].dead:
       a = alive[i]
       b = alive[target[i]]
@@ -102,14 +109,24 @@ def simulate(units):
     fight(alive, targets)
   return any(unit.ctype == 0 and not unit.dead for unit in units)
 
+def find_boost_i(units, i):
+  boosted = copy.deepcopy(units)
+  for unit in boosted:
+    if unit.ctype == 0:
+      unit.attack += i
+  if simulate(boosted):
+    return (i, units_alive(boosted))
+  return (i, None)
+
 def find_boost(units):
-  for i in itertools.count(1):
-    boosted = copy.deepcopy(units)
-    for unit in boosted:
-      if unit.ctype == 0:
-        unit.attack += i
-    if simulate(boosted):
-      return units_alive(boosted)
+  with multiprocessing.Pool() as pool:
+    for i_base in itertools.count(1, 8):
+      units_range = ((units, i) for i in range(i_base, i_base + 8))
+      boosted = pool.starmap(find_boost_i, units_range)
+      alive = [(i, boost) for i, boost in boosted if boost is not None]
+      if alive:
+        return min(alive)[1]
+  return aoc.UNREACHABLE
 
 def units_alive(units):
   return sum(u.size for u in units if not u.dead)

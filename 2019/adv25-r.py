@@ -151,7 +151,7 @@ def test_weight(cpu, total_weights, objects, wm):
 def find_password(cpu, objects):
   object_weights = find_weights(cpu, objects)
   total_weights = find_total_weights(object_weights)
-  key = lambda wm : test_weight(cpu, total_weights, objects, wm)
+  key = lambda wm: test_weight(cpu, total_weights, objects, wm)
   m = bisect.bisect_left(range(len(total_weights)), 0, key=key)
   _, output = compute_weight(cpu, total_weights, objects, m)
   return re.search(r"(\d{3,})", output).group(1)

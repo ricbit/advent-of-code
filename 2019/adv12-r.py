@@ -39,10 +39,11 @@ def simulate2(planet, coord):
       return tick + 1
 
 def simulate1(planet, ticks):
-  for tick in range(ticks):
+  sumabs = lambda seq: sum(abs(d) for d in seq)
+  for _ in range(ticks):
     for d in range(3):
       step(planet, d)
-    energy = sum(sum(abs(d) for d in p[0]) * sum(abs(d) for d in p[1]) for p in planet)
+    energy = sum(sumabs(p[0]) * sumabs(p[1]) for p in planet)
   return energy
 
 data = aoc.retuple_read("x_ y_ z_", r"<x=(.*?), y=(.*?), z=(.*?)>", sys.stdin)

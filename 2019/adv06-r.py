@@ -23,7 +23,7 @@ def part2(bigmap):
   src = "YOU"
   dst = "SAN"
   middle = set(bigmap[src]).intersection(set(bigmap[dst]))
-  lca = max(middle, key = lambda x: len(bigmap[x]))
+  lca = max(middle, key=lambda x: len(bigmap[x]))
   a = len(bigmap[src]) - bigmap[src].index(lca)
   b = len(bigmap[dst]) - bigmap[dst].index(lca)
   return a + b - 2

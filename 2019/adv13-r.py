@@ -17,7 +17,7 @@ class Ref:
 class IntCode:
   def __init__(self, data, input_values, state):
     self.data = aoc.ddict(lambda: 0)
-    self.data.update({i:value for i, value in enumerate(data)})
+    self.data.update({i: value for i, value in enumerate(data)})
     self.pos = 0
     self.output = []
     self.halted = False
@@ -56,19 +56,19 @@ class IntCode:
     while self.pos < len(self.data):
       ops += 1
       cmd = self.data[self.pos] % 100
-      if cmd == 1: # ADD
+      if cmd == 1:  # ADD
         a, b, c = self.decode(3)
         c.set(a + b)
         self.pos += 4
-      elif cmd == 2: # MUL
+      elif cmd == 2:  # MUL
         a, b, c = self.decode(3)
         c.set(a * b)
         self.pos += 4
-      elif cmd == 3: # IN
+      elif cmd == 3:  # IN
         (a,) = self.decode(1)
         a.set(self.state.run())
         self.pos += 2
-      elif cmd == 4: # OUT
+      elif cmd == 4:  # OUT
         if self.data[self.pos] == 204 and self.data[self.pos + 1] == -3:
           if self.data[self.base - 1] == 3:
             self.state.paddle = self.data[self.base - 3]
@@ -80,25 +80,25 @@ class IntCode:
         self.output.append(a.get())
         self.pos += 2
         return False
-      elif cmd == 5: # JP NZ
+      elif cmd == 5:  # JP NZ
         a, b = self.decode(2)
         self.pos = b.get() if (a != 0) else self.pos + 3
-      elif cmd == 6: # JP Z
+      elif cmd == 6:  # JP Z
         a, b = self.decode(2)
         self.pos = b.get() if (a == 0) else self.pos + 3
-      elif cmd == 7: # SET LT
+      elif cmd == 7:  # SET LT
         a, b, c = self.decode(3)
         c.set(int(a < b))
         self.pos += 4
-      elif cmd == 8: # SET EQ
+      elif cmd == 8:  # SET EQ
         a, b, c = self.decode(3)
         c.set(int(a == b))
         self.pos += 4
-      elif cmd == 9: # SET BP
+      elif cmd == 9:  # SET BP
         (a,) = self.decode(1)
         self.base += a.get()
         self.pos += 2
-      elif cmd == 99: # HALT
+      elif cmd == 99:  # HALT
         self.halted = True
         return True
 

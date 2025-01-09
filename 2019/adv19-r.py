@@ -46,7 +46,7 @@ def part1(data):
       ans += m.end - m.begin + 1
     first_array.append(first)
     last_array.append(last)
-  genpoly = lambda array : 49 * np.polyfit(list(range(size, 50)), array, 1)
+  genpoly = lambda array: 49 * np.polyfit(list(range(size, 50)), array, 1)
   first_poly = genpoly(first_array)
   last_poly = genpoly(last_array)
   return ans, first_poly[0], last_poly[0]

@@ -33,7 +33,8 @@ def solve(graph, fuels):
   return cost
 
 def search(graph, cargo):
-  return bisect.bisect_right(range(cargo), cargo, key=lambda x: solve(graph, x)) - 1
+  solve_key = lambda x: solve(graph, x)
+  return bisect.bisect_right(range(cargo), cargo, key=solve_key) - 1
 
 data = [line.strip() for line in sys.stdin]
 graph = {}

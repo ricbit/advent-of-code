@@ -68,17 +68,17 @@ def get_functions(path, asize, bsize, csize):
   a, b = path[:asize], path[asize: asize + bsize]
   c, pos, cmd = None, 0, []
   while pos < len(path):
-    if path[pos : pos + asize] == a:
+    if path[pos:pos + asize] == a:
       cmd.append("A")
       pos += asize
-    elif path[pos : pos + bsize] == b:
+    elif path[pos:pos + bsize] == b:
       cmd.append("B")
       pos += bsize
     elif c is None:
-      c = path[pos : pos + csize]
+      c = path[pos:pos + csize]
       cmd.append("C")
       pos += csize
-    elif path[pos : pos + csize] == c:
+    elif path[pos:pos + csize] == c:
       cmd.append("C")
       pos += csize
     else:

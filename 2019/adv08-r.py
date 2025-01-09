@@ -14,7 +14,7 @@ data = sys.stdin.read().strip()
 layers = []
 size = mx * my
 for i in range(len(data) // size):
-  layers.append(data[size * i : size * i + size])
+  layers.append(data[size * i:size * i + size])
 
 m = min(layers, key=lambda x: x.count("0"))
 aoc.cprint(m.count("1") * m.count("2"))

@@ -20,9 +20,9 @@ def init(data):
   return cpus, state
 
 def idle(state, cpus):
-  return (
-      all(not s.iq for s in state) and
-      all(cpu.state == cpu.INPUT for cpu in cpus))
+  no_iq = all(not s.iq for s in state)
+  all_input = all(cpu.state == cpu.INPUT for cpu in cpus)
+  return no_iq and all_input
 
 def execute(data):
   cpus, state = init(data)

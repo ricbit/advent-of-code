@@ -56,12 +56,15 @@ def get_vaporized(station, asteroids, number):
   sy, sx = station
   rotate = cmath.exp(-1j * (math.pi / 2 - 0.01))
   goals = ((ay, ax) for ay, ax in asteroids if (ay, ax) != (sy, sx))
-  polar = [(cmath.polar(((ax - sx) + (ay - sy) * 1j) * rotate), ax, ay) for ay, ax in goals]
+  to_complex = lambda ay, ax: (ax - sx) + (ay - sy) * 1j
+  to_polar = lambda ay, ax: (cmath.polar(to_complex(ay, ax) * rotate), ax, ay)
+  polar = [to_polar(ay, ax) for ay, ax in goals]
   polar.sort(key=lambda c: (c[0][1], c[0][0]))
   sorted_asteroids = aoc.ddict(lambda: [])
   for ((r, phase), y, x) in polar:
     sorted_asteroids[int(phase * 10000)].append((y, x))
-  return aoc.first(itertools.islice(spiral(sorted_asteroids), number - 1, number))
+  spiral_asteroids = spiral(sorted_asteroids)
+  return aoc.first(itertools.islice(spiral_asteroids, number - 1, number))
 
 t = aoc.Table.read()
 asteroids = [(j, i) for j, i in t.iter_all(lambda x: x in "#X")]

@@ -35,5 +35,3 @@ def second():
 
 aoc.cprint(first())
 aoc.cprint(second())
-
-

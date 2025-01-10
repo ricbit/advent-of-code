@@ -11,5 +11,6 @@ def count_wins(time, distance):
   b = math.floor((time + (time ** 2 - 4 * distance) ** 0.5) / 2 - 1e-3)
   return b - a + 1
 
-aoc.cprint(math.prod(count_wins(int(t), int(d)) for t, d in zip(time, distance)))
+compose = zip(time, distance)
+aoc.cprint(math.prod(count_wins(int(t), int(d)) for t, d in compose))
 aoc.cprint(count_wins(int("".join(time)), int("".join(distance))))

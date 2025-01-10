@@ -10,5 +10,6 @@ build = lambda regexp: lambda line: values[re.search(regexp, line).group(1)]
 first = build(fr"^.*?(\d|{numbers})")
 last = build(fr"^.*(\d|{numbers}).*?$")
 digits = lambda line: "".join(d for d in line if d.isdecimal())
-aoc.cprint(sum(first(digits(line)) * 10 + last(digits(line)) for line in lines))
-aoc.cprint(sum(first(line) * 10 + last(line) for line in lines))
+compose = lambda line: first(line) * 10 + last(line)
+aoc.cprint(sum(compose(digits(line)) for line in lines))
+aoc.cprint(sum(compose(line) for line in lines))

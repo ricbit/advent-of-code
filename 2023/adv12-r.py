@@ -1,6 +1,7 @@
 import sys
 import aoc
 import functools
+import multiprocessing
 
 def empty(opensize, groups):
   if opensize > 0:
@@ -34,14 +35,15 @@ def count(springs, opensize, groups):
   if springs[0] == "?":
     return dot(springs, opensize, groups) + sharp(springs, opensize, groups)
 
-def unfold(lines, n):
-  ans = 0
-  for line in lines:
-    springs, groups = line.strip().split()
-    groups = tuple(int(i) for i in groups.split(","))
-    ans += count("?".join([springs] * n), 0, groups * n)
-  return ans
+def unfold_line(line, n):
+  springs, groups = line.strip().split()
+  groups = tuple(int(i) for i in groups.split(","))
+  return count("?".join([springs] * n), 0, groups * n)
+
+def unfold(lines, n, pool):
+  return sum(pool.starmap(unfold_line, ((line, n) for line in lines)))
 
 lines = sys.stdin.readlines()
-aoc.cprint(unfold(lines, 1))
-aoc.cprint(unfold(lines, 5))
+with multiprocessing.Pool() as pool:
+  aoc.cprint(unfold(lines, 1, pool))
+  aoc.cprint(unfold(lines, 5, pool))

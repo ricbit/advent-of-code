@@ -22,7 +22,7 @@ def first(games):
 
 def second(games):
   ans = 0
-  for gameid, rgb in games.items():
+  for _, rgb in games.items():
     ans += math.prod(rgb.values())
   return ans
 

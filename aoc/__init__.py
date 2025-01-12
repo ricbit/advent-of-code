@@ -8,6 +8,8 @@ from collections import namedtuple, defaultdict, Counter
 from dataclasses import dataclass
 from io import StringIO
 
+UNREACHABLE = None
+
 try:
   import pyperclip
 except ImportError:
@@ -204,7 +206,7 @@ class bq:
     return self.size
 
 # Intervals are inclusive
-@dataclass(repr=True, init=True)
+@dataclass(repr=True, init=True, order=True)
 class Interval:
   begin: int
   end: int
@@ -223,6 +225,10 @@ class Interval:
         yield Interval(m.end + 1, self.end)
     else:
       yield self 
+
+  def union(self, b):
+    if max(self.begin, b.begin) <= min(self.end, b.end):
+      yield Interval(min(self.begin, b.begin), max(self.end, b.end))
   
   def __len__(self):
     return self.end - self.begin + 1

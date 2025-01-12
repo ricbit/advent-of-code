@@ -2,7 +2,7 @@ import math
 import aoc
 
 hexdigits = input().strip()
-raw = "".join(("0000" + bin(int(d, 16))[2:])[-4:] for d in hexdigits)
+raw = "".join(aoc.to_binary(int(d, 16), 4) for d in hexdigits)
 pos = 0
 
 def consumeint(pos, bits):

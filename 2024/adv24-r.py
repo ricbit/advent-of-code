@@ -46,8 +46,8 @@ def part1(nodes, ops):
 def find_error(g, a, b):
   brange = 45
   baseline = a + b
-  x = list(reversed("0" * brange + bin(a)[2:]))[:brange]
-  y = list(reversed("0" * brange + bin(b)[2:]))[:brange]
+  x = list(reversed(aoc.to_binary(a, brange)))
+  y = list(reversed(aoc.to_binary(b, brange)))
   for i in range(brange):
     nodes[f"x{i:02}"] = int(x[i])
     nodes[f"y{i:02}"] = int(y[i])

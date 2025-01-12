@@ -15,6 +15,9 @@ try:
 except ImportError:
   pyperclip = None
 
+def to_binary(n, length):
+  return ("0" * length + bin(n)[2:])[-length:]
+
 def extrapolate(it, goal):
   seen, inv = {}, {}
   for time, key in enumerate(it, 1):

@@ -1,7 +1,8 @@
 import re
 import sys
 import aoc
-  
+import z3
+
 limit = 4000000
 lines = sys.stdin.readlines()
 data = []
@@ -40,16 +41,22 @@ def part1(data):
   intervals = forbidden(data, 2000000)
   return sum(len(interval) - 1 for interval in intervals)
 
+def zabs(x):
+  return z3.If(x >= 0, x, -x)
+
 def part2(data):
-  for y in range(0, limit + 1):
-    if y % 1000 == 0:
-      print(y)
-    components = forbidden(data, y)
-    if len(components) > 1:
-      for a, b in zip(components, components[1:]):
-        if b.begin - a.end >= 1:
-          print(y + 4000000 * ((int(b.begin) + int(a.end)) // 2))
-          return
+  x = z3.Int('x')
+  y = z3.Int('y')
+  constr = [0 <= x, x <= 4000000, 0 <= y, y <= 4000000]
+  for sx, sy, bx, by in data:
+    constr.append(zabs(sx - x) + zabs(sy - y) > zabs(sx - bx) + zabs(sy - by))
+  s = z3.Solver()
+  s.add(z3.And(*constr))
+  s.check()
+  m = s.model()
+  xm = int(str(m.evaluate(x)))
+  ym = int(str(m.evaluate(y)))
+  return xm * 4000000 + ym
 
 aoc.cprint(part1(data))
-#aoc.cprint(part2(data))
+aoc.cprint(part2(data))

@@ -9,7 +9,7 @@ from collections import *
 
 def get(i, salt):
   value = salt + str(i)
-  for i in range(2017):
+  for i in range(1): #2017):
     value = aoc.md5(value)
   return value
 

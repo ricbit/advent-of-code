@@ -1,5 +1,6 @@
 import itertools
 import functools
+import aoc
 
 def deterministic_dice():
   yield from itertools.cycle(range(1, 101))
@@ -55,5 +56,5 @@ def manyworlds(state, pos1, pos2, dice1, dice2, score1, score2):
 
 p1 = int(input().split(":")[1])
 p2 = int(input().split(":")[1])
-print(play(p1, p2))
-print(max(*manyworlds(0, p1 - 1, p2 - 1, 0, 0, 0, 0)))
+aoc.cprint(play(p1, p2))
+aoc.cprint(max(*manyworlds(0, p1 - 1, p2 - 1, 0, 0, 0, 0)))

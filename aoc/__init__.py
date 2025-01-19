@@ -15,6 +15,19 @@ try:
 except ImportError:
   pyperclip = None
 
+def integer_compositions(n):
+  """Compositions of an integer (as an ordered sum of positive integers).
+  Returns an iterator over the compositions of the given integer n.
+  Example: n=3 -> 3 = 2+1 = 1+2 = 1+1+1.
+  """
+  if n == 0:
+    yield []
+  else:
+    yield [n]
+    for i in range(n - 1, 0, -1):
+      for composition in integer_compositions(n - i):
+        yield [i] + composition
+
 def to_binary(n, length):
   return ("0" * length + bin(n)[2:])[-length:]
 
@@ -141,6 +154,11 @@ def ifirst(seq):
 HEX = {
     'n': [0, -1], 's': [0, 1], 'ne': [1, -1], 
     'nw': [-1, 0], 'se': [1, 0], 'sw': [-1, 1]
+}
+
+HEX2 = {
+    'e': [2, 0], 'w': [-2, 0], 'ne': [1, -1],
+    'nw': [-1, -1], 'se': [1, 1], 'sw': [-1, 1]
 }
 
 def hex_dist(y, x):
@@ -299,7 +317,7 @@ def iter_neigh8(y, x):
     yield y + dj, x + di
 
 def line_blocks():
-  return [line.strip().split("\n") for line in sys.stdin.read().split("\n\n")]
+  return [line.splitlines() for line in sys.stdin.read().strip().split("\n\n")]
 
 def transpose(table):
   return [list(t) for t in zip(*table)]

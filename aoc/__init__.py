@@ -329,6 +329,9 @@ class Table:
     self.w = len(self.table[0])
     self.h = len(self.table)
 
+  def __repr__(self):
+    return "\n".join(str(line) for line in self.table)
+
   @staticmethod
   def read():
     return Table([list(line.rstrip()) for line in sys.stdin])

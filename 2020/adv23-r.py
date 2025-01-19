@@ -23,8 +23,7 @@ def solve(data, moves):
     save = [bidi[pos][1]]
     for _ in range(3):
       save.append(bidi[save[-1]][1])
-    advance = save[-1]
-    save = save[:-1]
+    *save, advance = save
     bidi[pos][1] = advance
     bidi[advance][0] = pos
     while dstvalue in save:

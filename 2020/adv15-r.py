@@ -3,18 +3,20 @@ import aoc
 
 def sequence(values, target):
   vlink = [(i, None) for i, v in enumerate(values)]
-  vhash = aoc.ddict(lambda: None)
-  vhash.update({v: i for i, v in enumerate(values)})
+  vhash = [None] * 50000000
+  for i, v in enumerate(values):
+    vhash[v] = i
+  vlast = vlink[-1]
   for _ in range(len(values), target):
-    i, prev = vlink[-1]
+    i, prev = vlast
     if prev is not None:
       new_value = i - prev
-      vlink.append((i + 1, vhash[new_value]))
+      vlast = (i + 1, vhash[new_value])
       vhash[new_value] = i + 1
     else:
-      vlink.append((i + 1, vhash[0]))
+      vlast = (i + 1, vhash[0])
       vhash[0] = i + 1
-  return aoc.first(k for k, v in vhash.items() if v == vlink[-1][0])
+  return aoc.first(k for k, v in enumerate(vhash) if v == vlast[0])
 
 data = aoc.ints(sys.stdin.read().strip().split(","))
 aoc.cprint(sequence(data, 2020))

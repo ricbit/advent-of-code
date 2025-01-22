@@ -317,7 +317,7 @@ def iter_neigh8(y, x):
     yield y + dj, x + di
 
 def line_blocks():
-  return [line.splitlines() for line in sys.stdin.read().strip().split("\n\n")]
+  return [line.splitlines() for line in sys.stdin.read().rstrip().split("\n\n")]
 
 def transpose(table):
   return [list(t) for t in zip(*table)]

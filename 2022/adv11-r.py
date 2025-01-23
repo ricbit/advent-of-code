@@ -68,13 +68,13 @@ def work_monkey(monkeys, current, low_worry, lcm):
       monkeys[current.if_false].items.append(item)
 
 def work_round(monkeys, worry, lcm):
-  for i, current in enumerate(monkeys):
+  for current in monkeys:
     work_monkey(monkeys, current, worry, lcm)
 
 def work_problem(rounds, low_worry):
   monkeys = parse(lines)
   lcm = math.lcm(*[m.divisible for m in monkeys])
-  for i in range(rounds):
+  for _ in range(rounds):
     work_round(monkeys, low_worry, lcm)
   business = [m.activity for m in monkeys]
   return math.prod(heapq.nlargest(2, business))

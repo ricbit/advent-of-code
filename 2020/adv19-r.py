@@ -8,8 +8,8 @@ def parse(rules):
     key, values = line.split(":")
     key = int(key)
     if '"' not in values:
-      grammar[key] = [
-          aoc.ints(value.strip().split()) for value in values.split("|")]
+      grammar[key] = tuple(
+          tuple(aoc.ints(value.strip().split())) for value in values.split("|"))
     else:
       grammar[key] = values.strip()[1]
   return grammar
@@ -28,7 +28,7 @@ def match_node(src, message, part):
   if isinstance(src, str):
     return message == src
   for dst in grammar[src]:
-    if match_sequence(tuple(dst), message, part):
+    if match_sequence(dst, message, part):
       return True
   return False
 
@@ -54,6 +54,6 @@ mintable = aoc.ddict(lambda: None)
 findmin(0)
 messages = [m.strip() for m in messages]
 aoc.cprint(check(messages, False))
-grammar[8] = [[42], [42, 8]]
-grammar[11] = [[42, 31], [42, 11, 31]]
+grammar[8] = ((42,), (42, 8))
+grammar[11] = ((42, 31), (42, 11, 31))
 aoc.cprint(check(messages, True))

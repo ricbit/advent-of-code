@@ -1,6 +1,6 @@
 import aoc
 import functools
-from tqdm import tqdm
+import multiprocessing
 
 def parse(rules):
   grammar = {}
@@ -18,7 +18,7 @@ def parse(rules):
 def match_sequence(seq, message, part):
   if len(seq) == 1:
     return match_node(seq[0], message, part)
-  for m in range(1, len(message) - len(seq) + 2):
+  for m in range(mintable[seq[0]], len(message) - sum(mintable[n] for n in seq[1:]) + 1):
     if match_node(seq[0], message[:m], part) and match_sequence(seq[1:], message[m:], part):
       return True
   return False
@@ -32,14 +32,26 @@ def match_node(src, message, part):
       return True
   return False
 
+@functools.cache
+def findmin(rule):
+  ans = 1e10
+  for dst in grammar[rule]:
+    if isinstance(dst[0], str):
+      mintable[rule] = 1
+      return 1
+    ans = min(ans, sum(findmin(d) for d in dst))
+  mintable[rule] = ans
+  return ans
+
 def check(messages, part):
-  ans = 0
-  for msg in tqdm(messages):
-    ans += match_node(0, msg, part)
+  with multiprocessing.Pool() as pool:
+    ans = sum(pool.starmap(match_node, ((0, msg, part) for msg in messages)))
   return ans
 
 rules, messages = aoc.line_blocks()
 grammar = parse(rules)
+mintable = aoc.ddict(lambda: None)
+findmin(0)
 messages = [m.strip() for m in messages]
 aoc.cprint(check(messages, False))
 grammar[8] = [[42], [42, 8]]

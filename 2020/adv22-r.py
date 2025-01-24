@@ -1,4 +1,5 @@
 import aoc
+import functools
 from collections import deque
 
 def score(winner):
@@ -22,6 +23,7 @@ def part1(data):
     return score(player1_cards)
   return score(player2_cards)
 
+@functools.cache
 def part2(data):
   p1, p2 = data
   player1_cards = deque(p1)
@@ -54,6 +56,6 @@ def part2(data):
   return False, score(player2_cards)
 
 data = aoc.line_blocks()
-data = [aoc.ints(x[1:]) for x in data]
+data = tuple(tuple(aoc.ints(x[1:])) for x in data)
 aoc.cprint(part1(data))
 aoc.cprint(part2(data)[1])

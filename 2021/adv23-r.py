@@ -34,14 +34,12 @@ def build_base_graph(part1):
   return g, ordered_nodes
 
 def get_frog_pos(zstate, ordered_nodes):
-  frog_pos = aoc.ddict(list)
   for node, (j, i) in zip(zstate, ordered_nodes):
     if node != ".":
-      frog_pos[node].append((j, i))
-  return frog_pos
+      yield node, (j, i), skip[ord(node) - ord("A")]
 
-def empty_below(frog, dst, zstate, ordered_nests):
-  nest = ord(frog) - ord("A")
+def empty_below(frog, dst, zstate, ordered_nests, nest):
+  nest = (nest - 3) // 2
   if dst[1] != skip[nest]:
     return False
   nestsize = 2 if len(zstate) < 20 else 4
@@ -52,42 +50,46 @@ def empty_below(frog, dst, zstate, ordered_nests):
   return False
 
 @functools.cache
-def get_paths(zg, pos, ordered_nodes, zstate):
+def get_paths(zg, src, ordered_nodes, zstate):
   visited = [False] * len(zstate)
-  pnext = deque([(0, ordered_nodes.index(pos))])
+  pnext = deque([(0, ordered_nodes.index(src))])
   ans = []
   while pnext:
     dist, pos = pnext.popleft()
     if visited[pos]:
       continue
     visited[pos] = True
-    ans.append((ordered_nodes[pos], dist))
+    if filter_path(src, ordered_nodes[pos]):
+      ans.append((ordered_nodes[pos], dist))
     for neigh, steps in zg[pos]:
       if zstate[neigh] == ".":
         pnext.append((dist + steps, neigh))
   return ans
 
+@functools.cache
+def filter_path(pos, dst):
+  # Can't walk inside a nest.
+  if dst[0] > 1 and pos[0] > 1 and dst[1] == pos[1]:
+    return False
+  # Can't walk on the corridor
+  if pos[0] == 1 and dst[0] == 1:
+    return False
+  # Must walk
+  if dst == pos:
+    return False
+  return True
+
 def get_valid_moves(g, zg, frog_pos, zstate, ordered_nests, ordered_nodes, mask):
-  for frog, mpos in frog_pos.items():
-    for pos in mpos:
-      paths = get_paths(zg, pos, ordered_nodes, mask)
-      for dst, size in paths:
-        # Can't walk inside a nest.
-        if dst[0] > 1 and pos[0] > 1 and dst[1] == pos[1]:
-          continue
-        # Can't walk on the corridor
-        if pos[0] == 1 and dst[0] == 1:
-          continue
-        # Can't enter another frog's nest.
-        if dst[0] > 1 and dst[1] != skip[ord(frog) - ord("A")]:
-          continue
-        # Must enter the nest all the way
-        if empty_below(frog, dst, zstate, ordered_nests):
-          continue
-        # Must walk
-        if dst == pos:
-          continue
-        yield (frog, pos, dst, size)
+  for frog, pos, nest in frog_pos:
+    paths = get_paths(zg, pos, ordered_nodes, mask)
+    for dst, size in paths:
+      # Can't enter another frog's nest.
+      if dst[0] > 1 and dst[1] != nest:
+        continue
+      # Must enter the nest all the way
+      if empty_below(frog, dst, zstate, ordered_nests, nest):
+        continue
+      yield (frog, pos, dst, size)
 
 def encode_state(state, ordered_nodes):
   return "".join(state[j][i] for j, i in ordered_nodes)
@@ -189,7 +191,7 @@ def solve(start, part1=True):
   return data
 
 #if True:
-with Profiler(interval=0.01) as profiler:
+with Profiler(interval=0.002) as profiler:
   data = [list((line + " " * 8)[:13]) for line in sys.stdin.read().splitlines()]
   table = aoc.Table(data)
   aoc.cprint(solve(table, part1=True))

@@ -28,27 +28,31 @@ def build_base_graph(part1):
     if not part1:
       g.add_edge((3, i), (4, i), steps=1)
       g.add_edge((4, i), (5, i), steps=1)
-  nx.nx_agraph.write_dot(g, "p23.dot")
-  return g
+  ordered_nodes = list(g.nodes)
+  return g, ordered_nodes
 
-def get_frog_pos(state):
+def get_frog_pos(zstate, ordered_nodes):
   frog_pos = aoc.ddict(list)
-  for j, i in state.iter_all():
-    if state[j][i] in "ABCD":
-      frog_pos[state[j][i]].append((j, i))
+  for node, (j, i) in zip(zstate, ordered_nodes):
+    if node != ".":
+      frog_pos[node].append((j, i))
   return frog_pos
 
-def empty_below(frog, dst, state):
-  nest = skip[ord(frog) - ord("A")]
-  limit = state.h - 1
-  if dst[1] != nest:
+def empty_below(frog, dst, state, zstate, ordered_nests):
+  nest = ord(frog) - ord("A")
+  if dst[1] != skip[nest]:
     return False
+  limit = state.h - 1
+  #nestsize = 2 if len(zstate) < 20 else 4
+  #for i in range(nest * nestsize + dst[0] - 2, nest * nestsize + nestsize):
   for i in range(dst[0] + 1, limit):
-    if state[i][nest] != frog:
+    #_, _, n = ordered_nests[i]
+    #if zstate[n] != frog:
+    if state[i][skip[nest]] != frog:
       return True
   return False
 
-def get_valid_moves(g, state, frog_pos):
+def get_valid_moves(g, state, frog_pos, zstate, ordered_nests):
   proper_nest = lambda x: x[1] == skip[ord(frog) - ord("A")]
   for frog, mpos in frog_pos.items():
     for pos in mpos:
@@ -68,73 +72,92 @@ def get_valid_moves(g, state, frog_pos):
         if dst[0] > 1 and not proper_nest(dst):
           continue
         # Must enter the nest all the way
-        if empty_below(frog, dst, state):
+        if empty_below(frog, dst, state, zstate, ordered_nests):
           continue
         # Must walk
         if dst == pos:
           continue
         yield (frog, pos, dst, size)
 
-def encode_state(state):
-  return "".join("".join(line) for line in state.table)
+def encode_state(state, ordered_nodes):
+  return "".join(state[j][i] for j, i in ordered_nodes)
 
-def decode_state(encoded, part1):
+def decode_state(encoded, part1, ordered_nodes):
   limit = 5 if part1 else 7
-  return aoc.Table([list(encoded[13 * i: 13 * i + 13]) for i in range(limit)])
+  table = [["."] * 13 for _ in range(limit)]
+  for value, (j, i) in zip(encoded, ordered_nodes):
+    table[j][i] = value
+  return aoc.Table(table)
 
 def print_state(state):
   for line in state.table:
     print("".join(line))
   print()
 
-def heuristic(state):
+def heuristic(zstate, ordered_nodes, ordered_nests):
   h = 0
-  for frog, pos in get_frog_pos(state).items():
+  for frog, pos in get_frog_pos(zstate, ordered_nodes).items():
     for src in pos:
       nest = skip[ord(frog) - ord("A")]
       factor = 10 ** (ord(frog) - ord('A'))
       h += abs(src[1] - nest) * factor
       if src[1] != nest:
         h += (src[0] - 1) * factor
-  for frog, s in zip("ABCD", skip):
-    factor = 10 ** (ord(frog) - ord('A'))
-    for j in range(2, state.h - 1):
-      if state[j][s] != frog:
-        h += (j - 1) * factor
+  for frog, zscore, zpos in ordered_nests:
+    if zstate[zpos] != frog:
+      h += zscore
   return h
 
+def update_state(score, heur, src, dst, count, pnext, state, nstate):
+  print(f"from score {score} heur {heur}, src {src}, dst {dst} "
+        f"iter {count} size {len(pnext)}")
+  print_state(state)
+  print(f"to score {score} heur {heur}")
+  print_state(nstate)
+  print("--- \n")
+
+def get_ordered_nests(ordered_nodes, state):
+  height = state.h
+  ordered_nests = []
+  for frog, s in zip("ABCD", skip):
+    factor = 10 ** (ord(frog) - ord('A'))
+    for j in range(2, height - 1):
+      ordered_nests.append((frog, (j - 1) * factor, ordered_nodes.index((j, s))))
+  return ordered_nests 
+
 def solve(start, part1=True):
-  pnext = [(heuristic(start), 0, encode_state(start))]
-  g = build_base_graph(part1)
+  g, ordered_nodes = build_base_graph(part1)
+  ordered_nests = get_ordered_nests(ordered_nodes, start)
+  print(ordered_nests)
+  zstart = encode_state(start, ordered_nodes)
+  pnext = [(heuristic(zstart, ordered_nodes, ordered_nests), 0, zstart)]
+  print(ordered_nodes)
   visited = set()
   count = 0
   while pnext:
-    heur, score, state = heapq.heappop(pnext)
-    if state in visited:
+    heur, score, zstate = heapq.heappop(pnext)
+    if zstate in visited:
       continue
-    visited.add(state)
-    state = decode_state(state, part1)
-    if heuristic(state) == 0:
+    visited.add(zstate)
+    state = decode_state(zstate, part1, ordered_nodes)
+    if heuristic(zstate, ordered_nodes, ordered_nests) == 0:
       return score
-    frog_pos = get_frog_pos(state)
-    for frog, src, dst, steps in get_valid_moves(g, state, frog_pos):
+    frog_pos = get_frog_pos(zstate, ordered_nodes)
+    valid_moves = get_valid_moves(g, state, frog_pos, zstate, ordered_nests)
+    for frog, src, dst, steps in valid_moves:
       nstate = state.copy()
       nstate[src[0]][src[1]] = "."
       nstate[dst[0]][dst[1]] = frog
       factor = 10 ** (ord(frog) - ord('A'))
-      tstate = encode_state(nstate)
+      tstate = encode_state(nstate, ordered_nodes)
       if tstate not in visited:
         newscore = score + steps * factor
-        h = newscore + heuristic(nstate)
+        h = newscore + heuristic(tstate, ordered_nodes, ordered_nests)
         count += 1
         if count % 1000 == 0:
+          print(zstate, len(zstate))
           pass
-          #print(f"from score {score} heur {heur}, src {src}, dst {dst} "
-          #      f"iter {count} size {len(pnext)}")
-          #print_state(state)
-          #print(f"to score {score} heur {heur}")
-          #print_state(nstate)
-          #print("--- \n")
+          update_state(score, heur, src, dst, count, pnext, state, nstate)
         heapq.heappush(pnext, (h, newscore, tstate))
   return data
 
@@ -144,4 +167,4 @@ aoc.cprint(solve(table, part1=True))
 data.insert(-2, list("  #D#C#B#A#  "))
 data.insert(-2, list("  #D#B#A#C#  "))
 table = aoc.Table(data)
-aoc.cprint(solve(table, part1=False))
+#aoc.cprint(solve(table, part1=False))

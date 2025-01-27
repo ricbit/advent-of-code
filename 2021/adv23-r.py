@@ -38,21 +38,18 @@ def get_frog_pos(zstate, ordered_nodes):
       frog_pos[node].append((j, i))
   return frog_pos
 
-def empty_below(frog, dst, state, zstate, ordered_nests):
+def empty_below(frog, dst, zstate, ordered_nests):
   nest = ord(frog) - ord("A")
   if dst[1] != skip[nest]:
     return False
-  limit = state.h - 1
-  #nestsize = 2 if len(zstate) < 20 else 4
-  #for i in range(nest * nestsize + dst[0] - 2, nest * nestsize + nestsize):
-  for i in range(dst[0] + 1, limit):
-    #_, _, n = ordered_nests[i]
-    #if zstate[n] != frog:
-    if state[i][skip[nest]] != frog:
+  nestsize = 2 if len(zstate) < 20 else 4
+  for i in range(nest * nestsize + dst[0] - 2 + 1, nest * nestsize + nestsize):
+    _, _, n = ordered_nests[i]
+    if zstate[n] != frog:
       return True
   return False
 
-def get_valid_moves(g, state, frog_pos, zstate, ordered_nests):
+def get_valid_moves(g, frog_pos, zstate, ordered_nests):
   proper_nest = lambda x: x[1] == skip[ord(frog) - ord("A")]
   for frog, mpos in frog_pos.items():
     for pos in mpos:
@@ -72,7 +69,7 @@ def get_valid_moves(g, state, frog_pos, zstate, ordered_nests):
         if dst[0] > 1 and not proper_nest(dst):
           continue
         # Must enter the nest all the way
-        if empty_below(frog, dst, state, zstate, ordered_nests):
+        if empty_below(frog, dst, zstate, ordered_nests):
           continue
         # Must walk
         if dst == pos:
@@ -143,7 +140,7 @@ def solve(start, part1=True):
     if heuristic(zstate, ordered_nodes, ordered_nests) == 0:
       return score
     frog_pos = get_frog_pos(zstate, ordered_nodes)
-    valid_moves = get_valid_moves(g, state, frog_pos, zstate, ordered_nests)
+    valid_moves = get_valid_moves(g, frog_pos, zstate, ordered_nests)
     for frog, src, dst, steps in valid_moves:
       nstate = state.copy()
       nstate[src[0]][src[1]] = "."

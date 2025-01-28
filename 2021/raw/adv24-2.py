@@ -54,6 +54,8 @@ def simulate(lines, values):
         for c in 'xyzw':
           if c != a:
             s.add(zvar[addr][c] == zvar[addr - 1][c])
+        if b[0] in "xyzw":
+          s.add(zvar[addr - 1][b] != z3.BitVecVal(0, 64))
       case "mod", a, b:
         s.add(zvar[addr][a] == zvar[addr - 1][a] % read(b, addr, zvar))
         for c in 'xyzw':

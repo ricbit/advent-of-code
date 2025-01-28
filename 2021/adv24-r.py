@@ -12,9 +12,9 @@ def add_wires(s, zvar, addr, a):
     if c != a:
       s.add(zvar[addr][c] == zvar[addr - 1][c])
 
-def simulate(lines, maximize):
+def simulate(lines, inter, maximize):
   s = z3.Optimize()
-  s.set(timeout=3 * 60 * 1000)
+  s.set(timeout=60 * 1000)
   size = 64
   zvar = [{c: z3.BitVec(f"{c}_{i}", size) for c in 'xyzw'}
           for i in range(1 + len(lines))]
@@ -28,6 +28,11 @@ def simulate(lines, maximize):
     s.add(values[i] > zero)
     s.add(values[i] <= z3.BitVecVal(9, size))
   cur = 0
+  for addr, zinter in zip(range(len(lines) + 1), inter):
+    for c, (a, b) in zinter.items():
+      s.add(zvar[addr][c] <= z3.BitVecVal(b, size))
+      #if a >= 0:
+      s.add(zvar[addr][c] >= z3.BitVecVal(a - 1, size))
   for addr, line in enumerate(lines, 1):
     match line.split():
       case "inp", reg:
@@ -61,10 +66,50 @@ def simulate(lines, maximize):
     s.maximize(output)
   else:
     s.minimize(output)
-  s.check()
+  print(s.check())
+  print(s.statistics())
   m = s.model()
   return "".join(str(m.evaluate(v)) for v in values)
 
+def intervals(lines):
+  regs = {c: (0, 0) for c in "xyzw"}
+  ans = [regs]
+  print(regs.copy())
+  for i, line in enumerate(lines):
+    match line.split():
+      case "inp", reg:
+        regs[reg] = (1, 9)
+      case "add", a, b:
+        if b[0] in "xyzw":
+          regs[a] = (min(regs[a][0] + regs[b][0], regs[a][0] + regs[b][1]),
+                     max(regs[a][1] + regs[b][0], regs[a][1] + regs[b][1]))
+        else:
+          regs[a] = (regs[a][0] + int(b), regs[a][1] + int(b))
+      case "mul", a, b:
+        if b[0] in "xyzw":
+          regs[a] = (min(regs[a][0] * regs[b][0], regs[a][0] * regs[b][1]),
+                     max(regs[a][1] * regs[b][0], regs[a][1] * regs[b][1]))
+        else:
+          regs[a] = (regs[a][0] * int(b), regs[a][1] * int(b))
+      case "div", a, b:
+        if b[0] in "xyzw":
+          regs[a] = (regs[a][0] // regs[b][1],
+                     regs[a][1] // regs[b][0])
+        else:
+          regs[a] = (regs[a][0] // int(b), regs[a][1] // int(b))
+      case "mod", a, b:
+        if b[0] in "xyzw":
+          print("bug")
+        else:
+          if regs[a][1] >= int(b):
+            regs[a] = (0, int(b) - 1)
+      case "eql", a, b:
+        regs[a] = (0, 1)
+    ans.append(regs.copy())
+    print(line.strip(), regs)
+  return ans
+ 
 lines = [line.strip() for line in sys.stdin]
-aoc.cprint(simulate(lines, True))
-aoc.cprint(simulate(lines, False))
+inter = intervals(lines)
+aoc.cprint(simulate(lines, inter, True))
+aoc.cprint(simulate(lines, inter, False))

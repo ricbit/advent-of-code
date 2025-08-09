@@ -44,7 +44,7 @@ Goal: 12:21 21:59
 Time: 11:46 34:17
 (90 100+)
 
-Algo: celullar automata, mod
+Algo: cellular automata, mod
 
 # P17
 
@@ -92,7 +92,7 @@ Goal: 14:00 27:42
 Time: 09:25 16:24
 (29 26)
 
-Algo: celullar automata, mod
+Algo: cellular automata, mod
 
 # P11
 

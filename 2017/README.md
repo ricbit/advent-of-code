@@ -24,7 +24,7 @@ Algo: assembly emulation, optimization
 Goal: 13:47 20:29
 Time: 10:45 17:42
 
-Algo: celullar automata
+Algo: cellular automata
 
 # P21
 

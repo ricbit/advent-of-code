@@ -103,8 +103,8 @@ Algo: simulation, mod
 
 - Forgot to ignore trails with no cars.
   - FIX: Attention
-- To sleepy on the first run.
-  - FIX: Don´t code after midnight.
+- Too sleepy on the first run.
+  - FIX: Don’t code after midnight.
 
 ### Wins
 
@@ -283,7 +283,7 @@ Algo: spiral of integers
   - FIX: Add to lib
 - Forgetting to add part number to ./full.
   - FIX: Exporting part number from the download script.
-- Script ./runsample didin't work.
+- Script ./runsample didn't work.
   - FIX: Update it.
 - Too much noise in streaming.
   - FIX: Use a filter.
@@ -328,7 +328,7 @@ Algo: max and min, mod and div
 - Auto copy of P1 into P2 worked.
 - Opening vim is much faster.
 - Less typos without autocomplete.
-- Script ./full worked nice.# P01
+- Script ./full worked nice.
 
 # P01
 

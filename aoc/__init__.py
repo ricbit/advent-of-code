@@ -20,6 +20,8 @@ def integer_compositions(n):
   Returns an iterator over the compositions of the given integer n.
   Example: n=3 -> 3 = 2+1 = 1+2 = 1+1+1.
   """
+  if n < 0:
+    raise ValueError("n must be non-negative")
   if n == 0:
     yield []
   else:
@@ -29,6 +31,10 @@ def integer_compositions(n):
         yield [i] + composition
 
 def to_binary(n, length):
+  if n < 0:
+    raise ValueError("n must be non-negative")
+  if length < 0:
+    raise ValueError("length must be non-negative")
   return ("0" * length + bin(n)[2:])[-length:]
 
 def extrapolate(it, goal):

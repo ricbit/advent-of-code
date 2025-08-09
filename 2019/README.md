@@ -26,7 +26,7 @@ Goal: 11:04 42:18
 Time: 09:44 65:54
 (67 100+)
 
-Algo: celullar automata, fractal
+Algo: cellular automata, fractal
 
 ### P23
 

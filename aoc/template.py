@@ -10,16 +10,12 @@ import functools
 import copy
 from collections import Counter, deque
 from dataclasses import dataclass
-from aoc.refintcode import IntCode
 
 def solve(data):
-  cpu = IntCode(data)
-  while cpu.run():
-    match cpu.state:
-      case cpu.INPUT:
-        value = cpu.input
-      case cpu.OUTPUT:
-        cpu.output = value
+  return data
 
 data = aoc.ints(sys.stdin.read().strip().split(","))
+data = aoc.ints_read()
+data = aoc.Table.read()
+data = aoc.line_blocks()
 aoc.cprint(solve(data))

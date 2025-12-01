@@ -26,7 +26,7 @@ def get_cookies():
 def get_tmux_session():
   session = libtmux.Server().sessions[0]
   for pane in session.panes:
-    if pane != session.attached_pane:
+    if pane != session.active_pane:
       pane.cmd('kill-pane')
   return session
 
@@ -76,10 +76,18 @@ def get_input(year, problem, cookies):
   f.close()
 
 def open_panes(problem, session):
-  session.attached_pane.cmd(
-      'split-window', '-b', '-p', '20', '-d', 'vi', 'input.%02d.txt' % int(problem))
-  session.attached_pane.cmd(
-      'split-window', '-b', '-p', '20', '-d', 'python')
+    session.active_pane.split_window(
+        '-b', 
+        attach=False, 
+        percent=20, 
+        shell='vi input.%02d.txt' % int(problem)
+    )
+    session.active_pane.split_window(
+        '-b', 
+        attach=False, 
+        percent=20, 
+        shell='python'
+    )
 
 def open_browser(year, problem):
   url_problem = get_url_problem(year, problem)
@@ -119,19 +127,19 @@ def start_timer(times, part):
       send_command("stop 1")
 
 def open_vi(problem, part, session):
-  session.attached_pane.send_keys("vi adv%02i-%d.py" % (int(problem), part))
+  session.active_pane.send_keys("vi adv%02i-%d.py" % (int(problem), part))
 
 def main():
   cookies = get_cookies()
   session = get_tmux_session()
   year, problem = get_problem()
   get_samples(year, problem, cookies)
-  times = get_times(year, problem, cookies)
+  #times = get_times(year, problem, cookies)
   get_input(year, problem, cookies)
   open_panes(problem, session)
   part = open_browser(year, problem)
   write_current(problem, part)
-  start_timer(times, part)
+  #start_timer(times, part)
   open_vi(problem, part, session)
 
 main()

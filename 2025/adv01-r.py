@@ -1,5 +1,4 @@
 import aoc
-import sys
 
 def solve(data):
   pos = 50

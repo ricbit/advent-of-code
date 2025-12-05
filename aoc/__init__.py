@@ -260,6 +260,9 @@ class Interval:
   def __len__(self):
     return self.end - self.begin + 1
 
+  def __contains__(self, k):
+    return self.begin <= k <= self.end
+
 def md5(text):
   m = _md5.md5()
   m.update(bytes(text, "ascii"))

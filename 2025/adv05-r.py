@@ -3,7 +3,7 @@ import aoc
 def part1(ranges, products):
   ans = 0
   for k in products:
-    ans += any(r.begin <= k <= r.end for r in ranges)
+    ans += any(k in r for r in ranges)
   return ans
 
 def add_inter(all_inter, i):

@@ -18,7 +18,7 @@ def part2(ranges):
   all_inter = []
   for r in ranges:
     add_inter(all_inter, r)
-  return sum(i.end - i.begin + 1 for i in all_inter)
+  return sum(len(i) for i in all_inter)
 
 ranges, products = aoc.line_blocks()
 ranges = [aoc.Interval(*map(int, r.split("-"))) for r in ranges]

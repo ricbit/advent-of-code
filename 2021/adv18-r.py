@@ -1,8 +1,6 @@
 import sys
-import itertools
 import aoc
-
-fishes = [eval(line) for line in sys.stdin]
+import p_tqdm
 
 def toposort(fish, current):
   if type(fish[0]) is not int:
@@ -106,13 +104,14 @@ def magnitude(fish):
     right = fish[1]
   return 3 * left + 2 * right
 
-def allreduce():
-  for fish in fishes:
-    print(reduce_fishes(fish))
+def process_row(fishes, i):
+  ans = []
+  for j in range(i + 1, len(fishes)):
+    ans.append(magnitude(reduce_fishes((fishes[i], fishes[j]))))
+  return max(ans)
 
+fishes = [eval(line) for line in sys.stdin]
 aoc.cprint(magnitude(allfish()))
-ans = []
-for a, b in itertools.permutations(fishes, 2):
-  fish = [a, b]
-  ans.append(magnitude(reduce_fishes(fish)))
-print(max(ans))
+process = lambda x: process_row(fishes, x)
+ans = p_tqdm.p_map(process, range(len(fishes) - 1), disable=True)
+aoc.cprint(max(ans))

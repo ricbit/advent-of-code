@@ -20,15 +20,15 @@ def get_operator_positions(table):
   for i, op in enumerate(table[-1]):
     if op in "+*":
       ops.append(i)
+  ops.append(len(table[0]))
   return ops
 
 def solve(table, iter_part):
   ans = 0
   ops = get_operator_positions(table)
-  for i, start in enumerate(ops):
-    end = len(table[0]) - 2 if i == len(ops) - 1 else ops[i + 1] - 2
+  for i, start in enumerate(ops[:-1]):
     ps = []
-    for problem in iter_part(len(table), start, end):
+    for problem in iter_part(len(table), start, ops[i + 1] - 2):
       n = 0
       for jj, j in problem:
         if table[jj][j] == " ":

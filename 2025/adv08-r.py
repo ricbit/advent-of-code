@@ -22,10 +22,7 @@ def part1(points, dist):
 
 def part2(points, dist):
   uf = nx.utils.UnionFind(range(len(points)))
-  first = None
   for v, p1, p2 in dist:
-    if first is None:
-      first = p1
     uf.union(p1, p2)
     if uf.weights[uf.parents[p1]] == len(points):
       return points[p1][0] * points[p2][0]

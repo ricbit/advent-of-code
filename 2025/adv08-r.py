@@ -4,12 +4,12 @@ import math
 import aoc
 import networkx as nx
 
-def distance(points):
-  p1, p2 = points
-  return math.dist(p1, p2), p1, p2
-
 def get_distances(points):
-  dist = list(map(distance, itertools.combinations(points, 2)))
+  dist = []
+  points.sort()
+  for p1 in range(len(points)):
+    for p2 in range(p1 + 1, min(len(points), p1 + 200)):
+      dist.append((math.dist(points[p1], points[p2]), p1, p2))
   dist.sort()
   return dist
 
@@ -22,14 +22,14 @@ def part1(points, dist):
   return math.prod(components[:3])
 
 def part2(points, dist):
-  g = nx.Graph()
-  for p in points:
-    g.add_node(p)
+  uf = nx.utils.UnionFind(range(len(points)))
+  first = None
   for v, p1, p2 in dist:
-    g.add_edge(p1, p2)
-    if nx.is_connected(g):
-      break
-  return p1[0] * p2[0]
+    if first is None:
+      first = p1
+    uf.union(p1, p2)
+    if uf.weights[uf.parents[p1]] == len(points):
+      return points[p1][0] * points[p2][0]
 
 data = sys.stdin.readlines()
 points = [tuple(map(int, line.split(","))) for line in data]

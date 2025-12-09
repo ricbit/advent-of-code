@@ -29,6 +29,9 @@ class MatrixSum:
     y2, x2 = y2 + 1, x2 + 1
     return self.p[y2][x2] - self.p[y1][x2] - self.p[y2][x1] + self.p[y1][x1]
 
+def sgn(x):
+  return (x > 0) - (x < 0)
+
 def integer_compositions(n):
   """Compositions of an integer (as an ordered sum of positive integers).
   Returns an iterator over the compositions of the given integer n.

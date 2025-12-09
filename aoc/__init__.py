@@ -15,6 +15,20 @@ try:
 except ImportError:
   pyperclip = None
 
+class MatrixSum:
+  def __init__(self, table):
+    self.p = [[0] * (table.w + 1) for _ in range(table.h + 1)]
+    for j in range(table.h):
+      for i in range(table.w):
+        self.p[j + 1][i + 1] = (
+            (1 if table[j][i] == "." else 0) +
+            self.p[j][i + 1] + self.p[j + 1][i] - self.p[j][i])
+
+  def sum(self, y1, y2, x1, x2):
+    # sum is inclusive
+    y2, x2 = y2 + 1, x2 + 1
+    return self.p[y2][x2] - self.p[y1][x2] - self.p[y2][x1] + self.p[y1][x1]
+
 def integer_compositions(n):
   """Compositions of an integer (as an ordered sum of positive integers).
   Returns an iterator over the compositions of the given integer n.

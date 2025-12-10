@@ -5,11 +5,13 @@ def apply_rounds(line, nrounds):
   pos = 0
   skip = 0
   q = list(range(256))
+  size = len(q)
   for _ in range(nrounds):
     for n in line:
       qq = q[:]
-      for i in range(0, n):
-        qq[(pos + i) % len(q)] = q[(pos + n - 1 - i + len(q)) % len(q)]
+      n1 = (pos + n - 1) % size
+      for i in range(n):
+        qq[(pos + i) % size] = q[(n1 - i) % size]
       q = qq
       pos += n + skip
       skip += 1

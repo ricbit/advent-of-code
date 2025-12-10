@@ -28,7 +28,7 @@ def part2(points, dist):
       return points[p1][0] * points[p2][0]
 
 data = sys.stdin.readlines()
-points = [tuple(map(int, line.split(","))) for line in data]
+points = [tuple(aoc.ints(line.split(","))) for line in data]
 dist = get_distances(points)
 aoc.cprint(part1(points, dist))
 aoc.cprint(part2(points, dist))

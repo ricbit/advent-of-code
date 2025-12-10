@@ -1,16 +1,7 @@
-import sys
-import string
-import re
-import itertools
-import math
-import cmath
 import aoc
 import heapq
-import functools
-import copy
-from collections import Counter, deque
-from dataclasses import dataclass
 import mip
+import multiprocessing
 
 class Part1Machine:
   def __init__(self, goal, buttons, joltage):
@@ -23,15 +14,15 @@ class Part1Machine:
   def search(self):
     state = 0
     visited = set([state])
-    queue = [(0, state)]
+    queue = aoc.bq([(0, state)], size=30)
     while queue:
-      flips, state = heapq.heappop(queue)
+      flips, state = queue.pop()
       if state == self.goal:
         return flips
       for button in self.buttons:
         nstate = state ^ button
         if nstate not in visited:
-          heapq.heappush(queue, (flips + 1, nstate))
+          queue.push((flips + 1, nstate))
           visited.add(nstate)
     return None
 
@@ -42,29 +33,39 @@ class Part2Machine:
 
   def search(self):
     m = mip.Model(sense=mip.MINIMIZE)
-    m.verbose = 0
-    button = [m.add_var(var_type=mip.INTEGER, name=f"b{i}") 
+    m.verbose = 1
+    button = [m.add_var(var_type=mip.INTEGER, name=f"b{i}")
               for i in range(len(self.buttons))]
     for i in range(len(self.goal)):
-      m += mip.xsum(button[b] for b in range(len(button)) 
+      m += mip.xsum(button[b] for b in range(len(button))
                     if i in self.buttons[b]) == self.goal[i]
     m.objective = mip.minimize(mip.xsum(button))
     m.optimize()
     return int(m.objective_value)
 
-def solve(machines, MachineType):
-  ans = 0
-  for machine in machines:
-    m = MachineType(*machine)
-    ans += m.search()
-  return ans
+def select_machine(packed):
+  machine_type, machines = packed
+  if machine_type == 1:
+    return Part1Machine(*machines).search()
+  else:
+    return Part2Machine(*machines).search()
 
-data = aoc.retuple_read("goal buttons joltage", r"\[(.*?)\] (\(.*?\)\s+)\{(.*?)\}")
+def solve(machines, machine_type):
+  with multiprocessing.Pool() as pool:
+    m = ((machine_type, machine) for machine in machines)
+    ans = pool.imap_unordered(select_machine, m)
+    return sum(ans)
+
+data = aoc.retuple_read(
+    "goal buttons joltage",
+    r"\[(.*?)\] (\(.*?\)\s+)\{(.*?)\}")
 machines = []
 for line in data:
   buttons = line.buttons.split()
-  machines.append((line.goal, 
-                   [list(map(int, b[1:-1].split(","))) for b in buttons],
-                   list(map(int, line.joltage.split(",")))))
-aoc.cprint(solve(machines, Part1Machine))
-aoc.cprint(solve(machines, Part2Machine))
+  machines.append((line.goal,
+                   tuple(tuple(aoc.ints(b[1:-1].split(","))) for b in buttons),
+                   tuple(aoc.ints(line.joltage.split(",")))))
+# Preload mip
+mip.Model()
+aoc.cprint(solve(machines, 1))
+aoc.cprint(solve(machines, 2))

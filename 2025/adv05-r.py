@@ -21,7 +21,7 @@ def part2(ranges):
   return sum(len(i) for i in all_inter)
 
 ranges, products = aoc.line_blocks()
-ranges = [aoc.Interval(*map(int, r.split("-"))) for r in ranges]
+ranges = [aoc.Interval(*aoc.ints(r.split("-"))) for r in ranges]
 products = aoc.ints(products)
 aoc.cprint(part1(ranges, products))
 aoc.cprint(part2(ranges))

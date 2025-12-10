@@ -67,6 +67,6 @@ def part2(points):
   return max_rect
 
 data = sys.stdin.readlines()
-points = [list(map(int, line.split(","))) for line in data]
+points = [aoc.ints(line.split(",")) for line in data]
 aoc.cprint(part1(points))
 aoc.cprint(part2(points))

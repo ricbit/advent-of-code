@@ -1,7 +1,6 @@
 import aoc
-import heapq
-import mip
 import multiprocessing
+import z3
 
 class Part1Machine:
   def __init__(self, goal, buttons, joltage):
@@ -32,16 +31,18 @@ class Part2Machine:
     self.buttons = buttons
 
   def search(self):
-    m = mip.Model(sense=mip.MINIMIZE)
-    m.verbose = 1
-    button = [m.add_var(var_type=mip.INTEGER, name=f"b{i}")
-              for i in range(len(self.buttons))]
+    solver = z3.Optimize()
+    size = len(self.buttons)
+    button = [z3.Int(f"b{i}") for i in range(size)]
+    for i in range(size):
+      solver.add(0 <= button[i])
+      solver.add(button[i] <= sum(self.goal))
     for i in range(len(self.goal)):
-      m += mip.xsum(button[b] for b in range(len(button))
-                    if i in self.buttons[b]) == self.goal[i]
-    m.objective = mip.minimize(mip.xsum(button))
-    m.optimize()
-    return int(m.objective_value)
+      joltage = sum(button[b] for b in range(size) if i in self.buttons[b])
+      solver.add(joltage == self.goal[i])
+    model = solver.minimize(sum(button))
+    solver.check()
+    return model.value().as_long()
 
 def select_machine(packed):
   machine_type, machines = packed
@@ -65,7 +66,5 @@ for line in data:
   machines.append((line.goal,
                    tuple(tuple(aoc.ints(b[1:-1].split(","))) for b in buttons),
                    tuple(aoc.ints(line.joltage.split(",")))))
-# Preload mip
-mip.Model()
 aoc.cprint(solve(machines, 1))
 aoc.cprint(solve(machines, 2))

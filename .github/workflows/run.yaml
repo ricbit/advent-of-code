@@ -48,7 +48,7 @@ jobs:
           cp -r aoc/* ${{ matrix.year }}/aoc
           time python ${{ matrix.year }}/adv${{ matrix.problem }}-r.py < ${{ matrix.year }}/input.${{ matrix.problem }}.txt > output.${{ matrix.problem }}.txt
       - name: Check answer ${{ matrix.problem }}
-        run: diff output.${{ matrix.problem }}.txt ${{ matrix.year }}/output.${{ matrix.problem }}.txt  test-problem:
+        run: diff output.${{ matrix.problem }}.txt ${{ matrix.year }}/output.${{ matrix.problem }}.txt
   test-problem-25:
     runs-on: ubuntu-latest
     needs: test-aoc-library

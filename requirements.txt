@@ -2,4 +2,4 @@ numpy
 pytest
 sympy
 networkx
-z3
+z3-solver
